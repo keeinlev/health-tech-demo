@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit your profile{% endblock %}
+
+{% block body %}
+    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
+    {% if user.is_authenticated %}
+        <div class='outer-section'>
+            <form method='POST' autocomplete="off">
+                {% csrf_token %}
+                {{ form.errors }}
+                {{ form.non_field_errors }}
+                <label for="name">Name</label>
+                <div class="row" id="name">
+                    <div class="col">
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    <div class="col">
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    {{ form.dob }}
+                    {{ form.dob.errors }}
+                </div>
+                <label for="phonenumber">Phone Number</label>
+                <div class="row" id="phonenumber">
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone1 }}
+                            {{ form.phone1.errors }}
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone2 }}
+                            {{ form.phone2.errors }}
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone3 }}
+                            {{ form.phone3.errors }}
+                        </div>
+                    </div>
+                </div>
+                {% if doctor %}
+                <div style='padding:10px;'>
+                    Qualifications:<br>
+                    {{ form.qualifications }}
+                    {{ form.qualifications.errors }}
+                </div>
+                <div style='margin-top: 15px;'>
+                    Current Consultations:
+                    {{ form.consultations }}
+                    <div id='current-consults' class='autocomplete-cont'>
+                        {% for c in consultations %}
+                        <div class='autocomplete-item consult-item'>&times;&nbsp;&nbsp;{{ c }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="autocomplete">
+                        <input id="consult-input" class="form-control" type="text" placeholder="Add Consultations">
+                    </div>
+                    {{ form.consultations.errors }}
+                </div>
+                <div style='margin-top: 15px;'>
+                    Current Languages:
+                    {{ form.languages }}
+                    <div id='current-languages' class='autocomplete-cont'>
+                        {% for l in languages %}
+                        <div class='autocomplete-item language-item'>&times;&nbsp;&nbsp;{{ l }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="autocomplete">
+                        <input id="language-input" class="form-control" type="text" placeholder="Add Languages">
+                    </div>
+                    {{ form.languages.errors }}
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col">
+                        <label for="ohipcard">OHIP Number</label>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <label for="version">OHIP Version Code &nbsp; <b><a href='#' id="ohip-version-help">?</a></b></label>
+                    </div>
+                    <div class="col">
+                        <label for="ohip-expiry">Expiration Date</label>
+                    </div>
+                </div>
+                <div class="row" id="ohipcard">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip1 }}
+                            {{ form.ohip1.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip2 }}
+                            {{ form.ohip2.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip3 }}
+                            {{ form.ohip3.errors }}
+                        </div>
+                    </div>
+                    
+                    <div class="col" id="version">
+                        <div class="form-group">
+                            {{ form.ohip_version }}
+                            {{ form.ohip_version.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        {{ form.ohip_expiry }}
+                        {{ form.ohip_expiry.errors }}
+                    </div>
+                </div>
+                {% endif %}
+                {% for e in form.non_field_errors %}
+                    <small style="color: red;">{{e}}</small>
+                {% endfor %}
+                <br />
+                <div style="text-align: center; padding-top: 10px;">
+                    <input type="submit" value="Save changes" class="btn btn-secondary">
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <h1 style='text-align: center;'>Sorry, you're not permitted in this area.</h1>
+        <p style='text-align: center;'><a href="{% url 'index' %}">Go back to Homepage</a></p>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+
+    $(".phone-inputs").keyup(function() {
+        if (this.value.length == this.maxLength) {
+            if (this.id == 'phone1') {
+                document.getElementById('phone2').focus();
+            } else if (this.id == 'phone2') {
+                document.getElementById('phone3').focus();
+            } else {
+                document.getElementById('ohip1').focus();
+            }
+        }
+    });
+    $(".ohip-inputs").keyup(function() {
+        if (this.value.length == this.maxLength) {
+            if (this.id == 'ohip1') {
+                document.getElementById('ohip2').focus();
+            } else if (this.id == 'ohip2') {
+                document.getElementById('ohip3').focus();
+            } else if (this.id == 'ohip3') {
+                document.getElementById('ohip-version').focus();
+            }
+        }
+    });
+</script>
+<script type='text/javascript'>
+    /*
+    window.onload = function() {
+        $('#current-consults').html('<p>' + document.getElementById('id_consultations').value + '</p>');
+        $('#current-languages').html('<p>' + document.getElementById('id_languages').value + '</p>');
+    }
+    */
+    $(document).on('click', '.autocomplete-item', function() {
+        var hiddenInput;
+        if (this.className.includes('language-item')) {
+            hiddenInput = $('#id_languages');
+        } else {
+            hiddenInput = $('#id_consultations');
+        }
+        str = this.innerText.slice(3);
+        current = hiddenInput.val();
+        start = current.indexOf(str);
+        end = start + str.length + 2;
+        if (end > current.length) {
+            start = start - 2;
+        }
+        hiddenInput.val(current.slice(0, start) + current.slice(end));
+        this.remove();
+        console.log(hiddenInput.val());
+    });
+    /*$('.autocomplete-item').click(function() {
+        var hiddenInput;
+        if (this.className.includes('language-item')) {
+            hiddenInput = $('#id_languages');
+        } else {
+            hiddenInput = $('#id_consultations');
+        }
+        str = this.innerText.slice(3);
+        current = hiddenInput.val();
+        start = current.indexOf(str);
+        hiddenInput.val(current.slice(0, start) + current.slice(start + str.length + 2));
+        this.remove();
+        console.log(hiddenInput.val());
+    })*/
+    var consults = ['Online Walk-In Appointment', 'Abrasions', 'Acid Reflux', 'Acne', 'Allergies', 'Asthma', 'Bacterial Vaginosis', 'Birth Control/Plan B', 'Body Aches', 'Bronchitis', 'Bug Bites', 'Cankers in Mouth', 'Cannabis Consult', 'Cataracts', 'Cholesterol Visit', 'Cold Sores', 'Concussion', 'COPD', 'Coronavirus', 'Coughing', 'Dehydration', 'Diarrhea', 'Earache', 'Emphysema', 'Erectile Dysfunction', 'Exercise Counseling', 'Eye Infection', 'Eye Issues', 'Fertility Optimization', 'Fever', 'Flu', 'Follow Up Appointment', 'Fracture', 'Frostbite', 'Glaucoma', 'Gout Flare Up', 'HPV Vaccination Consultation', 'Hair Loss', 'Head Lice', 'Headaches and Migraines', 'Hives', 'Hormone Health', 'Hypertension', 'Hypoactive Sexual Desire Disorder', 'Impetigo', 'Insomnia', 'Internal Medicine Consultation', 'Joint, Muscle Pain or Inflammation', 'Leg Pain', 'Macular Degeneration', 'Medical Device Prescriptions', 'Medical Forms', 'Menopause Consult', 'Mental Health Counselling', 'Nasal Congestion', 'Nausea', 'Nutrition Counselling', 'Orthopaedic Surgeon Consultation', 'Poision Ivy', 'Pregnancy Consultation', 'Rash', 'Referral for Pyshio/Chiro/Massage', 'Referral to a Psychologist', 'Referral to a Specialist', 'Requisition (Blood Test, X-Ray, Ultrasound, MRI, etc.)', 'Review Lab Results', 'Ringworm', 'STI', 'Shingles', 'Sick Note', 'Sinus Infection', 'Skin Health Consult', 'Skin Issues', 'Sleep Hygiene Counseling', 'Sleep Issues', 'Sore Throat', 'Sports Medicine', 'Sprains and Strains', 'Stress Reduction Counselling', 'Toenail or Fingernail Infection', 'Travel Consult', 'Treatment Prescriptions', 'Urinary Tract Infection', 'Varicose Veins', 'Weight Loss Monitoring/Counselling', 'Women\'s Health Assessment', 'Yeast Infections'];
+    var languages = ['Afar', 'Abkhazian', 'Afrikaans', 'Akan', 'Amharic', 'Aragonese', 'Arabic', 'Assamese', 'Avar', 'Aymara', 'Azerbaijani', 'Bashkir', 'Belarusian', 'Bulgarian', 'Bihari', 'Bislama', 'Bambara', 'Bengali', 'Tibetan', 'Breton', 'Bosnian', 'Catalan', 'Chechen', 'Chamorro', 'Corsican', 'Cree', 'Czech', 'Old Church Slavonic / Old Bulgarian', 'Chuvash', 'Welsh', 'Danish', 'German', 'Divehi', 'Dzongkha', 'Ewe', 'Greek', 'English', 'Esperanto', 'Spanish', 'Estonian', 'Basque', 'Persian', 'Peul', 'Finnish', 'Fijian', 'Faroese', 'French', 'West Frisian', 'Irish', 'Scottish Gaelic', 'Galician', 'Guarani', 'Gujarati', 'Manx', 'Hausa', 'Hebrew', 'Hindi', 'Hiri Motu', 'Croatian', 'Haitian', 'Hungarian', 'Armenian', 'Herero', 'Interlingua', 'Indonesian', 'Interlingue', 'Igbo', 'Sichuan Yi', 'Inupiak', 'Ido', 'Icelandic', 'Italian', 'Inuktitut', 'Japanese', 'Javanese', 'Georgian', 'Kongo', 'Kikuyu', 'Kuanyama', 'Kazakh', 'Greenlandic', 'Cambodian', 'Kannada', 'Korean', 'Kanuri', 'Kashmiri', 'Kurdish', 'Komi', 'Cornish', 'Kirghiz', 'Latin', 'Luxembourgish', 'Ganda', 'Limburgian', 'Lingala', 'Laotian', 'Lithuanian', 'Latvian', 'Malagasy', 'Marshallese', 'Maori', 'Macedonian', 'Malayalam', 'Mongolian', 'Moldovan', 'Marathi', 'Malay', 'Maltese', 'Burmese', 'Nauruan', 'North Ndebele', 'Nepali', 'Ndonga', 'Dutch', 'Norwegian Nynorsk', 'Norwegian', 'South Ndebele', 'Navajo', 'Chichewa', 'Occitan', 'Ojibwa', 'Oromo', 'Oriya', 'Ossetian', 'Punjabi', 'Pali', 'Polish', 'Pashto', 'Portuguese', 'Quechua', 'Raeto Romance', 'Kirundi', 'Romanian', 'Russian', 'Rwandi', 'Sanskrit', 'Sardinian', 'Sindhi', 'Sango', 'Serbo-Croatian', 'Sinhalese', 'Slovak', 'Slovenian', 'Samoan', 'Shona', 'Somalia', 'Albanian', 'Serbian', 'Swati', 'Southern Sotho', 'Sundanese', 'Swedish', 'Swahili', 'Tamil', 'Telugu', 'Tajik', 'Thai', 'Tigrinya', 'Turkmen', 'Tagalog', 'Tswana', 'Tonga', 'Turkish', 'Tsonga', 'Tatar', 'Twi', 'Tahitian', 'Uyghur', 'Ukrainian', 'Urdu', 'Venda', 'Vietnamese', 'Volapük', 'Walloon', 'Wolof', 'Xhosa', 'Yiddish', 'Yoruba', 'Zhuang', 'Chinese', 'Zulu'];
+    function autocomplete(inp, arr) {
+        var currentFocus;
+        inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false;}
+            currentFocus = -1;
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(a);
+            for (i = 0; i < arr.length; i++) {
+                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    b = document.createElement("DIV");
+                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(val.length);
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    b.addEventListener("click", function(e) {
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            }
+        });
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                currentFocus++;
+                addActive(x);
+            } else if (e.keyCode == 38) {
+                currentFocus--;
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    if (x) x[currentFocus].click();
+                }
+                if (this.id == 'consult-input') {
+                    addToHidden(this, document.getElementById('id_consultations'), 'current-consults');
+                } else if (this.id == 'language-input') {
+                    addToHidden(this, document.getElementById('id_languages'), 'current-languages');
+                }
+            }
+        });
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+        function closeAllLists(elmnt) {
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+    }
+    function addToHidden(addInput, to, label) {
+        //addInput = document.getElementById('consult-input');
+        //to = document.getElementById('id_consultations');
+        if (!to.value.includes(addInput.value)) {
+            if (to.value == '') {
+                to.value = addInput.value;
+            } else {
+                to.value += ', ' + addInput.value;
+            }
+            document.getElementById(label).innerHTML += "\n<div class='autocomplete-item" + ((label == 'current-languages') ? " language-item" : " consult-item") + "'>" + "&times;&nbsp;&nbsp;" + addInput.value + "</div>";
+        }
+        addInput.value = '';
+        
+    }
+
+</script>
+<script type='text/javascript'>
+    autocomplete(document.getElementById("consult-input"), consults);
+    autocomplete(document.getElementById("language-input"), languages);
+</script>
+{% endblock %}

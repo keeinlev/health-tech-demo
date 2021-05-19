@@ -1,0 +1,352 @@
+<style>
+    body{
+        background-color: #a8f5ff;
+        background-attachment: fixed;
+        background-size: cover;
+        overflow-y: scroll;
+        font-family: sans-serif;
+    }
+    .nav-item {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+    .heading {
+        margin-top: 3%;
+        text-align: center;
+    }
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 40%;
+    }
+    
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    .alert {
+        background-color: rgb(243, 250, 206);
+        padding: 20px;
+        border-radius: 5px;
+        margin-top:2%;
+        margin-left: auto;
+        margin-right: auto;
+        width:90%;
+    }
+    .section {
+        background-color: rgb(227, 252, 255);
+        padding: 30px;
+        border-radius: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        max-width: 90%;
+    }
+    .outer-section {
+        padding-bottom: 100px;
+    }
+    .appointment-box {
+        width:100%;
+        border-radius: 5px;
+        background-color: rgb(177, 247, 255);
+        padding: 10px;
+        margin: 20px auto 20px auto;
+    }
+    @media (min-width: 992px) {
+        .appointment-box-md {
+            padding: 25px 45px 25px 45px;
+        }
+    }
+    .patient-info {
+        padding:15px;
+        overflow-wrap: break-word;
+    }
+    @media (min-width: 992px) {
+        .patient-info-md {
+            overflow-wrap:normal;
+        }
+    }
+    .hidden {
+        visibility: hidden;
+    }
+    .appointment-details {
+        margin-top: auto;
+        margin-bottom: auto;
+        padding: 10px;
+    }    
+    
+    @media (min-width: 992px) {
+        .appointment-details-md {
+            padding: 15px 45px 15px 45px;
+        }
+    }
+    .appointment-status {
+        line-height: 40px;
+    }
+
+    @media (min-width: 992px) {
+        .appointment-status-md {
+            line-height: 60px;
+        }
+    }
+
+    form {
+        background-color: rgb(255, 255, 255);
+        padding: 50px 30px 30px 30px; border-radius: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+    select {
+        overflow-y: auto;
+    }
+    .doctor-radio {
+        visibility: hidden;
+    }
+    .calendar-cont {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+    }
+    .calendar-inside {
+        padding-right: 10%;
+    }
+    .doctor-radio-container {
+        overflow-y: scroll;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgb(227, 247, 255);
+        width: 80%;
+        border-radius: 5px;
+        max-height: 500px;
+    }
+    .cancel-cont {
+        margin-top: 5px;
+    }
+    .cancel-text {
+        color: #0000EE;
+        cursor:pointer;
+        margin-top: 5px;
+    }
+    .cancel-text:hover {
+        text-decoration: underline;
+    }
+    a {
+        color:blue;
+    }
+    .doctor-radio-container .doctor-label {
+        min-width: 100%;
+        text-align: center;
+        cursor: pointer;
+    }
+    .doctor-container {
+        display: inline-block;
+        background-color: rgb(221, 239, 255);
+        margin-left: auto;
+        margin-right: auto;
+        height:10%;
+        text-align: center;
+        border-radius: 5px;
+        padding: 10px;
+        min-width:100%;
+        width:100%;
+        max-width:100%;
+    }
+    .doctor-radio:checked + .doctor-container{
+        background: rgb(198, 227, 255);
+    }
+    #booksubmit {
+        margin-left: 3%;
+    }
+    #id_time {
+        width:100px;
+    }
+    .time-input {
+        margin-top:3%;
+    }
+    .doctor-content {
+        display: inline-block;
+        margin-left: auto;
+        margin-right: auto;
+        min-width:60%;
+        width:60%;
+        max-width:60%;
+    }
+    :root {
+        --backgroundColor: rgba(246, 241, 209);
+        --colorShadeA: rgb(106, 163, 137);
+        --colorShadeB: rgb(121, 186, 156);
+        --colorShadeC: rgb(150, 232, 195);
+        --colorShadeD: rgb(187, 232, 211);
+        --colorShadeE: rgb(205, 255, 232);
+    }
+
+    @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+    * {
+        box-sizing: border-box;
+    }
+    *::before, *::after {
+        box-sizing: border-box;
+    }
+    
+    button.big-button {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        outline: none;
+        border: 0;
+        vertical-align: middle;
+        text-decoration: none;
+        font-size: 1.5rem;
+        color:var(--colorShadeA);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-family: inherit;
+        padding: 1em 2em;
+        border: 2px solid var(--colorShadeA);
+        border-radius: 1em;
+        background: var(--colorShadeE);
+        transform-style: preserve-3d;
+        transition: all 175ms cubic-bezier(0, 0, 1, 1);
+    }
+    button.big-button::before {
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--colorShadeC);
+        border-radius: inherit;
+        box-shadow: 0 0 0 2px var(--colorShadeB), 0 0.75em 0 0 var(--colorShadeA);
+        transform: translate3d(0, 0.75em, -1em);
+        transition: all 175ms cubic-bezier(0, 0, 1, 1);
+    }
+
+
+    button.big-button:hover {
+        background: var(--colorShadeD);
+        transform: translate(0, 0.375em);
+    }
+
+    button.big-button:hover::before {
+        transform: translate3d(0, 0.75em, -1em);
+    }
+
+    button.big-button:active {
+        transform: translate(0em, 0.75em);
+    }
+
+    button.big-button:active::before {
+        transform: translate3d(0, 0, -1em);
+    
+        box-shadow: 0 0 0 2px var(--colorShadeB), 0 0.25em 0 0 var(--colorShadeB);
+
+    }
+    .scrollbar-rare-wind::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+        background-color: #e4fdff;
+        border-radius: 10px;
+    }
+
+    .scrollbar-rare-wind::-webkit-scrollbar {
+        width: 5px;
+        background-color: #e4fdff;
+    }
+
+    .scrollbar-rare-wind::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+        background-image: -webkit-gradient(linear, left bottom, left top, from(#b5faf6), to(#edebff));
+        background-image: -webkit-linear-gradient(bottom, #b5faf6 0%, #edebff 100%);
+        background-image: linear-gradient(to top, #b5faf6 0%, #edebff 100%);
+    }
+
+    .scrollbar-rare-wind {
+        scrollbar-color: #a8edea #edebff;
+    }
+    .autocomplete {
+        position: relative;
+        display: inline-block;
+        width: 300px;
+    }
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+        background-color: #e9e9e9;
+    }
+    .autocomplete-active {
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+    .autocomplete-cont {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .autocomplete-item {
+        background-color: rgb(243, 243, 243);
+        padding: 5px;
+        max-width: 400px;
+        display: inline-block;
+        margin: 10px 4px 10px 4px;
+        cursor:pointer;
+    }
+</style>

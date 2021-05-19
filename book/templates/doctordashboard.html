@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
+    {% if user.type == 'DOCTOR' %}
+        <div class='outer-section'>
+            <div class="section">
+                <h2>Open a new Appointment slot</h2>
+                
+                <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" id="bookform">
+                    <div class="ui calendar" id="bookcalendar"></div>
+                    <small id="already-booked"></small><br />
+                    {{ single_appt_form }}
+                    {% csrf_token %}
+                    <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
+                </form>
+            </div>
+            <div class="section">
+                <h2>Open a range of Appointment slots</h2>
+                <form method="post" action="{% url 'bookmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="bookmultform">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label for="id_startdate">Start Date</label>
+                            {{ mult_appt_form.startdate }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_starttime">Start Time</label>
+                            {{ mult_appt_form.starttime }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2%;">
+                        <div class="col-12 col-md-6">
+                            <label for="id_enddate">End Date</label>
+                            {{ mult_appt_form.enddate }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_endtime">End Time</label>
+                            {{ mult_appt_form.endtime }}
+                        </div>
+                    </div>
+                    <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                </form>
+            </div>
+            <br />
+            <div class="section">
+                <h2>Cancel a range of Appointment slots</h2>
+                <form method="post" action="{% url 'cancelmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="cancelmultform">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label for="id_c_startdate">Start Date</label>
+                            {{ cancel_mult_form.c_startdate }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_c_starttime">Start Time</label>
+                            {{ cancel_mult_form.c_starttime }}
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 2%;">
+                        <div class="col-12 col-md-6">
+                            <label for="id_c_enddate">End Date</label>
+                            {{ cancel_mult_form.c_enddate }}
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_c_endtime">End Time</label>
+                            {{ cancel_mult_form.c_endtime }}
+                        </div>
+                    </div>
+                    <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                </form>
+            </div>
+            <br />
+            <div class="section">
+                <h2>Your Upcoming Appointments</h2>
+                {% if appointments %}
+                    {% for appt in appointments %}
+                        <div class="appointment-box appointment-box-md">
+                            <div class='row' style='padding:10px 15px 10px 15px'>
+                                <div class='col-12 col-md-6 appointment-details appointment-details-md'>
+                                    <div class='row'>
+                                        <div class='col-12 appointment-status appointment-status-md'>
+                                            Appointment slot on <br>{{ appt.dateTime }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 appointment-status appointment-status-md'>
+                                            Status: {% if appt.booked %} <b style='color:red;'>Booked</b><br>{% else %} <b style='color:green;'>Available</b> {% endif %}
+                                        </div>
+                                        <div class='col-6 appointment-status appointment-status-md'>
+                                            <b class="cancel-text" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').removeClass('hidden')">Cancel</b>&nbsp;&nbsp;
+                                            <!--<b class="cancel-text hidden" id="confirm-yes{{appt.id}}" onclick="$('#cancel-reason{{appt.id}}').removeClass('hidden')">Yes</b>-->
+                                            <b class="cancel-text"><a id="confirm-yes{{appt.id}}" class="hidden" href="{% url 'cancelappt' appt.pk %}">Yes</a></b>&nbsp;&nbsp;
+                                            <b class="cancel-text hidden" id="confirm-no{{appt.id}}" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').addClass('hidden')">No</b>
+                                            <!--<div class="cancel-reason hidden" id="confirm-reason{{appt.id}}">
+                                                <input type="text" placeholder="Reason">
+                                                <b class="cancel-text"><a id="confirm-yes{{appt.id}}" class="hidden" href="{% url 'cancelappt' appt.pk %}">Submit</a></b>
+                                            </div>-->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class='row'>
+                                        <div class='col-12' style='margin-top:20px'><a href="{% url 'prescription' appt.pk %}">Details</a></div>
+                                    </div>
+                                    
+                                </div>
+                                {% if appt.booked %}
+                                <div class='col-12 col-md-6 appointment-details appointment-details-md'>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.first_name }} {{ appt.patient.last_name }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Inquiring About:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.consultation }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient Email:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.email }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient Phone #:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.phone }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient DOB:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.dob }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient OHIP Number:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.more.ohip_number }}
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            Patient OHIP Expiry:
+                                        </div>
+                                        <div class='col-6 patient-info patient-info-md'>
+                                            {{ appt.patient.more.ohip_expiry }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h4>You have no Appointments saved.</h4>
+                {% endif %}
+            </div>
+        </div>
+
+
+    {% else %}
+        <h1 style='text-align: center;'>Sorry, you're not permitted in this area.</h1>
+        <p style='text-align: center;'><a href="{% url 'index' %}">Go back to Homepage</a></p>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascript %}
+{% include 'calendarjs.html' %} 
+    var today = new Date();
+    var todayISO = today.toISOString().split('T')[0];
+
+    window.onload = function() {
+        document.getElementById('id_startdate').setAttribute('min', todayISO);
+        document.getElementById('id_c_startdate').setAttribute('min', todayISO);
+    }
+
+    $('#id_startdate').change(function() {
+        var minEndDate = $('#id_startdate').val();
+        document.getElementById('id_enddate').setAttribute('min', minEndDate);
+    });
+    $('#id_c_startdate').change(function() {
+        var minEndDate = $('#id_c_startdate').val();
+        document.getElementById('id_c_enddate').setAttribute('min', minEndDate);
+    });
+    $('#id_starttime').click(function() {
+        $('#id_endtime').html('');
+        form_url = $('#bookmultform').attr("update-end-date-url");
+        form_data = $('#bookmultform').serialize();
+        update_end_date(form_url, form_data);
+    });
+    $('#id_c_starttime').click(function() {
+        $('#id_c_endtime').html('');
+        form_url = $('#cancelmultform').attr("update-end-date-url");
+        form_data = $('#cancelmultform').serialize();
+        update_end_date(form_url, form_data);
+    });
+
+    function update_end_date(form_url, form_data) {
+        console.log(form_url);
+        console.log(form_data);
+        $.ajax({
+            url: form_url,
+            data: form_data,
+            dataType: 'json',
+            success: function(data) {
+                keys = data['keys'];
+                values = data['values'];
+                str = ''
+                for (i = 0; i < keys.length; i++) {
+                    str += `<option value='${keys[i]}'>${values[i]}</option>\n`
+                }
+                if (data['is_cancel']) {
+                    $('#id_c_endtime').html(str);
+                } else {
+                    $('#id_endtime').html(str);
+                }
+            }
+        })
+    }
+
+    $('#bookcalendar').calendar({
+        type: 'date',
+        minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+        //maxDate: new Date(today.getFullYear(), today.getMonth(), today.getDate() + (getTotalDays(today.getMonth(), today.getYear()) - today.getDate())),
+        inline: true,
+        onChange: function() {
+            $('#bookcalendar').calendar('refresh');
+            checkDate();
+            //$('#booksubmit').addClass("hidden");
+            //$('#already-booked').html('');
+        }
+    });
+
+    $('#id_time').change(function() {
+        $('#already-booked').html('');
+        checkDate();
+    })
+    
+    function checkDate() {
+        rawdate = $('#bookcalendar').calendar('get date');
+        try {
+            day = rawdate.getDate();
+            month = rawdate.getMonth() + 1;
+            year = rawdate.getFullYear();
+            date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+            $('input[name="date"]').val(date);
+
+            $.ajax({
+                url: $('#bookform').attr("check-date-url"),
+                data: $('#bookform').serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    $('#already-booked').html(data['message']);
+                    if (data['valid']) {
+                        if (data['booked']) {
+                            $('#already-booked').attr("style", "color: red");
+                            $('#booksubmit').addClass("hidden");
+                        } else {
+                            $('#already-booked').attr("style", "color: green");
+                            $('#booksubmit').removeClass("hidden");
+                        }
+                    } else {
+                        $('#already-booked').attr("style", "color: red");
+                        $('#booksubmit').addClass("hidden");
+                    }
+                    
+                }
+            });
+        }
+        catch(err) {
+            $('#already-booked').attr("style", "color: red");
+            $('#already-booked').html("Please select a date from the calendar.");
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% block title %}Create a New Account{% endblock %}
+{% block body %}
+    <div class="heading">
+        <h1>Welcome to the Registration Page</h1>
+        <h3>Register a New Account</h3>
+    </div>
+    <div>
+        <div id="myModal" class="modal" >
+            <div class="modal-content" >
+                <span class="close">&times;</span>
+                <img src="https://www.wchchart.ca/MyChart/WCH/assessment/img/ohip-legend.jpg">
+            </div>
+        </div>
+        <div>
+            <br />
+            
+            <form method="post" id="register" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email' %}">
+                <small style="color:red;" id="not-unique">{{message}}</small><br />
+                {% csrf_token %}
+                <label for="name">Name</label>
+                <div class="row" id="name">
+                    <div class="col">
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    <div class="col">
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    {{ form.dob }}
+                    {{ form.dob.errors }}
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col">
+                        <label for="email1">Email address</label>
+                    </div>
+                    <div class="col">
+                        <label for="email2">Confirm Email address</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.email1 }}
+                            {{ form.email1.errors }}
+                            <small id="email-match-help" class="form-text" style="visibility:hidden; color:red">Emails must match!</small>  
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.email2 }}
+                            {{ form.email2.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="password1">Password (Must be 8 to 16 characters)</label>
+                    </div>
+                    <div class="col">
+                        <label for="password2">Confirm Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.password1 }}
+                            {{ form.password1.errors }}
+                            <small id="password-match-help" class="form-text" style="visibility:hidden; color:red">Passwords must match and be 8 to 16 characters!</small>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.password2 }}
+                            {{ form.password2.errors }}
+                        </div>
+                    </div>
+                </div>
+                <label for="phonenumber">Phone Number</label>
+                <div class="row" id="phonenumber">
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone1 }}
+                            {{ form.phone1.errors }}
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone2 }}
+                            {{ form.phone2.errors }}
+                        </div>
+                    </div>
+                    <div class="col-4 col-md-3 justify-content-start">
+                        <div class="form-group">
+                            {{ form.phone3 }}
+                            {{ form.phone3.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="ohipcard">OHIP Number</label>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                    <div class="col">
+                        <label for="version">OHIP Version Code &nbsp; <b><a href='#' id="ohip-version-help">?</a></b></label>
+                    </div>
+                    <div class="col">
+                        <label for="ohip-expiry">Expiration Date</label>
+                    </div>
+                </div>
+                
+                <div class="row" id="ohipcard">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip1 }}
+                            {{ form.ohip1.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip2 }}
+                            {{ form.ohip2.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form.ohip3 }}
+                            {{ form.ohip3.errors }}
+                        </div>
+                    </div>
+                    
+                    <div class="col" id="version">
+                        <div class="form-group">
+                            {{ form.ohip_version }}
+                            {{ form.ohip_version.errors }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        {{ form.ohip_expiry }}
+                        {{ form.ohip_expiry.errors }}
+                    </div>
+                </div>
+                {% for e in form.non_field_errors %}
+                    <small style="color: red;">{{e}}</small>
+                {% endfor %}
+                <br />
+                <input type="submit" id="register-submit" class="btn btn-secondary" value="Register" disabled="true"/>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+
+    $(".phone-inputs").keyup(function() {
+        if (this.value.length == this.maxLength) {
+            if (this.id == 'phone1') {
+                document.getElementById('phone2').focus();
+            } else if (this.id == 'phone2') {
+                document.getElementById('phone3').focus();
+            } else {
+                document.getElementById('ohip1').focus();
+            }
+        }
+    });
+    $(".ohip-inputs").keyup(function() {
+        if (this.value.length == this.maxLength) {
+            if (this.id == 'ohip1') {
+                document.getElementById('ohip2').focus();
+            } else if (this.id == 'ohip2') {
+                document.getElementById('ohip3').focus();
+            } else if (this.id == 'ohip3') {
+                document.getElementById('ohip-version').focus();
+            }
+        }
+    });
+</script>
+<script type="text/javascript">
+    // Get the modal
+    var modal = document.getElementById("myModal");
+    
+    // Get the button that opens the modal
+    var btn = document.getElementById("ohip-version-help");
+    
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+</script>
+<script type="text/javascript">
+    var pass1 = document.getElementById('password1');
+    var pass2 = document.getElementById('password2');
+    var passmatchmsg = document.getElementById('password-match-help');
+
+    var email1 = document.getElementById('email1');
+    var email2 = document.getElementById('email2');
+    var emailmatchmsg = document.getElementById('email-match-help');
+
+    var subbtn = document.getElementById('register-submit');
+    
+    var formelements = document.getElementsByClassName('form-control');
+
+
+    var match_pass = function() {
+        if (pass1.value || pass2.value) {
+            if ((pass1.value != pass2.value) || (pass1.value.length < 8) || (pass1.value.length > 16)) {
+                pass1.style.borderColor = 'red';
+                pass2.style.borderColor = 'red';
+                passmatchmsg.style.visibility = 'visible';
+                return false;
+            } else {
+                pass1.style.borderColor = 'green';
+                pass2.style.borderColor = 'green';
+                passmatchmsg.style.visibility = 'hidden';
+                return true;
+            }
+        }
+        /*if (passmatch && emailmatch) {
+            subbtn.disabled = false;
+        } else {
+            subbtn.disabled = true;
+        }*/
+    };
+    
+    var match_email = function() {
+        if (email1.value || email2.value) {
+            if (email1.value != email2.value) {
+                email1.style.borderColor = 'red';
+                email2.style.borderColor = 'red';
+                emailmatchmsg.style.visibility = 'visible';
+                return false;
+            }
+            else {
+                email1.style.borderColor = 'green';
+                email2.style.borderColor = 'green';
+                emailmatchmsg.style.visibility = 'hidden';
+                return true;
+            }
+        }
+        /*if (passmatch && emailmatch) {
+            subbtn.disabled = false;
+        } else {
+            subbtn.disabled = true;
+        }*/
+    };
+
+    var unique_fields = function (form) {
+        $.ajax({
+            url: form.attr("data-validate-email-url"),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.email_is_taken || data.ohip_is_taken) {
+                    $('#not-unique').html(data.error_message);
+                    $('#not-unique').css('visibility', 'visible');
+                } else {
+                    $('#not-unique').html('');
+                    $('#not-unique').css('visibility', 'hidden');
+                }
+            }
+        });
+    };
+    unique = false;
+    emailmatch = false;
+    passmatch = false;
+    complete = false;
+    
+    $('.form-control').keyup(function(e) {
+
+        
+        filled = true;
+
+        if ($(this).attr('class').includes('email-inputs') || $(this).attr('class').includes('ohip-inputs')) {
+            if ($(this).attr('class').includes('email-inputs')) {
+                emailmatch = match_email();
+            }
+            unique_fields($(this).closest("form"));
+        } else if ($(this).attr('class').includes('pass-inputs')) {
+            passmatch = match_pass();
+        }
+
+        for (elem=0; elem < formelements.length; ++elem) {
+            if (!formelements[elem].value) {
+                filled = false;
+                break;
+            }
+        }
+        if (filled) {
+            subbtn.disabled = false;
+        } else {
+            subbtn.disabled = true;
+        }
+        
+    });
+</script>
+{% endblock %}

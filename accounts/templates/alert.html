@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="alert{% if message %}{% else %} hidden{% endif %}">
+    <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</b>
+        <br>
+        {% if valid %}
+        <a href="{% url 'login' %}">Login Now</a>
+        {% else %}
+        <a href="{% url 'index' %}">Go to Home</a>
+        {% endif %}
+    </small>
+</div>
+
+{% endblock %}

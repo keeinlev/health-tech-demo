@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Log in to An Existing Account{% endblock %}
+{% block body %}
+    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
+    <div>
+        <div>
+            <br />
+            <div class='row'>
+                <div class='col-10 col-md-4' style="margin-right: auto; margin-left: auto;">
+                    <form method='post'>
+                        <h4 style="text-align: center;">Login to your Account</h3>
+                        <br />
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="30" name="{{ form.username.html_name }}" placeholder="Username" type="text" /> 
+                            {% for e in form.username.errors %}
+                                <small style="color: red;">{{e}}</small>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" id="{{ form.password.id_for_label }}" maxlength="30" name="{{ form.password.html_name }}" placeholder="Password" type="password" /> 
+                            {% for e in form.password.errors %}
+                                <small style="color: red;">{{e}}</small>
+                            {% endfor %}
+                        </div>
+                        {% for e in form.non_field_errors %}
+                            <small style="color: red;">{{e}}</small>
+                        {% endfor %}
+                        <div style="text-align: center; padding-top: 10px;">
+                            <input type="submit" id="login-submit" value="Login" class="btn btn-secondary", disabled>
+                        </div>
+                        <br>
+                        <div style="text-align: center;">
+                            <small>Don't have an account yet? <a href="{% url 'register' %}">Sign up now!</a></small>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript">
+        button = document.getElementById('login-submit');
+
+        document.onkeyup = function(e) {
+            if ($('#id_username').val() && $('#id_password').val()) {
+                button.disabled = false;
+            } else {
+                button.disabled = true;
+            }
+        }
+    </script>
+{% endblock %}

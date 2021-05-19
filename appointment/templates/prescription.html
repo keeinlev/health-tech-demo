@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment Prescription{% endblock %}
+
+{% block body %}
+    {% if message %}
+        <div class="alert{% if message %}{% else %} hidden{% endif %}">
+            <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+        </div>
+    {% else %}
+        <h1>{{ appt.doctor }} {{ appt.patient }} {{ appt.date }}</h1>
+        {% if user.is_authenticated and user.type == 'DOCTOR' %}
+            <form method='post' autocomplete="off">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class='row'>
+                    <div class='col'>
+                        {{ form.prescription.label }}
+                    </div>
+                    <div class='col'>
+                        {{ form.notes.label }}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col'>
+                        {{ form.prescription.errors }}
+                        {{ form.prescription }}
+                    </div>
+                    <div class='col'>
+                        {{ form.notes.errors }}
+                        {{ form.notes }}
+                    </div>
+                </div>
+                <div class='row' style='margin-top:20px'>
+                    <div class='col-12'>
+                        {{ form.track_number.label }}
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-6'>
+                        {{ form.track_number.errors }}
+                        {{ form.track_number }}
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-secondary" style='margin-top: 20px;'>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}

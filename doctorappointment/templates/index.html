@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="heading">
+        
+        {% if user.is_authenticated %}
+        <h1>Hi {{ user.first_name }}!</h1>
+            {% if user.type == "DOCTOR" %}
+                <a href="{% url 'doctordashboard' %}"><button class="big-button">>> Your Dashboard >></button></a>
+            {% else %}
+                <a href="{% url 'book' %}"><button class="big-button">>> Book Now >></button></a>
+            {% endif %}
+        {% else %}
+        <h1>Welcome to the Online Doctor Appointment Scheduler</h1>
+        <p>You are not logged in</p>
+        
+        <a href="{% url 'login' %}"><button class="big-button">>> Login >></button></a>
+    </div>
+    {% endif %}
+
+{% endblock %}
