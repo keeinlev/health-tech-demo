@@ -86,9 +86,15 @@ def bookmult(request):
                         for i in range(timeKeys.index(starttime), timeKeys.index(endtime) + 1):
                             t = timeKeys[i]
                             if not (Appointment.objects.filter(doctor = u, date = str(d), time = t).exists()):
-                                Appointment.objects.create(doctor = u, date = str(d), time = t, datetime=getDateTime(d, int(t)))
+                                a = Appointment.objects.create(doctor = u, date = str(d), time = t, datetime=getDateTime(d, int(t)))
+                                Prescription.objects.create(appt=a, date=a.date)
                         d += timedelta(days=1)
                     return redirect('apptcreated')
+                else:
+                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.now()).order_by('date', 'time')
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': u, 'appointments': appointments, 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+        else:
+            pass
     return render(request, 'doctordashboard.html')
 
 def cancelmult(request):
@@ -114,6 +120,11 @@ def cancelmult(request):
                                 appts.first().delete()
                         d += timedelta(days=1)
                     return redirect('apptcanceled')
+                else:
+                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.now()).order_by('date', 'time')
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': u, 'appointments': appointments, 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+        else:
+            pass
     return render(request, 'doctordashboard.html')
 
 def updateenddate(request):
@@ -127,7 +138,7 @@ def updateenddate(request):
                 is_cancel = 1
             else:
                 starttime = request.GET.get('starttime', None)
-            possibletimes = list(filter(lambda time: time[0] > int(starttime), IntTimes.choices))
+            possibletimes = list(filter(lambda time: time[0] >= int(starttime), IntTimes.choices))
             keys=[]
             values=[]
             for time in possibletimes:

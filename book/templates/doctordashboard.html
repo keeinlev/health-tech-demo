@@ -204,16 +204,20 @@
         document.getElementById('id_c_enddate').setAttribute('min', minEndDate);
     });
     $('#id_starttime').click(function() {
-        $('#id_endtime').html('');
-        form_url = $('#bookmultform').attr("update-end-date-url");
-        form_data = $('#bookmultform').serialize();
-        update_end_date(form_url, form_data);
+        if (this.value > $('#id_endtime').val()) {
+            $('#id_endtime').html('');
+            form_url = $('#bookmultform').attr("update-end-date-url");
+            form_data = $('#bookmultform').serialize();
+            update_end_date(form_url, form_data);
+        }
     });
     $('#id_c_starttime').click(function() {
-        $('#id_c_endtime').html('');
-        form_url = $('#cancelmultform').attr("update-end-date-url");
-        form_data = $('#cancelmultform').serialize();
-        update_end_date(form_url, form_data);
+        if (this.value > $('#id_c_endtime').val()) {
+            $('#id_c_endtime').html('');
+            form_url = $('#cancelmultform').attr("update-end-date-url");
+            form_data = $('#cancelmultform').serialize();
+            update_end_date(form_url, form_data);
+        }
     });
 
     function update_end_date(form_url, form_data) {

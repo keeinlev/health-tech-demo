@@ -36,13 +36,13 @@ class CreateAppointmentRangeForm(forms.Form):
     startdate = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "form-control", 'placeholder': "2020-02-20", 'max':"9999-12-31"}))
     starttime = forms.ChoiceField(label=False, required=True, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select'}))
     enddate = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "form-control", 'placeholder': "2020-02-20", 'max':"9999-12-31"}))
-    endtime = forms.ChoiceField(label=False, required=True, choices=[], widget=forms.Select(attrs={'class':'custom-select'}))
+    endtime = forms.ChoiceField(label=False, required=True, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select'}))
 
 class CancelAppointmentRangeForm(forms.Form):
     c_startdate = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "form-control", 'placeholder': "2020-02-20", 'max':"9999-12-31"}))
     c_starttime = forms.ChoiceField(label=False, required=True, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select'}))
     c_enddate = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "form-control", 'placeholder': "2020-02-20", 'max':"9999-12-31"}))
-    c_endtime = forms.ChoiceField(label=False, required=True, choices=[], widget=forms.Select(attrs={'class':'custom-select'}))
+    c_endtime = forms.ChoiceField(label=False, required=True, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select'}))
 
 class EditAppointmentForm(forms.Form):
     doctor = forms.ModelChoiceField(label=False, queryset=Doctor.objects.all(), required=True, widget=forms.HiddenInput())
