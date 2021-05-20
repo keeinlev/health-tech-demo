@@ -29,9 +29,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = '123456'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
+# DEBUG = True
 
 ALLOWED_HOSTS = ['health-tech-demo.azurewebsites.net']
 
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     'accounts',
     'scheduledreminders',
     'appointment',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -135,24 +138,40 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#STATIC_ROOT = os.path.join(BASE_DIR,  'static_root')
+# STATIC_URL = '/static/'
 
-#STATICFILES_DIR = ('C:/Users/Kevin/Desktop/SEEEG/Online Appt Proj Django/health/static/')
+STATICFILES_DIRS = []
+
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+#STATICFILES_FINDERS
+
+STATIC_LOCATION = 'static'
+
+AZURE_ACCOUNT_NAME = env('AZURE_ACCOUNT_NAME')
+
+AZURE_ACCOUNT_KEY = env('AZURE_ACCOUNT_KEY')
+
+AZURE_CONTAINER = env('AZURE_CONTAINER')
+
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_REDIRECT_URL = 'login_redir'
 
 LOGOUT_REDIRECT_URL = 'index'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = env('EMAIL_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
-EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = '587'
+# EMAIL_HOST_USER = env('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+# EMAIL_USE_TLS = True
 #EMAIL_USE_SSL = False
