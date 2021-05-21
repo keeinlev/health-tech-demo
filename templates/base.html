@@ -1,4 +1,4 @@
-
+{% load static %}
 
 <!DOCTYPE html>
 
@@ -17,10 +17,11 @@
 
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
-        
+        <link href="{% static 'appstyles/general.css '%}" rel="stylesheet" type="text/css" />
+        {% block styles %}
+        {% endblock %}
         <title>{% block title %}Online Appointment Scheduler {% endblock %}</title>
     </head>
-    {% include 'styles.html' %}
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column" style="height: 100px; font-size: x-large;">
             <!-- <a class="navbar-brand" href="/"><img src="" height="40px" style="padding:0;margin-right:5px;vertical-align: middle;">ProbaBall</a> -->

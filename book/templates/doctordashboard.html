@@ -2,6 +2,10 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block styles %}
+<link href="{% static 'appstyles/appt.css' %}" rel='stylesheet' type='text/css' />
+{% endblock %}
+
 {% block body %}
     <div class="alert{% if message %}{% else %} hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>

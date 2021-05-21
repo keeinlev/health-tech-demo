@@ -1,0 +1,44 @@
+.appointment-box {
+    width:100%;
+    border-radius: 5px;
+    background-color: rgb(177, 247, 255);
+    padding: 10px;
+    margin: 20px auto 20px auto;
+}
+@media (min-width: 992px) {
+    .appointment-box-md {
+        padding: 25px 45px 25px 45px;
+    }
+}
+.patient-info {
+    padding:15px;
+    overflow-wrap: break-word;
+}
+@media (min-width: 992px) {
+    .patient-info-md {
+        overflow-wrap:normal;
+    }
+}
+.hidden {
+    visibility: hidden;
+}
+.appointment-details {
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 10px;
+}    
+
+@media (min-width: 992px) {
+    .appointment-details-md {
+        padding: 15px 45px 15px 45px;
+    }
+}
+.appointment-status {
+    line-height: 40px;
+}
+
+@media (min-width: 992px) {
+    .appointment-status-md {
+        line-height: 60px;
+    }
+}
