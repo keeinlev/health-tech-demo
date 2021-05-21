@@ -62,7 +62,6 @@ def register(request):
             uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
             link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
             activate_url = 'http://' + domain + link
-            print(u.email)
             send_mail(
                 'Confirm your Online Health Account',
                 'Hi,' + u.first_name + '\n\nPlease use the following link to confirm your email:\n' + activate_url,
@@ -99,7 +98,6 @@ def editprofile(request):
                         pi = PatientInfo.objects.filter(user = u).first()
                         pi.ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3']) + '-' + form.cleaned_data['ohip_version'].upper()
                         pi.ohip_expiry = form.cleaned_data['ohip_expiry']
-                        print(form.cleaned_data['ohip_version'])
                         pi.save()
                     except IntegrityError as e:
                         return render(request, "editprofile.html", {'form': form, 'message': 'OHIP number already registered to existing account!'})

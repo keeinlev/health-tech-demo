@@ -31,7 +31,7 @@ def doctordashboard(request):
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
-                appointments = Appointment.objects.filter(doctor = u, datetime__gt = datetime.now()).order_by('date', 'time')
+                appointments = Appointment.objects.filter(doctor = u, datetime__gt = datetime.utcnow()).order_by('date', 'time')
                 return render(request, 'doctordashboard.html', {'doctor': u, 'appointments': appointments, 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form })
     return render(request, 'doctordashboard.html')
 
@@ -43,7 +43,7 @@ def apptcreated(request):
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
-                appointments = Appointment.objects.filter(doctor = u, datetime__gt = datetime.now()).order_by('date', 'time')
+                appointments = Appointment.objects.filter(doctor = u, datetime__gt = datetime.utcnow()).order_by('date', 'time')
                 message = "Appointment slot(s) created!"
                 return render(request, 'doctordashboard.html', {'doctor': u, 'appointments': appointments, 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
@@ -91,7 +91,7 @@ def bookmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcreated')
                 else:
-                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.now()).order_by('date', 'time')
+                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.utcnow()).order_by('date', 'time')
                     return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': u, 'appointments': appointments, 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
@@ -121,7 +121,7 @@ def cancelmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcanceled')
                 else:
-                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.now()).order_by('date', 'time')
+                    appointments = Appointment.objects.filter(doctor=u, datetime__gt = datetime.utcnow()).order_by('date', 'time')
                     return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': u, 'appointments': appointments, 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
@@ -217,7 +217,7 @@ def apptcanceled(request):
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
-                appointments = Appointment.objects.filter(doctor = u.id, datetime__gt = datetime.now()).order_by('date', 'time')
+                appointments = Appointment.objects.filter(doctor = u.id, datetime__gt = datetime.utcnow()).order_by('date', 'time')
                 message = "Appointment(s) cancelled."
                 return render(request, 'doctordashboard.html', {'doctor': u, 'appointments': appointments, 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
@@ -232,7 +232,7 @@ def update_calendar(request):
             d = Doctor.objects.filter(id = doctor_id).first()
             for c in d.more.consultations.split(', '):
                 consultations.append(c)
-            for appt in Appointment.objects.filter(doctor = d, datetime__gt = datetime.now() + timedelta(minutes=30), booked=False).order_by('date', 'time'):
+            for appt in Appointment.objects.filter(doctor = d, datetime__gt = datetime.utcnow(), booked=False).order_by('date', 'time'):
                 if appt.date not in datesList:
                     datesList.append(appt.date)
             if len(datesList) == 1:
@@ -252,7 +252,6 @@ def book(request):
             form = EditAppointmentForm()
             if (request.method == "POST"):
                 form = EditAppointmentForm(request.POST)
-                print(form.is_valid())
                 if form.is_valid():
                     doc = form.cleaned_data['doctor']
                     pat = u
@@ -297,7 +296,7 @@ def findtimes(request):
         if u.type == "PATIENT":
             d = request.GET.get('doctor-id')
             date = request.GET.get('date')
-            appts = Appointment.objects.filter(doctor = d, datetime__gt = datetime.now() + timedelta(minutes=30), date=date, booked=False).order_by('time')
+            appts = Appointment.objects.filter(doctor = d, datetime__gt = datetime.utcnow(), date=date, booked=False).order_by('time')
             data = {}
             if (appts.exists()):
                 values=[]

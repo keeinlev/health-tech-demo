@@ -15,7 +15,7 @@ import os
 import mimetypes
 import environ
 
-env = environ.Env(DEBUG=(bool,False))
+env = environ.Env()
 
 environ.Env.read_env()
 
@@ -31,9 +31,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = ['health-tech-demo.azurewebsites.net']
+ALLOWED_HOSTS = ['127.0.0.1','health-tech-demo.azurewebsites.net']
 
 
 # Application definition
@@ -164,9 +164,9 @@ AZURE_CONTAINER = env('AZURE_CONTAINER')
 
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}'
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'login_redir'
 

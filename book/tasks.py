@@ -33,4 +33,3 @@ def send_reminder(appt_id, purpose):
             'healthapptdemo@gmail.com',
             [doctor_email],
         )
-        print(patient_email + '\n' + doctor_email + '\n')

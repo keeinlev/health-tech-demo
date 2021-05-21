@@ -19,9 +19,6 @@
         overflow-wrap:normal;
     }
 }
-.hidden {
-    visibility: hidden;
-}
 .appointment-details {
     margin-top: auto;
     margin-bottom: auto;
