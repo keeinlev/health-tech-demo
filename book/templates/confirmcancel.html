@@ -4,7 +4,7 @@
 
 {% block body %}
     <form method="POST" action="{% url 'cancelappt' appt.pk %}">
-        <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {{ appt.patient.first_name }} {{ appt.patient.last_name }} on {{ dt }}.</p>
+        <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {{ appt.patient }} on {{ dt }}.</p>
         {% csrf_token %}
         {{ form }}
         <input type="submit" class="btn btn-secondary">

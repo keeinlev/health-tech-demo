@@ -39,7 +39,7 @@
                 <ul class="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item" style="margin-right: 40px;">
-                            <h4 style="margin-top:7px;">Hello, {{ user.first_name }} {{ user.last_name }}</h5>
+                            <h4 style="margin-top:7px;">Hello, {{ user }}</h5>
                         </li>
                     {% endif %}
                     <li class="nav-item">

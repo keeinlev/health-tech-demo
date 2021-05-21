@@ -83,9 +83,9 @@
             </div>
             <br />
             <div class="section">
-                <h2>Your Upcoming Appointments</h2>
-                {% if appointments %}
-                    {% for appt in appointments %}
+                <h2>Your Upcoming Appointments - <a href="{{ doctor.more.meeting_url }}" target="_blank">Go to your Online Meeting Room</a></h2>
+                {% if doctor.getAppts %}
+                    {% for appt in doctor.getAppts %}
                         <div class="appointment-box appointment-box-md">
                             <div class='row' style='padding:10px 15px 10px 15px'>
                                 <div class='col-12 col-md-6 appointment-details appointment-details-md'>
@@ -100,18 +100,13 @@
                                         </div>
                                         <div class='col-6 appointment-status appointment-status-md'>
                                             <b class="cancel-text" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').removeClass('hidden')">Cancel</b>&nbsp;&nbsp;
-                                            <!--<b class="cancel-text hidden" id="confirm-yes{{appt.id}}" onclick="$('#cancel-reason{{appt.id}}').removeClass('hidden')">Yes</b>-->
                                             <b class="cancel-text"><a id="confirm-yes{{appt.id}}" class="hidden" href="{% url 'cancelappt' appt.pk %}">Yes</a></b>&nbsp;&nbsp;
                                             <b class="cancel-text hidden" id="confirm-no{{appt.id}}" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').addClass('hidden')">No</b>
-                                            <!--<div class="cancel-reason hidden" id="confirm-reason{{appt.id}}">
-                                                <input type="text" placeholder="Reason">
-                                                <b class="cancel-text"><a id="confirm-yes{{appt.id}}" class="hidden" href="{% url 'cancelappt' appt.pk %}">Submit</a></b>
-                                            </div>-->
                                         </div>
                                     </div>
                                     
                                     <div class='row'>
-                                        <div class='col-12' style='margin-top:20px'><a href="{% url 'prescription' appt.pk %}">Details</a></div>
+                                        <div class='col-12' style='margin-top:20px'><a href="{% url 'details' appt.pk %}">Details</a></div>
                                     </div>
                                     
                                 </div>
@@ -122,7 +117,7 @@
                                             Patient:
                                         </div>
                                         <div class='col-6 patient-info patient-info-md'>
-                                            {{ appt.patient.first_name }} {{ appt.patient.last_name }}
+                                            {{ appt.patient }}
                                         </div>
                                     </div>
                                     <div class='row'>

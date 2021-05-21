@@ -8,42 +8,88 @@
             <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
         </div>
     {% else %}
-        <h1>{{ appt.doctor }} {{ appt.patient }} {{ appt.date }}</h1>
-        {% if user.is_authenticated and user.type == 'DOCTOR' %}
-            <form method='post' autocomplete="off">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                <div class='row'>
-                    <div class='col'>
-                        {{ form.prescription.label }}
+        <div class='heading'>
+            <h1>Appointment with Dr. {{ appt.doctor }} on {{ appt.date }}</h1>
+            <h3>Patient: {{ appt.patient }}</h4>
+        </div>
+        {% if user.is_authenticated %}
+            {% if user.type == 'DOCTOR' %}
+                <form method='post' autocomplete="off">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class='row'>
+                        <div class='col'>
+                            {{ form.prescription.label }}
+                        </div>
+                        <div class='col'>
+                            {{ form.notes.label }}
+                        </div>
                     </div>
-                    <div class='col'>
-                        {{ form.notes.label }}
+                    <div class='row'>
+                        <div class='col'>
+                            {{ form.prescription.errors }}
+                            {{ form.prescription }}
+                        </div>
+                        <div class='col'>
+                            {{ form.notes.errors }}
+                            {{ form.notes }}
+                        </div>
+                    </div>
+                    <div class='row' style='margin-top:20px'>
+                        <div class='col-12'>
+                            {{ form.track_number.label }}
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-6'>
+                            {{ form.track_number.errors }}
+                            {{ form.track_number }}
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-secondary" style='margin-top: 20px;'>
+                </form>
+            {% else %}
+                <div class='section'>
+                    <div style='margin:50px;'>
+                        <label for='presc'>Prescription:</label>
+                        <div class='row' style='margin-bottom: 20px;'>
+                            <div class='col'>
+                                <div id='presc'>
+                                    {% if details.prescription %}
+                                        {{ details.prescription }}
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <label for='p_track'>Prescription Tracking Number:</label>
+                        <div class='row' style='margin-bottom: 20px;'>
+                            <div class='col'>
+                                <div id='p_track'>
+                                    {% if details.track_number %}
+                                        {{ details.track_number }}
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <label for='apptnotes'>Appointment Notes:</label>
+                        <div class='row' style='margin-bottom: 20px;'>
+                            <div class='col'>
+                                <div id='apptnotes'>
+                                    {% if details.notes %}
+                                        {{ details.notes }}
+                                    {% else %}
+                                        None
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class='row'>
-                    <div class='col'>
-                        {{ form.prescription.errors }}
-                        {{ form.prescription }}
-                    </div>
-                    <div class='col'>
-                        {{ form.notes.errors }}
-                        {{ form.notes }}
-                    </div>
-                </div>
-                <div class='row' style='margin-top:20px'>
-                    <div class='col-12'>
-                        {{ form.track_number.label }}
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class='col-6'>
-                        {{ form.track_number.errors }}
-                        {{ form.track_number }}
-                    </div>
-                </div>
-                <input type="submit" class="btn btn-secondary" style='margin-top: 20px;'>
-            </form>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}

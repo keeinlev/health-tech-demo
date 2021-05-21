@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.core.validators import RegexValidator, validate_email, EmailValidator, MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from datetime import datetime
 
 # Create your models here.
 
@@ -64,6 +65,13 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
+    @property
+    def getAppts(self):
+        from book.models import Appointment
+        if (self.type == 'PATIENT'):
+            return Appointment.objects.filter(patient=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
+        elif (self.type == 'DOCTOR'):
+            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
 
 class PatientManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
@@ -96,6 +104,7 @@ class DoctorInfo(models.Model):
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
     consultations = models.TextField(_("Doctor's Applicable Consultations"))
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
+    meeting_url = models.CharField(_("Doctor's Meeting Link"), max_length=500, default=None, null=True, blank=True)
 
 class Doctor(User):
     objects = DoctorManager()
@@ -121,3 +130,4 @@ def createdoctor():
     d.set_password(password)
     d.save()
     DoctorInfo.objects.create(user=d, certification=certification, consultations=consultations, languages=languages)
+    print("Doctor created! Please add a meeting URL in the Edit Profile page once logged in.")

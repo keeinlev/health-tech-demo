@@ -26,9 +26,10 @@ class DoctorEditForm(forms.Form):
     phone1 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "form-control phone-inputs", 'id': "phone1", 'maxlength': "3", 'placeholder': "XXX"}))
     phone2 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "form-control phone-inputs", 'id': "phone2", 'maxlength': "3", 'placeholder': "XXX"}))
     phone3 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "form-control phone-inputs", 'id': "phone3", 'maxlength': "4", 'placeholder': "XXXX"}))
-    qualifications = forms.CharField(label=False, widget=forms.Textarea())
+    qualifications = forms.CharField(label=False, required=True, widget=forms.Textarea(attrs={'class':'form-control'}))
     consultations = forms.CharField(label=False, widget=forms.HiddenInput())
     languages = forms.CharField(label=False, widget=forms.HiddenInput())
+    meeting_url = forms.CharField(label=False, widget=forms.TextInput(attrs={'type': "text", 'class': "form-control", 'placeholder': "Meeting Link"}))
 
 class PatientEditForm(forms.Form):
     first_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "first_name", 'class': "form-control", 'placeholder': "First name"}))

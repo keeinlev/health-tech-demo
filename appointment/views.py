@@ -4,7 +4,7 @@ from .models import Prescription
 from .forms import PrescriptionForm
 
 # Create your views here.
-def prescription(request, pk):
+def details(request, pk):
     u = request.user
     if u.is_authenticated:
         appt = Appointment.objects.filter(pk = pk)
@@ -32,7 +32,7 @@ def prescription(request, pk):
                     })
                     return render(request, 'prescription.html', {'appt': appt, 'form': form})
             else:
-                pass #display prescription details for patient
+                return render(request, 'prescription.html', {'appt': appt, 'details': p})
         else:
             return render(request, 'prescription.html', {'message': 'No Appointment found!'})
         return render(request, 'prescription.html', {'appt': appt})

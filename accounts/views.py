@@ -86,12 +86,12 @@ def editprofile(request):
             else:
                 form = PatientEditForm(request.POST)
             if form.is_valid():
-
                 if u.type == 'DOCTOR':
                     di = DoctorInfo.objects.filter(user = u).first()
                     di.certification = form.cleaned_data['qualifications']
                     di.consultations = form.cleaned_data['consultations']
                     di.languages = form.cleaned_data['languages']
+                    di.meeting_url = form.cleaned_data['meeting_url']
                     di.save()
                 else:
                     try:
@@ -122,6 +122,7 @@ def editprofile(request):
                     'qualifications': d.more.certification,
                     'consultations': d.more.consultations,
                     'languages': d.more.languages,
+                    'meeting_url': d.more.meeting_url,
                 })
                 return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', '), 'languages': d.more.languages.split(', '),})
             else:
