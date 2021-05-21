@@ -5,6 +5,11 @@
 <link href="{% static "appstyles/appt.css" %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+{% block javascript %}
+<script src="{% static "jsmodules/calendarmethods.js" %}" type="text/javascript"></script>
+<script src="{% static "jsmodules/bookmethods.js" %}" type="text/javascript"></script>
+{% endblock %}
+
 {% block body %}
     <div class="heading">
         <h1 style="text-align: center;">Welcome to the Booking Page</h1>
@@ -100,8 +105,4 @@
     <h1>Sorry, you're not permitted in this area.</h1>
     <p><a href="{% url 'index' %}">Go back to Homepage</a></p>
     {% endif %}
-{% endblock %}
-{% block javascript %}
-<script src="{% static "jsmodules/calendarmethods.js" %}" type="text/javascript"></script>
-<script src="{% static "jsmodules/bookmethods.js" %}" type="text/javascript"></script>
 {% endblock %}

@@ -1,8 +1,16 @@
+
 {% extends 'base.html' %}
+
 {% block title %}Create a New Account{% endblock %}
 
 {% block styles %}
 <link href="{% static "appstyles/modal.css" %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static "jsmodules/autojump.js" %}" type="text/javascript"></script>
+<script src="{% static "jsmodules/modal.js" %}" type="text/javascript"></script>
+<script src="{% static "jsmodules/register.js" %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block body %}
@@ -162,9 +170,4 @@
         </div>
     </div>
 
-{% endblock %}
-{% block javascript %}
-<script src="{% static "jsmodules/autojump.js" %}" type="text/javascript"></script>
-<script src="{% static "jsmodules/modal.js" %}" type="text/javascript"></script>
-<script src="{% static "jsmodules/register.js" %}" type="text/javascript"></script>
 {% endblock %}
