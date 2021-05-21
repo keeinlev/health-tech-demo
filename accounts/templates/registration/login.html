@@ -2,8 +2,6 @@
 
 {% block title %}Log in to An Existing Account{% endblock %}
 
-{% block javascript %}
-{% endblock %}
 
 {% block body %}
     <div class="alert{% if message %}{% else %} hidden{% endif %}">
@@ -46,4 +44,17 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript'>
+button = document.getElementById('login-submit');
+
+document.onkeyup = function(e) {
+    if ($('#id_username').val() && $('#id_password').val()) {
+        button.disabled = false;
+    } else {
+        button.disabled = true;
+    }
+}
+</script>
 {% endblock %}
