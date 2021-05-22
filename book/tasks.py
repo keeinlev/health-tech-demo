@@ -23,13 +23,13 @@ def send_reminder(appt_id, purpose):
         
         send_mail(
             f'{kwords[0]} for Appointment with Dr. {doctor_name}',
-            f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}',
+            f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.doctor.more.meeting_url}',
             'healthapptdemo@gmail.com',
             [patient_email],
         )
         send_mail(
             f'{kwords[0]} for Appointment with {patient_name}',
-            f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}',
+            f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.doctor.more.meeting_url}',
             'healthapptdemo@gmail.com',
             [doctor_email],
         )

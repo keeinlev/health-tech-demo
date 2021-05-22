@@ -12,12 +12,11 @@ $(document).on('click', '.autocomplete-item', function() {
     current = hiddenInput.val();
     start = current.indexOf(str);
     end = start + str.length + 2;
-    if (end > current.length) {
+    if (end > current.length && start > 0) {
         start = start - 2;
     }
     hiddenInput.val(current.slice(0, start) + current.slice(end));
     this.remove();
-    console.log(hiddenInput.val());
 });
 function autocomplete(inp, arr) {
     var currentFocus;
