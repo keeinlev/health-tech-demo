@@ -34,7 +34,7 @@ def register(request):
             ohip_number = ohip_number.upper()
             ohip_expiry = form.cleaned_data['ohip_expiry']
             if len(phone) != 14 or len(ohip_number) != 15:
-                message = "Registration unsuccessfull. Please make sure phone and OHIP numbers are in the correct format."
+                message = "Registration unsuccessful. Please make sure phone and OHIP numbers are in the correct format."
                 return render(request, "register.html", {'form': form, 'message': message})
             if (email != form.cleaned_data['email2'] or password != form.cleaned_data['password2']):
                 message = "Registration unsuccessfull. Please make sure emails and passwords match."

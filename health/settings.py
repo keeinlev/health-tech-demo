@@ -30,12 +30,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['127.0.0.1','health-tech-demo.azurewebsites.net']
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -147,26 +141,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'health/static'),
 ]
 
-STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
 STATIC_LOCATION = 'static'
-
-AZURE_ACCOUNT_NAME = env('AZURE_ACCOUNT_NAME')
-
-AZURE_ACCOUNT_KEY = env('AZURE_ACCOUNT_KEY')
-
-AZURE_CONTAINER = env('AZURE_CONTAINER')
-
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-
-STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'login_redir'
 
@@ -178,3 +158,8 @@ EMAIL_HOST_USER = env('EMAIL_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+if (env('DJANGO_DEVELOPMENT') == 'True'):
+    from .development import *
+else:
+    from .production import *

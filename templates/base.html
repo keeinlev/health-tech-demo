@@ -38,9 +38,11 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
-                        <li class="nav-item" style="margin-right: 40px;">
-                            <h4 style="margin-top:7px;">Hello, {{ user }}</h5>
-                        </li>
+                        {% if not user.is_superuser %}
+                            <li class="nav-item" style="margin-right: 40px;">
+                                <h4 style="margin-top:7px;">Hello, {{ user }}</h5>
+                            </li>
+                        {% endif %}
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Home</a>
@@ -48,9 +50,15 @@
                     
                     {% if user.type != "DOCTOR" %}
                         {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'book' %}">Book</a>
-                            </li>
+                            {% if user.is_superuser %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'book' %}">Book</a>
+                                </li>
+                            {% endif %}
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'login' %}">Book</a>
@@ -66,9 +74,11 @@
                                 <a class="nav-link" href="{% url 'doctordashboard' %}">My Dashboard</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
-                        </li>
+                        {% if not user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>

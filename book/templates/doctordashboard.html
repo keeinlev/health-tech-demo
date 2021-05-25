@@ -15,71 +15,77 @@
     </div>
     {% if user.type == 'DOCTOR' %}
         <div class='outer-section'>
-            <div class="section">
-                <h2>Open a new Appointment slot</h2>
-                
-                <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" id="bookform">
-                    <div class="ui calendar" id="bookcalendar"></div>
-                    <small id="already-booked"></small><br />
-                    {{ single_appt_form }}
-                    {% csrf_token %}
-                    <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
-                </form>
-            </div>
-            <div class="section">
-                <h2>Open a range of Appointment slots</h2>
-                <form method="post" action="{% url 'bookmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="bookmultform">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <label for="id_startdate">Start Date</label>
-                            {{ mult_appt_form.startdate }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="id_starttime">Start Time</label>
-                            {{ mult_appt_form.starttime }}
-                        </div>
+            <div class='row'>
+                <div class='col-12 col-md-6'>
+                    <div class="section" style='height: 97.33%;'>
+                        <h2>Open a new Appointment slot</h2>
+                        
+                        <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" id="bookform">
+                            <div class="ui calendar" id="bookcalendar"></div>
+                            <small id="already-booked"></small><br />
+                            {{ single_appt_form }}
+                            {% csrf_token %}
+                            <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
+                        </form>
                     </div>
-                    <div class="row" style="margin-bottom: 2%;">
-                        <div class="col-12 col-md-6">
-                            <label for="id_enddate">End Date</label>
-                            {{ mult_appt_form.enddate }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="id_endtime">End Time</label>
-                            {{ mult_appt_form.endtime }}
-                        </div>
+                </div>
+                <div class='col-12 col-md-6'>
+                    <div class="section">
+                        <h2>Open a range of Appointment slots</h2>
+                        <form method="post" action="{% url 'bookmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="bookmultform">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_startdate">Start Date</label>
+                                    {{ mult_appt_form.startdate }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="id_starttime">Start Time</label>
+                                    {{ mult_appt_form.starttime }}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2%;">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_enddate">End Date</label>
+                                    {{ mult_appt_form.enddate }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="id_endtime">End Time</label>
+                                    {{ mult_appt_form.endtime }}
+                                </div>
+                            </div>
+                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                        </form>
                     </div>
-                    <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
-                </form>
-            </div>
-            <br />
-            <div class="section">
-                <h2>Cancel a range of Appointment slots</h2>
-                <form method="post" action="{% url 'cancelmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="cancelmultform">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <label for="id_c_startdate">Start Date</label>
-                            {{ cancel_mult_form.c_startdate }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="id_c_starttime">Start Time</label>
-                            {{ cancel_mult_form.c_starttime }}
-                        </div>
+                    <br />
+                    <div class="section">
+                        <h2>Cancel a range of Appointment slots</h2>
+                        <form method="post" action="{% url 'cancelmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="cancelmultform">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_c_startdate">Start Date</label>
+                                    {{ cancel_mult_form.c_startdate }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="id_c_starttime">Start Time</label>
+                                    {{ cancel_mult_form.c_starttime }}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 2%;">
+                                <div class="col-12 col-md-6">
+                                    <label for="id_c_enddate">End Date</label>
+                                    {{ cancel_mult_form.c_enddate }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="id_c_endtime">End Time</label>
+                                    {{ cancel_mult_form.c_endtime }}
+                                </div>
+                            </div>
+                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                        </form>
                     </div>
-                    <div class="row" style="margin-bottom: 2%;">
-                        <div class="col-12 col-md-6">
-                            <label for="id_c_enddate">End Date</label>
-                            {{ cancel_mult_form.c_enddate }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="id_c_endtime">End Time</label>
-                            {{ cancel_mult_form.c_endtime }}
-                        </div>
-                    </div>
-                    <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
-                </form>
+                </div>
             </div>
             <br />
             <div class="section">

@@ -49,7 +49,7 @@ class User(AbstractUser):
 
     type = models.CharField(_('Type'), max_length=50, choices=Types.choices)
     username = None
-    phone = models.CharField(_("User Phone Number"), max_length=14, validators=[RegexValidator(regex='^{14}$', message="Length must be 14", code='nomatch')])
+    phone = models.CharField(_("User Phone Number"), max_length=14, validators=[RegexValidator(regex='^.{14}$', message="Must be in format XXX-XXX-XXXX", code='nomatch')])
     first_name = models.CharField(_("User First Name"), max_length=50)
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
@@ -73,20 +73,13 @@ class User(AbstractUser):
         elif (self.type == 'DOCTOR'):
             return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
 
-class PatientManager(models.Manager):
+class PatientManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.PATIENT)
 
-class DoctorManager(models.Manager):
+class DoctorManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.DOCTOR)
-
-
-class PatientInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    ohip_number = models.CharField(_("OHIP Number"), max_length=15, unique=True, validators=[RegexValidator(regex='^{15}$', message="Length must be 15", code='nomatch')])
-    #ohip_version_code = models.CharField(_("OHIP Version Code"), max_length=2, validators=[RegexValidator(regex='^{2}$', message="Length must be 2", code='nomatch')])
-    ohip_expiry = models.DateField(_("OHIP Expiry Date"), default=timezone.now)
 
 class Patient(User):
     objects = PatientManager()
@@ -98,13 +91,12 @@ class Patient(User):
     class Meta:
         proxy = True
 
+class PatientInfo(models.Model):
+    user = models.OneToOneField(Patient, on_delete=models.CASCADE, unique=True)
+    ohip_number = models.CharField(_("OHIP Number"), max_length=15, unique=True, validators=[RegexValidator(regex='^.{15}$', message="Must be in format XXXX-XXX-XXX-XX", code='nomatch')])
+    #ohip_version_code = models.CharField(_("OHIP Version Code"), max_length=2, validators=[RegexValidator(regex='^{2}$', message="Length must be 2", code='nomatch')])
+    ohip_expiry = models.DateField(_("OHIP Expiry Date"), default=timezone.now)
 
-class DoctorInfo(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
-    consultations = models.TextField(_("Doctor's Applicable Consultations"))
-    languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
-    meeting_url = models.CharField(_("Doctor's Meeting Link"), max_length=500, default=None, null=True, blank=True)
 
 class Doctor(User):
     objects = DoctorManager()
@@ -115,6 +107,14 @@ class Doctor(User):
     
     class Meta:
         proxy = True
+
+
+class DoctorInfo(models.Model):
+    user = models.OneToOneField(Doctor, on_delete=models.CASCADE, unique=True)
+    certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
+    consultations = models.TextField(_("Doctor's Applicable Consultations"))
+    languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
+    meeting_url = models.CharField(_("Doctor's Meeting Link"), max_length=500, unique=True, default=None, null=True, blank=True)
 
 def createdoctor():
     first_name = input("Enter first name: ")

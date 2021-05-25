@@ -18,72 +18,76 @@
     <div class="alert{% if message or error_message %}{% else %} hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}{{ error_message }}</small></b>
     </div>
-    <div>
-        <form method="post" id="bookform" action="{% url 'book' %}" update-calendar-url="{% url 'update_calendar' %}" find-times-url="{% url 'findtimes' %}">
-            {% csrf_token %}
-            {% for e in form.non_field_errors %}
-                <small style="color: red;">{{e}}</small>
-            {% endfor %}
-            {{ form.doctor }}
-            {{ form.date }}
-            <div class='row'>
-                <div class='col-12 col-md-6'>
-                    <div class="doctor-radio-container scrollbar-rare-wind" id='doctor-outside-container'>
-                        <h2 style="text-align: center; margin-top: 4%;">Select a Doctor</h3>
-                        <div class='doctor-content'>
-                            {% for d in doctors %}
-                                <label class="doctor-label">
-                                    <input type="radio" value="{{ d.id }}" name="doctor-id" class="doctor-radio">
-                                    <div class="doctor-container">
-                                        <h4>{{ d }}</h4><br>
-                                        <p><b>Qualifications:</b><br>
-                                            {{ d.more.certification }}<br>
-                                            <b>Consultations:</b><br>
-                                            {{ d.more.consultations }}<br>
-                                            <b>Languages:</b><br>
-                                            {{ d.more.languages }}</p><br>
-                                    </div>
-                                </label>
-                            {% endfor %}
+    {% if doctors %}
+        <div>
+            <form method="post" id="bookform" action="{% url 'book' %}" update-calendar-url="{% url 'update_calendar' %}" find-times-url="{% url 'findtimes' %}">
+                {% csrf_token %}
+                {% for e in form.non_field_errors %}
+                    <small style="color: red;">{{e}}</small>
+                {% endfor %}
+                {{ form.doctor }}
+                {{ form.date }}
+                <div class='row'>
+                    <div class='col-12 col-md-6'>
+                        <div class="doctor-radio-container scrollbar-rare-wind" id='doctor-outside-container'>
+                            <h2 style="text-align: center; margin-top: 4%;">Select a Doctor</h3>
+                            <div class='doctor-content'>
+                                {% for d in doctors %}
+                                    <label class="doctor-label">
+                                        <input type="radio" value="{{ d.id }}" name="doctor-id" class="doctor-radio">
+                                        <div class="doctor-container">
+                                            <h4>{{ d }}</h4><br>
+                                            <p><b>Qualifications:</b><br>
+                                                {{ d.more.certification }}<br>
+                                                <b>Consultations:</b><br>
+                                                {{ d.more.consultations }}<br>
+                                                <b>Languages:</b><br>
+                                                {{ d.more.languages }}</p><br>
+                                        </div>
+                                    </label>
+                                {% endfor %}
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-12 col-md-6'>
+                        <h2 id='apptsempty' style="margin-top:4%; text-align: center;"></h2>
                         
-                        </div>
-                    </div>
-                </div>
-                <div class='col-12 col-md-6'>
-                    <h2 id='apptsempty' style="margin-top:4%; text-align: center;"></h2>
-                    
-                    <div class="hidden" id="calendar-cont">
-                        <div class="calendar-inside">
-                            <h3 style="margin-top: 4%; text-align: center;">Choose a day for your Appointment</h3>
-                            <div class="ui calendar" id="bookcalendar"></div>
-                            <div class='row'>
-                                <small id='noappt' style="color: red; margin: 2% 20px 0px;"></small>
-                            </div>
-                            <div class="row" style="margin-top: 3%;">
-                                <div class='col'>
-                                    <label for="id_time">Time:</label>
+                        <div class="hidden" id="calendar-cont">
+                            <div class="calendar-inside">
+                                <h3 style="margin-top: 4%; text-align: center;">Choose a day for your Appointment</h3>
+                                <div class="ui calendar" id="bookcalendar"></div>
+                                <div class='row'>
+                                    <small id='noappt' style="color: red; margin: 2% 20px 0px;"></small>
                                 </div>
-                                <div class='col'>
-                                    <label for="id_consultation">Consultation:</label>
+                                <div class="row" style="margin-top: 3%;">
+                                    <div class='col'>
+                                        <label for="id_time">Time:</label>
+                                    </div>
+                                    <div class='col'>
+                                        <label for="id_consultation">Consultation:</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class='col-6'>
-                                    {{ form.time }}
-                                </div>
-                                <div class='col-6'>
-                                    {{ form.consultation }}
+                                <div class="row">
+                                    <div class='col-6'>
+                                        {{ form.time }}
+                                    </div>
+                                    <div class='col-6'>
+                                        {{ form.consultation }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div style="margin-top: 3%; text-align: center;">
-                <input type="submit" id="booksubmit" class="btn btn-secondary hidden">
-            </div>
-        </form>
-    </div>
+                <div style="margin-top: 3%; text-align: center;">
+                    <input type="submit" id="booksubmit" class="btn btn-secondary hidden">
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <h1 style='text-align: center; color:rgb(153, 161, 161)'>Sorry, no doctors are available at the moment.</h1>
+    {% endif %}
     <br/>
     
     <!--
