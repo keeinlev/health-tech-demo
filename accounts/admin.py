@@ -19,6 +19,7 @@ class UserAdmin(BaseUserAdmin):
             'classes': ('wide',),
             'fields': ('email', 'dob', 'password1', 'password2')}
         ),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone', 'dob',)})
     )
     search_fields = ('email',)
     ordering = ('email',)

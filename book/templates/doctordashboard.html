@@ -20,13 +20,31 @@
                     <div class="section" style='height: 97.33%;'>
                         <h2>Open a new Appointment slot</h2>
                         
-                        <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" id="bookform">
+                        <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" get-dates-url="{% url 'getdates' %}" id="bookform">
                             <div class="ui calendar" id="bookcalendar"></div>
                             <small id="already-booked"></small><br />
                             {{ single_appt_form }}
                             {% csrf_token %}
                             <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
                         </form>
+                        <div style="overflow-x:auto;">
+                            <table class='infotable'>
+                              <tr>
+                                <th class='infohead'>Date</th>
+                                <th class='infohead'>Time</th>
+                                <th class='infohead'>Availability</th>
+                                <th class='infohead'>Patient</th>
+                                <th class='infohead'>Details</th>
+                              </tr>
+                              <tr>
+                                  <td>&nbsp;</td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                              </tr>
+                            </table>
+                          </div>
                     </div>
                 </div>
                 <div class='col-12 col-md-6'>

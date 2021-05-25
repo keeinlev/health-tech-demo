@@ -32,8 +32,6 @@ $('#id_c_starttime').click(function() {
 });
 
 function update_end_date(form_url, form_data) {
-    console.log(form_url);
-    console.log(form_data);
     $.ajax({
         url: form_url,
         data: form_data,
@@ -61,11 +59,32 @@ $('#bookcalendar').calendar({
     inline: true,
     onChange: function() {
         $('#bookcalendar').calendar('refresh');
+        console.log('change')
+        fetchAppts();
         checkDate();
-        //$('#booksubmit').addClass("hidden");
-        //$('#already-booked').html('');
+        $('#booksubmit').addClass("hidden");
+        $('#already-booked').html('');
     }
 });
+
+function fetchAppts() {
+    rawdate = $('#bookcalendar').calendar('get date');
+    day = rawdate.getDate();
+    month = rawdate.getMonth() + 1;
+    year = rawdate.getFullYear();
+    date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    $('input[name="date"]').val(date);
+    $.ajax({
+        url: $('#bookform').attr("get-dates-url"),
+        data: $('#bookform').serialize(),
+        dataType: 'json',
+        success: function (data) {
+            console.log('here');
+            console.log(data);
+        }
+    });
+}
+
 
 $('#id_time').change(function() {
     $('#already-booked').html('');

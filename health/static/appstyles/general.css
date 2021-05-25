@@ -5,6 +5,23 @@ body {
     overflow-y: scroll;
     font-family: sans-serif;
 }
+.infotable {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 90%;
+    border: 1px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
+}
+.infohead {
+    text-align: left;
+    padding: 8px;
+    background-color: rgb(190, 190, 190);
+}
+.infocell {
+    text-align: left;
+    padding: 8px;
+}
 .hidden {
     visibility: hidden;
 }
@@ -50,7 +67,8 @@ input[type=number] {
 }
 form {
     background-color: rgb(255, 255, 255);
-    padding: 50px 30px 30px 30px; border-radius: 5px;
+    padding: 50px 30px 30px 30px;
+    border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;

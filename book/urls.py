@@ -11,6 +11,7 @@ urlpatterns = [
     path("doctordashboard/bookmult", views.bookmult, name='bookmult'),
     url(r'^ajax/updateenddate/$', views.updateenddate, name='updateenddate'),
     url(r'^ajax/update_calendar/$', views.update_calendar, name='update_calendar'),
+    url(r'^ajax/getdates/$', views.getdates, name='getdates'),
     url(r'^ajax/checkifbooked/$', views.checkifbooked, name='checkifbooked'),
     url(r'^ajax/findtimes/$', views.findtimes, name='findtimes'),
     path('cancelappointment/<int:pk>', views.cancelappt, name='cancelappt'),

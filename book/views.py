@@ -31,7 +31,7 @@ def doctordashboard(request):
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
-                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(id=u.id), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form })
+                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form })
     return render(request, 'doctordashboard.html')
 
 def apptcreated(request):
@@ -43,7 +43,7 @@ def apptcreated(request):
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
                 message = "Appointment slot(s) created!"
-                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(id=u.id), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
+                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
 
 def getDateTime(date, time):
@@ -89,7 +89,7 @@ def bookmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcreated')
                 else:
-                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(id=u.id), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
     return render(request, 'doctordashboard.html')
@@ -118,7 +118,7 @@ def cancelmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcanceled')
                 else:
-                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(id=u.id), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
     return render(request, 'doctordashboard.html')
@@ -145,6 +145,25 @@ def updateenddate(request):
                 'values': values,
                 'is_cancel': is_cancel
             }
+            return JsonResponse(data)
+    return JsonResponse({})
+
+def getdates(request):
+    u = request.user
+    if (u.is_authenticated):
+        if u.type == "DOCTOR":
+            date = request.GET.get('date', None)
+            appts = []
+            for a in u.getAppts:
+                appts.append({
+                    'pk': a.pk,
+                    'date': a.date,
+                    'time': a.time,
+                    'dt': a.datetime,
+                    'booked': a.booked,
+                    'patient': a.patient,
+                })
+            data = {'apptdata': appts}
             return JsonResponse(data)
     return JsonResponse({})
 
@@ -177,7 +196,7 @@ def checkifbooked(request):
 def cancelappt(request, pk):
     if (request.user.is_authenticated and request.user.type == "DOCTOR"):
         u = request.user
-        a = Appointment.objects.filter(doctor=u, id=pk).first()
+        a = Appointment.objects.filter(doctor=u, pk=pk).first()
         if request.method == "POST":
             form = CancelConfirmForm(request.POST)
             if form.is_valid():
@@ -214,7 +233,7 @@ def apptcanceled(request):
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
                 message = "Appointment(s) cancelled."
-                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(id=u.id), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
+                return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
 
 def update_calendar(request):
@@ -224,7 +243,7 @@ def update_calendar(request):
             datesList = []
             consultations = []
             doctor_id = request.GET.get('doctor-id', None)
-            d = Doctor.objects.filter(id = doctor_id).first()
+            d = Doctor.objects.filter(pk = doctor_id).first()
             for c in d.more.consultations.split(', '):
                 consultations.append(c)
             for appt in Appointment.objects.filter(doctor = d, datetime__gt = datetime.utcnow(), booked=False).order_by('date', 'time'):
