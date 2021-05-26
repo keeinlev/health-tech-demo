@@ -59,7 +59,7 @@ $('#bookcalendar').calendar({
     inline: true,
     onChange: function() {
         $('#bookcalendar').calendar('refresh');
-        console.log('change')
+        console.log($('#bookcalendar').calendar('get date'));
         fetchAppts();
         checkDate();
         $('#booksubmit').addClass("hidden");
@@ -73,14 +73,33 @@ function fetchAppts() {
     month = rawdate.getMonth() + 1;
     year = rawdate.getFullYear();
     date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    console.log(day, month, year)
+    $('#default-row').addClass('display-hidden');
+    $('.inforow').remove();
     $('input[name="date"]').val(date);
     $.ajax({
         url: $('#bookform').attr("get-dates-url"),
         data: $('#bookform').serialize(),
         dataType: 'json',
         success: function (data) {
-            console.log('here');
             console.log(data);
+            details = data['apptdata'];
+            str = '';
+            for (i = 0; i < details.length; ++i) {
+                console.log(details[i])
+                str += '<tr class="inforow">\n<td class="infocell">' + details[i]['date'] + '</td>';
+                str += '\n    <td class="infocell">' + details[i]['time'] + '</td>';
+                str += '\n    <td class="infocell">' + details[i]['booked'] + '</td>';
+                str += '\n    <td class="infocell">' + details[i]['patient'] + '</td>';
+                str += '\n    <td class="infocell"><a href="' + details[i]['detailsurl'] + '">Details</a></td>';
+                str += '\n</tr>\n';
+            }
+            if (str) {
+                $(str).appendTo( "#appointment-table" );
+            } else {
+                $('#default-row').removeClass('display-hidden');
+            }
+            console.log(str);
         }
     });
 }

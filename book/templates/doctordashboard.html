@@ -27,22 +27,26 @@
                             {% csrf_token %}
                             <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
                         </form>
-                        <div style="overflow-x:auto;">
-                            <table class='infotable'>
-                              <tr>
-                                <th class='infohead'>Date</th>
-                                <th class='infohead'>Time</th>
-                                <th class='infohead'>Availability</th>
-                                <th class='infohead'>Patient</th>
-                                <th class='infohead'>Details</th>
-                              </tr>
-                              <tr>
-                                  <td>&nbsp;</td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                              </tr>
+                        <div style="overflow-x:auto; height:200px;">
+                            <table class='infotable' id='appointment-table'>
+                                <thead class='appttablehead'>
+                                    <tr>
+                                        <th class='infohead'>Date</th>
+                                        <th class='infohead'>Time</th>
+                                        <th class='infohead'>Availability</th>
+                                        <th class='infohead'>Patient</th>
+                                        <th class='infohead'>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody class='appttablebody'>
+                                    <tr id='default-row'>
+                                        <td class='infocell'></td>
+                                        <td class='infocell'></td>
+                                        <td class='infocell'></td>
+                                        <td class='infocell'></td>
+                                        <td class='infocell'></td>
+                                    </tr>
+                                </tbody>
                             </table>
                           </div>
                     </div>

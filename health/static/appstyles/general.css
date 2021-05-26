@@ -5,13 +5,31 @@ body {
     overflow-y: scroll;
     font-family: sans-serif;
 }
+.appttablebody {
+    display:block;
+    height:163.2px;
+    overflow:auto;
+}
+.appttablehead, .appttablebody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+.appttablehead {
+    width: 100%;
+}
 .infotable {
+    empty-cells: show;
+    display: table;
     border-collapse: collapse;
     border-spacing: 0;
     width: 90%;
-    border: 1px solid #ddd;
+    border: 1px solid rgb(156, 156, 156);
     margin-left: auto;
     margin-right: auto;
+    overflow-y: scroll;
+    height: 200px;
+    max-height: 200px;
 }
 .infohead {
     text-align: left;
@@ -19,8 +37,14 @@ body {
     background-color: rgb(190, 190, 190);
 }
 .infocell {
+    display: table-cell;
     text-align: left;
     padding: 8px;
+    width:100%;
+    min-width:100%;
+}
+.display-hidden {
+    display: none
 }
 .hidden {
     visibility: hidden;
@@ -50,7 +74,7 @@ input[type=number] {
     margin-top:2%;
     margin-left: auto;
     margin-right: auto;
-    width:90%;
+    width:100%;
 }
 .section {
     background-color: rgb(255, 255, 255);

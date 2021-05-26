@@ -8,6 +8,8 @@ from .times import IntTimes
 from datetime import date, datetime, timedelta
 from .tasks import send_reminder
 from django.core.mail import send_mail
+from django.urls import reverse
+from pytz import timezone
 
 def fromisoform(d):
     year = int(d[:4])
@@ -153,15 +155,16 @@ def getdates(request):
     if (u.is_authenticated):
         if u.type == "DOCTOR":
             date = request.GET.get('date', None)
+            print(date)
             appts = []
-            for a in u.getAppts:
+            for a in u.getAppts.filter(date=date):
+                dt = a.datetime.astimezone(timezone('America/New_York'))
                 appts.append({
-                    'pk': a.pk,
-                    'date': a.date,
-                    'time': a.time,
-                    'dt': a.datetime,
-                    'booked': a.booked,
-                    'patient': a.patient,
+                    'date': str(a.date),
+                    'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
+                    'booked': "<b style='color:" + ("red'>Booked" if a.booked else "green'>Available") + "</b>",
+                    'patient': f'{a.patient.first_name} {a.patient.last_name}' if a.patient else "None",
+                    'detailsurl': reverse('details', kwargs={'pk': a.pk}),
                 })
             data = {'apptdata': appts}
             return JsonResponse(data)
