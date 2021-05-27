@@ -8,8 +8,10 @@
 {% endblock %}
 
 {% block body %}
+    <div class="alert{% if not message %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
     <div class="heading">
-        
         {% if user.is_authenticated %}
         <h1>Hi {{ user.first_name }}!</h1>
             {% if user.type == "DOCTOR" %}
@@ -38,6 +40,9 @@
                                         </div>-->
                                         <div class='row'>
                                             <div class='col-12' style='margin-top:20px'><a href="{% url 'details' appt.pk %}">Details</a></div>
+                                        </div>
+                                        <div class='row'>
+                                            <div class='col-12' style='margin-top:20px'><a href="{% url 'cancelappt' appt.pk %}">Cancel</a></div>
                                         </div>
                                     </div>
                                 </div>

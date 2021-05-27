@@ -10,6 +10,7 @@ from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone
+from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone
 
 def fromisoform(d):
     year = int(d[:4])
@@ -197,33 +198,47 @@ def checkifbooked(request):
 
 ############# Reminder: make a condition for patients cancelling
 def cancelappt(request, pk):
-    if (request.user.is_authenticated and request.user.type == "DOCTOR"):
-        u = request.user
-        a = Appointment.objects.filter(doctor=u, pk=pk).first()
-        if request.method == "POST":
-            form = CancelConfirmForm(request.POST)
-            if form.is_valid():
-                r = form.cleaned_data['reason']
-                send_mail(
-                    'Your Appointment has been Cancelled',
-                    'Hi,' + a.patient.first_name + '\n\nWe are sorry to inform you that your appointment with Dr. ' + a.doctor.first_name + ' ' + a.doctor.last_name + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
-                    'healthapptdemo@gmail.com',
-                    [a.patient.email],
-                )
-                a.delete()
-                return redirect('apptcanceled')
-        else:
-            if a.booked:
-                form = CancelConfirmForm(initial={
-                    'doctor': a.doctor,
-                    'patient': a.patient,
-                    'date': a.date,
-                    'time': a.time,
-                })
-                return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime() })
+    u = request.user
+    if u.is_authenticated:
+        a = Appointment.objects.filter(pk=pk)
+        if a.exists():
+            a = a.first()
+            if request.method == "POST":
+                form = CancelConfirmForm(request.POST)
+                if form.is_valid():
+                    target = a.doctor
+                    other = f'Patient {a.patient}'
+                    if u.type == "DOCTOR":
+                        target = a.patient
+                        other = f'Dr. {a.doctor}'
+                    r = form.cleaned_data['reason']
+                    # smsmessage = client.messages.create(
+                    #     body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
+                    #     from_=twilio_phone,
+                    #     to='+1' + target.phone,
+                    # )
+                    send_mail(
+                        'Your Appointment has been Cancelled',
+                        'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                        'healthapptdemo@gmail.com',
+                        [target.email],
+                    )
+                    a.delete()
+                    return redirect('apptcanceled')
             else:
-                a.delete()
-                return redirect('apptcanceled')
+                if a.booked:
+                    form = CancelConfirmForm(initial={
+                        'doctor': a.doctor,
+                        'patient': a.patient,
+                        'date': a.date,
+                        'time': a.time,
+                    })
+                    return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime() })
+                else:
+                    a.delete()
+                    return redirect('apptcanceled')
+        else:
+            return render(request, 'alert.html', {'message': 'Appointment does not exist!'})
     return render(request, 'doctordashboard.html')
 
 
@@ -237,6 +252,9 @@ def apptcanceled(request):
             if (request.method == "GET"):
                 message = "Appointment(s) cancelled."
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
+        else:
+            return render(request, 'index.html', {'message': 'Appointment Cancelled'})
+    
     return render(request, 'doctordashboard.html')
 
 def update_calendar(request):

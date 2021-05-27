@@ -3,11 +3,23 @@
 {% block title %}Confirm Cancel{% endblock %}
 
 {% block body %}
-    <form method="POST" action="{% url 'cancelappt' appt.pk %}">
-        <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {{ appt.patient }} on {{ dt }}.</p>
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" class="btn btn-secondary">
-    </form>
-
+    <div class="alert{% if not message %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
+    {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'cancelappt' appt.pk %}">
+            <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {% if user.type == 'DOCTOR' %}{{ appt.patient }}{% else %}Dr. {{ appt.doctor }}{% endif %} on {{ dt }}.</p>
+            {% csrf_token %}
+            <div class='row'>
+                <div class='col' style='text-align: center;'>
+                    {{ form }}
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col' style='text-align: center;'>
+                    <input type="submit" class="btn btn-secondary">
+                </div>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

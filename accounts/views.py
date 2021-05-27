@@ -27,17 +27,17 @@ def register(request):
             dob = form.cleaned_data['dob']
             email = form.cleaned_data['email1']
             password = form.cleaned_data['password1']
-            phone = '(' + str(form.cleaned_data['phone1']) + ') ' + str(form.cleaned_data['phone2']) + '-' + str(form.cleaned_data['phone3'])
+            phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
             ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3'])
             ohip_version_code = form.cleaned_data['ohip_version']
             ohip_number = ohip_number + '-' + ohip_version_code
             ohip_number = ohip_number.upper()
             ohip_expiry = form.cleaned_data['ohip_expiry']
-            if len(phone) != 14 or len(ohip_number) != 15:
+            if len(phone) != 10 or len(ohip_number) != 15:
                 message = "Registration unsuccessful. Please make sure phone and OHIP numbers are in the correct format."
                 return render(request, "register.html", {'form': form, 'message': message})
             if (email != form.cleaned_data['email2'] or password != form.cleaned_data['password2']):
-                message = "Registration unsuccessfull. Please make sure emails and passwords match."
+                message = "Registration unsuccessful. Please make sure emails and passwords match."
 
                 return render(request, "register.html", {'form': form, 'message': message})
             try:
@@ -70,7 +70,7 @@ def register(request):
             )
             return redirect('activateprompt')
         else:
-            message = "Registration unsuccessfull. Please make sure you have filled all fields in correctly."
+            message = "Registration unsuccessful. Please make sure you have filled all fields in correctly."
             return render(request, "register.html", {'form': form, 'message': message})
     else:
         form = SignUpForm()
@@ -105,7 +105,7 @@ def editprofile(request):
                 u.first_name = form.cleaned_data['first_name']
                 u.last_name = form.cleaned_data['last_name']
                 u.dob = form.cleaned_data['dob']
-                u.phone = '(' + str(form.cleaned_data['phone1']) + ') ' + str(form.cleaned_data['phone2']) + '-' + str(form.cleaned_data['phone3'])
+                u.phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
                 u.save()
 
             return redirect('index')
@@ -116,9 +116,9 @@ def editprofile(request):
                     'first_name': d.first_name,
                     'last_name': d.last_name,
                     'dob': d.dob,
-                    'phone1': d.phone[1:4],
-                    'phone2': d.phone[6:9],
-                    'phone3': d.phone[10:14],
+                    'phone1': d.phone[:3],
+                    'phone2': d.phone[3:6],
+                    'phone3': d.phone[6:],
                     'qualifications': d.more.certification,
                     'consultations': d.more.consultations,
                     'languages': d.more.languages,
@@ -131,9 +131,9 @@ def editprofile(request):
                     'first_name': p.first_name,
                     'last_name': p.last_name,
                     'dob': p.dob,
-                    'phone1': p.phone[1:4],
-                    'phone2': p.phone[6:9],
-                    'phone3': p.phone[10:14],
+                    'phone1': p.phone[:3],
+                    'phone2': p.phone[3:6],
+                    'phone3': p.phone[6:],
                     'ohip1': p.more.ohip_number[:4],
                     'ohip2': p.more.ohip_number[5:8],
                     'ohip3': p.more.ohip_number[9:12],
