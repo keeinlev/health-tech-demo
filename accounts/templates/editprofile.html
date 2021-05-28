@@ -10,15 +10,16 @@
 
 
 {% block body %}
-    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+    <div class="alert{% if message %}{% else %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
     {% if user.is_authenticated %}
-        <div class='outer-section'>
+        <div class='heading'>
+            <h1>Edit your Profile</h1>
+        </div>
+        <div class='outer-section' style='padding-bottom: 50px;'>
             <form method='POST' autocomplete="off">
-                <div style='margin-bottom: 4%; text-align: center;'>
-                    <h1>Edit your Profile</h1>
-                </div>
+                
                 {% csrf_token %}
                 {{ form.errors }}
                 {{ form.non_field_errors }}
@@ -152,7 +153,7 @@
                 {% endfor %}
                 <br />
                 <div style="text-align: center; padding-top: 10px;">
-                    <input type="submit" value="Save changes" class="btn btn-secondary">
+                    <input type="submit" value="Save changes" class="btn-lg btn-block btn-secondary">
                 </div>
             </form>
         </div>

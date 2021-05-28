@@ -5,10 +5,10 @@
 {% block title %}Log in to An Existing Account{% endblock %}
 
 {% block body %}
-    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+    <div class="alert{% if message %}{% else %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
-    <div>
+    <div class='outer-section'>
         <div>
             <br />
             <div class='row'>
@@ -33,7 +33,7 @@
                             <small style="color: red;">{{e}}</small>
                         {% endfor %}
                         <div style="text-align: center; padding-top: 10px;">
-                            <input type="submit" id="login-submit" value="Login" class="btn btn-secondary", disabled>
+                            <input type="submit" id="login-submit" value="Login" class="btn-lg btn-block btn-secondary", disabled>
                         </div>
                         <br>
                         <div style="text-align: center;">

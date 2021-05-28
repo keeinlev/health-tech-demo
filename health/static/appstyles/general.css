@@ -49,12 +49,18 @@ body {
 .hidden {
     visibility: hidden;
 }
-.nav-item {
-    padding-left: 25px;
-    padding-right: 25px;
+@media (min-width: 768px) {  
+    .navbar {
+        font-size:x-large;
+    } /*1rem = 16px*/
+}
+.navbar-nav > li{
+    margin-left:25px;
+    margin-right:25px;
 }
 .heading {
     margin-top: 3%;
+    margin-bottom: 3%;
     text-align: center;
 }
 /* Chrome, Safari, Edge, Opera */

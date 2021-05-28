@@ -3,23 +3,28 @@
 {% block title %}Confirm Cancel{% endblock %}
 
 {% block body %}
-    <div class="alert{% if not message %} hidden{% endif %}">
+    <div class="alert{% if not message %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
     {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'cancelappt' appt.pk %}">
-            <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {% if user.type == 'DOCTOR' %}{{ appt.patient }}{% else %}Dr. {{ appt.doctor }}{% endif %} on {{ dt }}.</p>
-            {% csrf_token %}
-            <div class='row'>
-                <div class='col' style='text-align: center;'>
-                    {{ form }}
+        <div class='heading'>
+            <h1>Confirm Cancel</h1>
+        </div>
+        <div>
+            <form method="POST" action="{% url 'cancelappt' appt.pk %}">
+                <p style="text-align: center;">Please provide a reason for cancelling your Appointment with {% if user.type == 'DOCTOR' %}{{ appt.patient }}{% else %}Dr. {{ appt.doctor }}{% endif %} on {{ dt }}.</p>
+                {% csrf_token %}
+                <div class='row'>
+                    <div class='col' style='text-align: center;'>
+                        {{ form }}
+                    </div>
                 </div>
-            </div>
-            <div class='row'>
-                <div class='col' style='text-align: center;'>
-                    <input type="submit" class="btn btn-secondary">
+                <div class='row'>
+                    <div class='col' style='text-align: center;'>
+                        <input type="submit" class="btn-lg btn-block btn-secondary">
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     {% endif %}
 {% endblock %}

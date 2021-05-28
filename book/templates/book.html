@@ -15,7 +15,7 @@
     </div>
 
     {% if user.type == "PATIENT" %}
-    <div class="alert{% if message or error_message %}{% else %} hidden{% endif %}">
+    <div class="alert{% if message or error_message %}{% else %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}{{ error_message }}</small></b>
     </div>
     {% if doctors %}

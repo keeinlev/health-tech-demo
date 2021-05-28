@@ -14,7 +14,7 @@
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
     {% if user.type == 'DOCTOR' %}
-        <div class='outer-section'>
+        <div style='padding-bottom: 50px;'>
             <div class='row'>
                 <div class='col-12 col-md-6'>
                     <div class="section" style='height: 97.33%;'>
@@ -25,7 +25,7 @@
                             <small id="already-booked"></small><br />
                             {{ single_appt_form }}
                             {% csrf_token %}
-                            <input type="submit" id="booksubmit" onsubmit="return false" class="btn btn-secondary hidden time-input" value="Save">
+                            <input type="submit" id="booksubmit" onsubmit="return false" class="btn-lg btn-block btn-secondary hidden time-input" value="Save">
                         </form>
                         <div style="overflow-x:auto; height:200px;">
                             <table class='infotable' id='appointment-table'>
@@ -76,7 +76,7 @@
                                     {{ mult_appt_form.endtime }}
                                 </div>
                             </div>
-                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn-lg btn-block btn-secondary" value="Save">
                         </form>
                     </div>
                     <br />
@@ -104,7 +104,7 @@
                                     {{ cancel_mult_form.c_endtime }}
                                 </div>
                             </div>
-                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn btn-secondary" value="Save">
+                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn-lg btn-block btn-secondary" value="Save">
                         </form>
                     </div>
                 </div>

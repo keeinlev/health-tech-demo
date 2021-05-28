@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="alert{% if not message %} hidden{% endif %}">
+    <div class="alert{% if not message %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
     <div class="heading">
