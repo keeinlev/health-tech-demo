@@ -2,7 +2,7 @@ from .settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','health-tech-demo.azurewebsites.net']
+ALLOWED_HOSTS = ['127.0.0.1','health-tech.azurewebsites.net']
 
 STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
