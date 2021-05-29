@@ -20,8 +20,8 @@
                 <a href="{% url 'book' %}"><button class="big-button">>> Book Now >></button></a>
                 <div class="section" style='margin-top: 7%;'>
                     <h2>Your Upcoming Appointments</h2>
-                    {% if user.getAppts %}
-                        {% for appt in user.getAppts %}
+                    {% if user.getSomeAppts %}
+                        {% for appt in user.getSomeAppts %}
                             <div class="appointment-box appointment-box-md">
                                 <div class='row' style='padding:10px 15px 10px 15px'>
                                     <div class='col-12 appointment-details appointment-details-md'>

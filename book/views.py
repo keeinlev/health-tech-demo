@@ -156,9 +156,31 @@ def getdates(request):
     if (u.is_authenticated):
         if u.type == "DOCTOR":
             date = request.GET.get('date', None)
-            print(date)
             appts = []
             for a in u.getAppts.filter(date=date):
+                dt = a.datetime.astimezone(timezone('America/New_York'))
+                appts.append({
+                    'date': str(a.date),
+                    'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
+                    'booked': "<b style='color:" + ("red'>Booked" if a.booked else "green'>Available") + "</b>",
+                    'patient': f'{a.patient.first_name} {a.patient.last_name}' if a.patient else "None",
+                    'detailsurl': reverse('details', kwargs={'pk': a.pk}),
+                })
+            data = {'apptdata': appts}
+            return JsonResponse(data)
+    return JsonResponse({})
+
+def patientsearch(request):
+    u = request.user
+    if (u.is_authenticated):
+        if u.type == "DOCTOR":
+            searched = request.GET.get('patient-search')
+            date = request.GET.get('date', None)
+            query = u.getAppts.filter(patient__first_name__contains=searched) | u.getAppts.filter(patient__last_name__contains=searched)
+            if date != '0':
+                query = u.getAppts.filter(date=date, patient__first_name__contains=searched) | u.getAppts.filter(date=date, patient__last_name__contains=searched)
+            appts = []
+            for a in query:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
                 appts.append({
                     'date': str(a.date),

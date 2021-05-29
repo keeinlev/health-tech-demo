@@ -72,6 +72,14 @@ class User(AbstractUser):
             return Appointment.objects.filter(patient=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
         elif (self.type == 'DOCTOR'):
             return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
+    
+    @property
+    def getSomeAppts(self):
+        from book.models import Appointment
+        if (self.type == 'PATIENT'):
+            return Appointment.objects.filter(patient=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')[:10]
+        elif (self.type == 'DOCTOR'):
+            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')[:10]
 
 class PatientManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):

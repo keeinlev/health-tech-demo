@@ -20,13 +20,20 @@
                     <div class="section" style='height: 97.33%;'>
                         <h2>Open a new Appointment slot</h2>
                         
-                        <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" get-dates-url="{% url 'getdates' %}" id="bookform">
+                        <form method="post" action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" get-dates-url="{% url 'getdates' %}" get-patient-appts-url="{% url 'patientsearch' %}" id="bookform">
+                            {% csrf_token %}
+                            <input type='hidden' id='patient-search' name='patient-search'>
                             <div class="ui calendar" id="bookcalendar"></div>
                             <small id="already-booked"></small><br />
                             {{ single_appt_form }}
-                            {% csrf_token %}
-                            <input type="submit" id="booksubmit" onsubmit="return false" class="btn-lg btn-block btn-secondary hidden time-input" value="Save">
+                            <b class='cancel-text' onclick='clearCalendar()'>Clear Calendar</b>
+                            <input type="submit" id="booksubmit" onsubmit="return false" class="btn-lg btn-block btn-secondary display-hidden time-input" value="Save">
                         </form>
+                        <div class='appt-search row'>
+                            <div class='col-9'>
+                                <input type="text" id="search-bar" class='form-control' placeholder="Search by Patient (first, last, preferred name)">
+                            </div>
+                        </div>
                         <div style="overflow-x:auto; height:200px;">
                             <table class='infotable' id='appointment-table'>
                                 <thead class='appttablehead'>
@@ -104,7 +111,7 @@
                                     {{ cancel_mult_form.c_endtime }}
                                 </div>
                             </div>
-                            <input type="submit" onsubmit="return false" id="bookmultsubmit" class="btn-lg btn-block btn-secondary" value="Save">
+                            <input type="submit" onsubmit="return false" id="cancelmultsubmit" class="btn-lg btn-block btn-secondary" value="Save">
                         </form>
                     </div>
                 </div>
@@ -112,8 +119,8 @@
             <br />
             <div class="section">
                 <h2>Your Upcoming Appointments - <a href="{{ doctor.more.meeting_url }}" target="_blank">Go to your Online Meeting Room</a></h2>
-                {% if doctor.getAppts %}
-                    {% for appt in doctor.getAppts %}
+                {% if doctor.getSomeAppts %}
+                    {% for appt in doctor.getSomeAppts %}
                         <div class="appointment-box appointment-box-md">
                             <div class='row' style='padding:10px 15px 10px 15px'>
                                 <div class='col-12 col-md-6 appointment-details appointment-details-md'>
@@ -218,4 +225,7 @@
 {% block javascript %}
 <script src="{% static 'jsmodules/calendarmethods.js' %}" type='text/javascript'></script>
 <script src="{% static 'jsmodules/docdash.js' %}" type='text/javascript'></script>
+<script type="text/javascript">
+    
+</script>
 {% endblock %}

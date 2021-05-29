@@ -23,7 +23,7 @@ body {
     display: table;
     border-collapse: collapse;
     border-spacing: 0;
-    width: 90%;
+    width: 430px;
     border: 1px solid rgb(156, 156, 156);
     margin-left: auto;
     margin-right: auto;
@@ -33,13 +33,13 @@ body {
 }
 .infohead {
     text-align: left;
-    padding: 8px;
+    padding: 8px 15px 8px 15px;
     background-color: rgb(190, 190, 190);
 }
 .infocell {
     display: table-cell;
     text-align: left;
-    padding: 8px;
+    padding: 8px 15px 8px 15px;
     width:100%;
     min-width:100%;
 }
@@ -105,6 +105,10 @@ form {
 }
 select {
     overflow-y: auto;
+}
+.appt-search {
+    margin: 0px auto 20px auto;
+    width: 95%;
 }
 .doctor-radio {
     visibility: hidden;

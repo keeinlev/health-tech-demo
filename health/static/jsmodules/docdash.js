@@ -59,11 +59,58 @@ $('#bookcalendar').calendar({
     inline: true,
     onChange: function() {
         $('#bookcalendar').calendar('refresh');
-        console.log($('#bookcalendar').calendar('get date'));
-        fetchAppts();
+        if ($('#bookcalendar').calendar('get date')) {
+            fetchAppts();
+        }
         checkDate();
-        $('#booksubmit').addClass("hidden");
+        $('#booksubmit').addClass("display-hidden");
         $('#already-booked').html('');
+    }
+});
+
+function updateApptTable(details) {
+    str = '';
+    for (i = 0; i < details.length; ++i) {
+        str += '<tr class="inforow">\n<td class="infocell">' + details[i]['date'] + '</td>';
+        str += '\n    <td class="infocell">' + details[i]['time'] + '</td>';
+        str += '\n    <td class="infocell">' + details[i]['booked'] + '</td>';
+        str += '\n    <td class="infocell">' + details[i]['patient'] + '</td>';
+        str += '\n    <td class="infocell"><a href="' + details[i]['detailsurl'] + '">Details</a></td>';
+        str += '\n</tr>\n';
+    }
+    if (str) {
+        $(str).appendTo( "#appointment-table" );
+    } else {
+        $('#default-row').removeClass('display-hidden');
+    }
+}
+
+$('#search-bar').keyup(function() {
+    bar = $('#search-bar').val();
+    $('#patient-search').val(bar);
+    if (bar != '') {
+        rawdate = $('#bookcalendar').calendar('get date');
+        date = 0;
+        if (rawdate) {
+            day = rawdate.getDate();
+            month = rawdate.getMonth() + 1;
+            year = rawdate.getFullYear();
+            date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+        }
+        $('#default-row').addClass('display-hidden');
+        $('.inforow').remove();
+        $('input[name="date"]').val(date);
+        $.ajax({
+            url: $('#bookform').attr("get-patient-appts-url"),
+            data: $('#bookform').serialize(),
+            dataType: 'json',
+            success: function (data) {
+                updateApptTable(data['apptdata'])
+            }
+        });
+    } else {
+        $('.inforow').remove();
+        $('#default-row').removeClass('display-hidden');
     }
 });
 
@@ -73,7 +120,6 @@ function fetchAppts() {
     month = rawdate.getMonth() + 1;
     year = rawdate.getFullYear();
     date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-    console.log(day, month, year)
     $('#default-row').addClass('display-hidden');
     $('.inforow').remove();
     $('input[name="date"]').val(date);
@@ -82,28 +128,15 @@ function fetchAppts() {
         data: $('#bookform').serialize(),
         dataType: 'json',
         success: function (data) {
-            console.log(data);
-            details = data['apptdata'];
-            str = '';
-            for (i = 0; i < details.length; ++i) {
-                console.log(details[i])
-                str += '<tr class="inforow">\n<td class="infocell">' + details[i]['date'] + '</td>';
-                str += '\n    <td class="infocell">' + details[i]['time'] + '</td>';
-                str += '\n    <td class="infocell">' + details[i]['booked'] + '</td>';
-                str += '\n    <td class="infocell">' + details[i]['patient'] + '</td>';
-                str += '\n    <td class="infocell"><a href="' + details[i]['detailsurl'] + '">Details</a></td>';
-                str += '\n</tr>\n';
-            }
-            if (str) {
-                $(str).appendTo( "#appointment-table" );
-            } else {
-                $('#default-row').removeClass('display-hidden');
-            }
-            console.log(str);
+            updateApptTable(data['apptdata'])
         }
     });
 }
 
+function clearCalendar() {
+    $("#bookcalendar").calendar("clear");
+    $('#booksubmit').addClass("display-hidden");
+}
 
 $('#id_time').change(function() {
     $('#already-booked').html('');
@@ -128,14 +161,14 @@ function checkDate() {
                 if (data['valid']) {
                     if (data['booked']) {
                         $('#already-booked').attr("style", "color: red");
-                        $('#booksubmit').addClass("hidden");
+                        $('#booksubmit').addClass("display-hidden");
                     } else {
                         $('#already-booked').attr("style", "color: green");
-                        $('#booksubmit').removeClass("hidden");
+                        $('#booksubmit').removeClass("display-hidden");
                     }
                 } else {
                     $('#already-booked').attr("style", "color: red");
-                    $('#booksubmit').addClass("hidden");
+                    $('#booksubmit').addClass("display-hidden");
                 }
                 
             }
