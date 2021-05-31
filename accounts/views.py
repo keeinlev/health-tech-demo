@@ -24,11 +24,15 @@ def register(request):
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
+            preferred_name = form.cleaned_data['preferred_name']
             dob = form.cleaned_data['dob']
             email = form.cleaned_data['email1']
             password = form.cleaned_data['password1']
-            phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
-            ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3'])
+            phone = str(form.cleaned_data['phone'])
+            #phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
+            ohip_number = str(form.cleaned_data['ohip'])
+            ohip_number = ohip_number[:4] + '-' + ohip_number[4:7] + '-' + ohip_number[7:]
+            #ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3'])
             ohip_version_code = form.cleaned_data['ohip_version']
             ohip_number = ohip_number + '-' + ohip_version_code
             ohip_number = ohip_number.upper()
@@ -41,7 +45,7 @@ def register(request):
 
                 return render(request, "register.html", {'form': form, 'message': message})
             try:
-                u = User.objects.create(first_name=first_name, last_name=last_name, phone=phone, email=email, password=password, dob=dob, type=User.Types.PATIENT)
+                u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, password=password, dob=dob, type=User.Types.PATIENT)
                 PatientInfo.objects.create(user=u, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
             except IntegrityError as e:
                 #print(e.__cause__)
@@ -146,11 +150,9 @@ def editprofile(request):
 
 def validate_email(request):
     email = request.GET.get('email1', None)
-    ohip1 = request.GET.get('ohip1', None)
-    ohip2 = request.GET.get('ohip2', None)
-    ohip3 = request.GET.get('ohip3', None)
+    ohip = str(request.GET.get('ohip', None))
     ohip_version = request.GET.get('ohip_version', None)
-    ohip = '-'.join([str(ohip1), str(ohip2), str(ohip3), str(ohip_version)])
+    ohip = '-'.join([ohip[:4], ohip[4:7], ohip[7:], str(ohip_version)])
     data = {
         'email_is_taken': User.objects.filter(email__iexact=email).exists(),
         'ohip_is_taken': PatientInfo.objects.filter(ohip_number__iexact=ohip).exists(),

@@ -5,8 +5,34 @@
 {% block styles %}
 <link href="{% static 'appstyles/bigbutton.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'appstyles/appt.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'appstyles/home.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+{% block top %}
+<div class='homepage-1'>
+    <div class='row' style='width:100%'>
+        <div class='col-md-6 col-12'>
+            <div class='typography'>
+                Your Healthcare.
+                Digitalized.
+            </div>
+        </div>
+        <div class='col-12 col-md-6'>
+            <img src="{% static 'images/devices.png' %}" id='device-img' />
+        </div>
+    </div>
+</div>
+<div class='homepage-2'>
+    <div class='row' style='width:100%'>
+        <div class='col-12'>
+            <a href="{% url 'login' %}"><button class="action-button">Login</button></a>
+        </div>
+    </div>
+</div>
+<div class='homepage-3'>
+    
+</div>
+{% endblock %}
 {% block body %}
     <div class="alert{% if not message %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
@@ -53,12 +79,10 @@
                     {% endif %}
                 </div>
             {% endif %}
-        {% else %}
-        <h1>Welcome to the Online Doctor Appointment Scheduler</h1>
-        <p>You are not logged in</p>
-        
-        <a href="{% url 'login' %}"><button class="big-button">>> Login >></button></a>
     </div>
     {% endif %}
 
+{% endblock %}
+{% block javascript %}
+<script type='text/javascript' src="{% static 'jsmodules/home.js' %}"></script>
 {% endblock %}

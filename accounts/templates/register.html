@@ -6,14 +6,11 @@
 
 {% block styles %}
 <link href="{% static 'appstyles/modal.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'appstyles/customform.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block body %}
-    <div class="heading">
-        <h1>Welcome to the Registration Page</h1>
-        <h3>Register a New Account</h3>
-    </div>
     <div>
         <div id="myModal" class="modal" >
             <div class="modal-content" >
@@ -23,8 +20,72 @@
         </div>
         <div>
             <br />
-            
-            <form method="post" id="register" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email' %}">
+            <div class='outer-section' style='height: 850px;max-height: 1000px; text-align: center;'>
+                <form id="msform" class='site-form' style='opacity: 0%;' method="post" id="register" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <!-- fieldsets -->
+                    <fieldset>
+                        <h2 class="fs-title">Create your account</h2>
+                        <h3 style="color:red;" class="fs-subtitle not-unique display-hidden">{{message}}</h3>
+                        <h3 id="email-match-help" class="fs-subtitle display-hidden" style="color:red">Emails must match!</h3>
+                        {{ form.email1 }}
+                        {{ form.email1.errors }}
+                        {{ form.email2 }}
+                        {{ form.email2.errors }}
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <h2 class="fs-title">Create your account</h2>
+                        <h3 style="color:red;" class="fs-subtitle not-unique display-hidden">{{message}}</h3>
+                        <h3 id="password-match-help" class="fs-subtitle display-hidden" style="color:red">Passwords must match and be 8 to 16 characters!</h3>
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                        <input type="button" name="previous" class="previous action-button" value="Previous" />
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <h2 class="fs-title">Personal Details</h2>
+                        <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                        {{ form.preferred_name }}
+                        {{ form.preferred_name.errors }}
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                        {{ form.dob }}
+                        {{ form.dob.errors }}
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                        <input type="button" name="previous" class="previous action-button" value="Previous" />
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
+                        <h2 class="fs-title">OHIP Details</h2>
+                        <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
+                        {{ form.ohip }}
+                        {{ form.ohip.errors }}
+                        <div class='row'>
+                            <div class='col-12 col-md-8'>
+                                {{ form.ohip_version }}
+                                {{ form.ohip_version.errors }}
+                            </div>
+                            <div class='col-1'>
+                                <br>
+                                <b><a href='#' id="ohip-version-help" style='font-size: medium;'>?</a></b>
+                            </div>
+                            <div class='col-12'>
+                                {{ form.ohip_expiry }}
+                                {{ form.ohip_expiry.errors }}
+                            </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button" value="Previous" />
+                        <input type="submit" id='register-submit' class="action-button" href="{% url 'register' %}" value="Register" disabled />
+                    </fieldset>
+                </form>
+            </div>
+            <!--<form method="post" id="register" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email' %}">
                 <small style="color:red;" id="not-unique">{{message}}</small><br />
                 {% csrf_token %}
                 <label for="name">Name</label>
@@ -162,13 +223,19 @@
                 {% endfor %}
                 <br />
                 <input type="submit" id="register-submit" class="btn-lg btn-block btn-secondary" value="Register" disabled="true"/>
-            </form>
+            </form>-->
         </div>
     </div>
 
 {% endblock %}
 {% block javascript %}
 <script src="{% static 'jsmodules/modal.js' %}" type='text/javascript'></script>
-<script src="{% static 'jsmodules/autojump.js' %}" type='text/javascript'></script>
+<!--<script src="{% static 'jsmodules/autojump.js' %}" type='text/javascript'></script>-->
+<script src="{% static 'jsmodules/customform.js' %}" type='text/javascript'></script>
 <script src="{% static 'jsmodules/register.js' %}" type='text/javascript'></script>
+<script type='text/javascript'>
+    window.onload = function() {
+        $('#msform').css({'opacity': '1'});
+    }
+</script>
 {% endblock %}

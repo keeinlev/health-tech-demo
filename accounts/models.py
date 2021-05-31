@@ -51,6 +51,7 @@ class User(AbstractUser):
     username = None
     phone = models.CharField(_("User Phone Number"), max_length=10, validators=[RegexValidator(regex='^.{10}$', message="Phone number must be 10 digits long", code='nomatch')])
     first_name = models.CharField(_("User First Name"), max_length=50)
+    preferred_name = models.CharField(_("User Preferred Name"), max_length=50, blank=True, null=True, default=None)
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
     dob = models.DateField(default=timezone.now)

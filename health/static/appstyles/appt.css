@@ -2,40 +2,40 @@
     width:100%;
     border-radius: 5px;
     background-color: rgb(177, 247, 255);
-    padding: 10px;
+    padding: 25px 45px 25px 45px;
     margin: 20px auto 20px auto;
 }
-@media (min-width: 992px) {
+@media (max-width: 992px) {
     .appointment-box-md {
-        padding: 25px 45px 25px 45px;
+        padding: 10px;
     }
 }
 .patient-info {
     padding:15px;
-    overflow-wrap: break-word;
+    overflow-wrap:normal;
 }
-@media (min-width: 992px) {
+@media (max-width: 992px) {
     .patient-info-md {
-        overflow-wrap:normal;
+        overflow-wrap: break-word;
     }
 }
 .appointment-details {
     margin-top: auto;
+    padding: 15px 45px 15px 45px;
     margin-bottom: auto;
-    padding: 10px;
 }    
 
-@media (min-width: 992px) {
+@media (max-width: 992px) {
     .appointment-details-md {
-        padding: 15px 45px 15px 45px;
+        padding: 10px;
     }
 }
 .appointment-status {
-    line-height: 40px;
+    line-height: 60px;
 }
 
-@media (min-width: 992px) {
+@media (max-width: 992px) {
     .appointment-status-md {
-        line-height: 60px;
+        line-height: 40px;
     }
 }

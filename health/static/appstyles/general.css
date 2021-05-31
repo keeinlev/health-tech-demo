@@ -1,9 +1,45 @@
+
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
 body {
-    background-color: #a8f5ff;
+    /*background-color: #a8f5ff;*/
+    background-color: white;
     background-attachment: fixed;
     background-size: cover;
     overflow-y: scroll;
-    font-family: sans-serif;
+	font-family: montserrat, arial, verdana;
+    height: auto;
+}
+.spacer {
+    height:117px;
+}
+@media (max-width: 992px) {
+    .spacer {
+        height:63.25px
+    }
+}
+input {
+    padding: 15px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: montserrat;
+	color: #2C3E50;
+	font-size: 13px;
+}
+.action-button {
+	width: 100px;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
 }
 .appttablebody {
     display:block;
@@ -83,7 +119,8 @@ input[type=number] {
     width:100%;
 }
 .section {
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(216, 216, 216);
+    box-shadow: -5px 5px rgb(223, 223, 223);
     padding: 30px;
     border-radius: 5px;
     margin-left: auto;
@@ -95,13 +132,27 @@ input[type=number] {
     padding-bottom: 100px;
     width:100%;
 }
-form {
+.siteform {
+    border:none;
+    padding: 50px 30px 30px 30px;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+	text-align: center;
+	width: 90%;
+	box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+	box-sizing: border-box;
+    /*
     background-color: rgb(255, 255, 255);
+    border-style:solid;
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
     padding: 50px 30px 30px 30px;
     border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+    */
 }
 select {
     overflow-y: auto;

@@ -13,7 +13,7 @@
             <br />
             <div class='row'>
                 <div class='col-10 col-md-4' style="margin-right: auto; margin-left: auto;">
-                    <form method='post'>
+                    <form method='post' class='siteform' style='opacity: 0%; transition: all 2s;'>
                         <h4 style="text-align: center;">Login to your Account</h3>
                         <br />
                         {% csrf_token %}
@@ -33,7 +33,7 @@
                             <small style="color: red;">{{e}}</small>
                         {% endfor %}
                         <div style="text-align: center; padding-top: 10px;">
-                            <input type="submit" id="login-submit" value="Login" class="btn-lg btn-block btn-secondary", disabled>
+                            <input type="submit" id="login-submit" value="Login" class="btn-lg btn-block action-button", disabled>
                         </div>
                         <br>
                         <div style="text-align: center;">
@@ -48,4 +48,9 @@
 {% endblock %}
 {% block javascript %}
 <script src="{% static 'jsmodules/loginbutton.js' %}" type='text/javascript'></script>
+<script type='text/javascript'>
+    window.onload = function() {
+        $('.siteform').css({'opacity': '1'});
+    }
+</script>
 {% endblock %}

@@ -8,20 +8,22 @@ var emailmatchmsg = document.getElementById('email-match-help');
 
 var subbtn = document.getElementById('register-submit');
 
-var formelements = document.getElementsByClassName('form-control');
-
+var formelements = document.getElementsByClassName('formcontrol');
+console.log(formelements);
 
 var match_pass = function() {
     if (pass1.value || pass2.value) {
         if ((pass1.value != pass2.value) || (pass1.value.length < 8) || (pass1.value.length > 16)) {
             pass1.style.borderColor = 'red';
             pass2.style.borderColor = 'red';
-            passmatchmsg.style.visibility = 'visible';
+            $('#password-match-help').removeClass('display-hidden');
+            //passmatchmsg.style.visibility = 'visible';
             return false;
         } else {
             pass1.style.borderColor = 'green';
             pass2.style.borderColor = 'green';
-            passmatchmsg.style.visibility = 'hidden';
+            $('#password-match-help').addClass('display-hidden');
+            //passmatchmsg.style.visibility = 'hidden';
             return true;
         }
     }
@@ -37,13 +39,15 @@ var match_email = function() {
         if (email1.value != email2.value) {
             email1.style.borderColor = 'red';
             email2.style.borderColor = 'red';
-            emailmatchmsg.style.visibility = 'visible';
+            $('#email-match-help').removeClass('display-hidden');
+            //emailmatchmsg.style.visibility = 'visible';
             return false;
         }
         else {
             email1.style.borderColor = 'green';
             email2.style.borderColor = 'green';
-            emailmatchmsg.style.visibility = 'hidden';
+            $('#email-match-help').addClass('display-hidden');
+            //emailmatchmsg.style.visibility = 'hidden';
             return true;
         }
     }
@@ -61,11 +65,11 @@ var unique_fields = function (form) {
         dataType: 'json',
         success: function (data) {
             if (data.email_is_taken || data.ohip_is_taken) {
-                $('#not-unique').html(data.error_message);
-                $('#not-unique').css('visibility', 'visible');
+                $('.not-unique').html(data.error_message);
+                $('.not-unique').removeClass('display-hidden');
             } else {
-                $('#not-unique').html('');
-                $('#not-unique').css('visibility', 'hidden');
+                $('.not-unique').html('');
+                $('.not-unique').addClass('display-hidden');
             }
         }
     });
@@ -75,12 +79,12 @@ emailmatch = false;
 passmatch = false;
 complete = false;
 
-$('.form-control').keyup(function(e) {
+$('.formcontrol').keyup(function(e) {
 
     
     filled = true;
 
-    if ($(this).attr('class').includes('email-inputs') || $(this).attr('class').includes('ohip-inputs')) {
+    if ($(this).attr('class').includes('email-inputs') || $(this).attr('id').includes('ohip')) {
         if ($(this).attr('class').includes('email-inputs')) {
             emailmatch = match_email();
         }

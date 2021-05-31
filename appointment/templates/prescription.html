@@ -16,7 +16,7 @@
         
         {% if user.is_authenticated %}
             {% if user.type == 'DOCTOR' %}
-                <form method='post' autocomplete="off">
+                <form method='post' autocomplete="off" class='siteform'>
                     {% csrf_token %}
                     {{ form.non_field_errors }}
                     <div class='row'>
