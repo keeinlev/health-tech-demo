@@ -10,8 +10,85 @@
     top: -5px;
 }
 .homepage-3 {
+    margin-top: 100px;
     height:1000px;
     background-color:rgb(255, 255, 255);
+}
+.instruction-box {
+    border-radius: 4px;
+    padding: 15px 10px 10px 10px;
+    height:300px;
+    width:300px;
+    text-align: center;
+    margin: 30px 10px 0 10px;
+    font-size: 25px;
+    line-height: normal;
+    opacity: 0%;
+    color: rgb(209, 144, 209);
+}
+@media (max-width:1800px) {
+    .instruction-box {
+        height: 250px;
+        width: 250px;
+        font-size: 20px;
+    }
+}
+@media (max-width:1500px) {
+    .instruction-box {
+        height: 225px;
+        width: 225px;
+    }
+}
+@media (max-width:1370px) {
+    .instruction-box {
+        height: 250px;
+        width: 200px;
+    }
+}
+@media (max-width:1200px) {
+    .instruction-box {
+        height: 250px;
+        width: 170px;
+    }
+}
+@media (max-width:1040px) {
+    .instruction-box {
+        padding-top:10px;
+        height: 180px;
+        width: 150px;
+        font-size: 12px;
+    }
+}
+@media (max-width:900px) {
+    .instruction-box {
+        padding-top:3px;
+        height: 190px;
+        width: 125px;
+    }
+}
+@media (max-width:767px) {
+    .instruction-box {
+        padding-top:15px;
+        margin: 30px auto 0 auto;
+        height: 500px;
+        width: 80%;
+        font-size: 25px;
+    }
+}
+@media (max-width:500px) {
+    .instruction-box {
+        height: 330px;
+    }
+}
+@media (min-width:2400px) {
+    .instruction-box {
+        padding-top:15px;
+        height: 400px;
+        width: 400px;
+    }
+}
+.instruction-title {
+    text-align: center;
 }
 .action-button {
 	width: 150px;
@@ -60,6 +137,15 @@
         font-size: 35px;
         margin: 75px 33% auto;
     }
+}
+.typography2 {
+    display: inline-block;
+    color: rgb(177, 95, 177);
+    font-weight:bold;
+    font-size: 50px;
+    line-height: 95px;
+    opacity: 0%;
+    transition: all 2s;
 }
 #device-img {
     display: inline-block;
