@@ -33,7 +33,7 @@
     <div class='row' style='width:100%'>
         <div class='col-12' style='text-align: center;'>
             <div class='typography2'>
-                It's easy as<br>1-2-3.
+                It's easy as <div class='break-123'>1-2-3.</div>
             </div>
         </div>
     </div>
@@ -54,7 +54,7 @@
                     Confirm Your Email and Login.
                 </div>
                 <div class='instruction-image'>
-                    <img src="{% static 'images/signup.png' %}" style='width:100%'/>
+                    <img src="{% static 'images/login.png' %}" style='width:100%'/>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     Book an Appointment With A Doctor.
                 </div>
                 <div class='instruction-image'>
-                    <img src="{% static 'images/signup.png' %}" style='width:100%'/>
+                    <img src="{% static 'images/book.png' %}" style='width:100%'/>
                 </div>
             </div>
         </div>
@@ -74,9 +74,14 @@
                     We'll Remind you 15 Minutes Ahead.
                 </div>
                 <div class='instruction-image'>
-                    <img src="{% static 'images/signup.png' %}" style='width:100%'/>
+                    <img src="{% static 'images/reminder.png' %}" style='width:100%'/>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class='row justify-content-center' style='width:100%; padding-top: 40px;'>
+        <div class='col-4' style='text-align: center;'>
+            <a href="{% url 'register' %}"><input type='button' class="action-button" value="Get Started" /></a>
         </div>
     </div>
 </div>
@@ -127,9 +132,11 @@
                     {% endif %}
                 </div>
             {% endif %}
+        {% endif %}
     </div>
-    {% endif %}
-
+{% endblock %}
+{% block bottom %}
+<div class='homepage-4'></div>
 {% endblock %}
 {% block javascript %}
 <script type='text/javascript' src="{% static 'jsmodules/home.js' %}"></script>

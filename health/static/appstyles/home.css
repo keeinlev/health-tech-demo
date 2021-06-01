@@ -11,7 +11,7 @@
 }
 .homepage-3 {
     margin-top: 100px;
-    height:1000px;
+    margin-bottom: 100px;
     background-color:rgb(255, 255, 255);
 }
 .instruction-box {
@@ -21,74 +21,17 @@
     width:300px;
     text-align: center;
     margin: 30px 10px 0 10px;
-    font-size: 25px;
+    font-size: 23px;
     line-height: normal;
     opacity: 0%;
     color: rgb(209, 144, 209);
 }
-@media (max-width:1800px) {
-    .instruction-box {
-        height: 250px;
-        width: 250px;
-        font-size: 20px;
-    }
-}
-@media (max-width:1500px) {
-    .instruction-box {
-        height: 225px;
-        width: 225px;
-    }
-}
-@media (max-width:1370px) {
-    .instruction-box {
-        height: 250px;
-        width: 200px;
-    }
-}
-@media (max-width:1200px) {
-    .instruction-box {
-        height: 250px;
-        width: 170px;
-    }
-}
-@media (max-width:1040px) {
-    .instruction-box {
-        padding-top:10px;
-        height: 180px;
-        width: 150px;
-        font-size: 12px;
-    }
-}
-@media (max-width:900px) {
-    .instruction-box {
-        padding-top:3px;
-        height: 190px;
-        width: 125px;
-    }
-}
-@media (max-width:767px) {
-    .instruction-box {
-        padding-top:15px;
-        margin: 30px auto 0 auto;
-        height: 500px;
-        width: 80%;
-        font-size: 25px;
-    }
-}
-@media (max-width:500px) {
-    .instruction-box {
-        height: 330px;
-    }
-}
-@media (min-width:2400px) {
-    .instruction-box {
-        padding-top:15px;
-        height: 400px;
-        width: 400px;
-    }
-}
 .instruction-title {
     text-align: center;
+}
+.instruction-image {
+    position: absolute;
+    bottom: -75px;
 }
 .action-button {
 	width: 150px;
@@ -101,7 +44,10 @@
 	padding: 20px 10px;
 	margin: 10px 5px;
     opacity: 0%;
-    transition: all 2s;
+    transition: opacity 2s;
+}
+.action-button:enabled:hover, .action-button:enabled:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
 }
 .typography {
     display: inline-block;
@@ -113,30 +59,6 @@
     margin: 110px 50% auto;
     opacity: 0%;
     transition: all 2s;
-}
-@media (max-width:992px) {
-    .typography {
-        width: 40%;
-        line-height: 65px;
-        font-size: 50px;
-        margin: 150px 35% auto;
-    }
-}
-@media (max-width:767px) {
-    .typography {
-        width: 23%;
-        line-height: 65px;
-        font-size: 35px;
-        margin: 80px 40% auto;
-    }
-}
-@media (max-width:600px) {
-    .typography {
-        width: 37%;
-        line-height: 65px;
-        font-size: 35px;
-        margin: 75px 33% auto;
-    }
 }
 .typography2 {
     display: inline-block;
@@ -154,24 +76,142 @@
     opacity: 0%;
     transition: all 1s;
 }
+@media (max-width:1800px) {
+    .instruction-box {
+        height: 250px;
+        width: 250px;
+        font-size: 20px;
+    }
+    .instruction-image {
+        bottom: -50px;
+    }
+}
+@media (max-width:1500px) {
+    .instruction-box {
+        height: 225px;
+        width: 225px;
+    }
+    .instruction-image {
+        bottom: -65px;
+    }
+}
+@media (max-width:1370px) {
+    .instruction-box {
+        height: 250px;
+        width: 200px;
+    }
+    .instruction-image {
+        bottom: -40px;
+    }
+}
+@media (max-width:1200px) {
+    .instruction-box {
+        height: 250px;
+        width: 170px;
+    }
+    .instruction-image {
+        bottom: -10px;
+    }
+}
+@media (max-width:1040px) {
+    .instruction-box {
+        padding-top:10px;
+        height: 180px;
+        width: 150px;
+        font-size: 12px;
+    }
+    .instruction-image {
+        bottom: -15px;
+    }
+}
 @media (max-width:992px) {
+    .typography {
+        width: 40%;
+        line-height: 65px;
+        font-size: 50px;
+        margin: 150px 35% auto;
+    }
     #device-img {
         display: inline-block;
         width: 275px;
         margin: 150px 50px auto;
     }
+    .instruction-image {
+        bottom: 15px;
+    }
+}
+@media (max-width:900px) {
+    .instruction-box {
+        padding-top:3px;
+        height: 190px;
+        width: 125px;
+    }
 }
 @media (max-width:767px) {
+    .instruction-box {
+        padding-top:15px;
+        margin: 30px auto 0 auto;
+        height: 500px;
+        width: 80%;
+        font-size: 25px;
+    }
+    .typography {
+        width: 23%;
+        line-height: 65px;
+        font-size: 35px;
+        margin: 80px 40% auto;
+    }
     #device-img {
         display: inline-block;
         width: 200px;
         margin: 30px 40% auto;
     }
+    .instruction-image {
+        bottom: -140px;
+    }
 }
 @media (max-width:600px) {
+    .typography {
+        width: 37%;
+        line-height: 65px;
+        font-size: 35px;
+        margin: 75px 33% auto;
+    }
     #device-img {
         display: inline-block;
         width: 117px;
         margin: 30px 35% auto;
+    }
+    .instruction-image {
+        bottom: -100px;
+    }
+}
+.break-123 {
+    display: inline;
+}
+@media (max-width:565px) {
+    .break-123 {
+        display: block;
+    }
+}
+@media (max-width:500px) {
+    .instruction-box {
+        height: 330px;
+    }
+}
+@media (min-width:2000px) {
+    .instruction-box {
+        padding-top:15px;
+        height: 300px;
+        width: 300px;
+    }
+    .instruction-image {
+        bottom: -100px;
+    }
+}
+@media (min-width:2400px) {
+    .instruction-box {
+        height: 400px;
+        width: 400px;
     }
 }
