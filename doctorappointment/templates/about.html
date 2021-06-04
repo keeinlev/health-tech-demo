@@ -1,7 +1,21 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="heading">
+<div class="heading" style='opacity: 0; padding-bottom: 100px;transition: all 1.5s;'>
     <h1>About us</h1>
 </div>
+<div class="video row justify-content-center" style='padding-bottom:100px; opacity:0; transition: all 2.5s;'>
+    <div class='col-12'>
+        <iframe style='width:100%; height:720px' src='https://youtube.com/embed/vnwAGz5MN4M'></iframe>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    window.onload = function() {
+        $('.heading, .video').css('opacity', '1');
+        $('.heading').css('padding-bottom', '0px');
+    }
+</script>
 {% endblock %}
