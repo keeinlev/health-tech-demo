@@ -41,20 +41,20 @@
                     {{ form.dob.errors }}
                 </div>
                 <label for="phonenumber">Phone Number</label>
-                <div class="row" id="phonenumber">
-                    <div class="col-4 col-md-3 justify-content-start">
+                <div class="row justify-content-center" id="phonenumber">
+                    <div class="col-4 col-md-3">
                         <div class="form-group">
                             {{ form.phone1 }}
                             {{ form.phone1.errors }}
                         </div>
                     </div>
-                    <div class="col-4 col-md-3 justify-content-start">
+                    <div class="col-4 col-md-3">
                         <div class="form-group">
                             {{ form.phone2 }}
                             {{ form.phone2.errors }}
                         </div>
                     </div>
-                    <div class="col-4 col-md-3 justify-content-start">
+                    <div class="col-4 col-md-3">
                         <div class="form-group">
                             {{ form.phone3 }}
                             {{ form.phone3.errors }}
@@ -63,14 +63,14 @@
                 </div>
                 {% if doctor %}
                 <label for="id_meeting_url">Meeting Link</label>
-                <div class='row form-group'>
+                <div class='row form-group justify-content-center'>
                     <div class='col-6'>
                         {{ form.meeting_url }}
                         {{ form.meeting_url.errors }}
                     </div>
                 </div>
                 <label for="id_qualifications">Qualifications</label>
-                <div class='row form-group'>
+                <div class='row form-group justify-content-center'>
                     <div class='col-6'>
                         {{ form.qualifications }}
                         {{ form.qualifications.errors }}

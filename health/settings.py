@@ -15,6 +15,7 @@ import os
 import mimetypes
 import environ
 from twilio.rest import Client
+import urllib.parse as up
 
 env = environ.Env()
 
@@ -81,17 +82,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'health.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 AUTH_USER_MODEL = 'accounts.User'
 

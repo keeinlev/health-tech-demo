@@ -19,5 +19,6 @@ window.onscroll = function() {
     }
     if (window.pageYOffset > 500) {
         $('.action-button')[1].style.opacity = 1;
+        $('.action-button')[2].style.opacity = 1;
     }
 }

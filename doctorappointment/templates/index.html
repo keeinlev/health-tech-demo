@@ -9,6 +9,9 @@
 {% endblock %}
 
 {% block top %}
+<div class="home-alert{% if not message %} display-hidden{% endif %}">
+    <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+</div>
 <div class='homepage-1'>
     <div class='row' style='width:100%'>
         <div class='col-md-6 col-12'>
@@ -25,7 +28,7 @@
 <div class='homepage-2'>
     <div class='row' style='width:100%'>
         <div class='col-12'>
-            <a href="{% url 'login' %}"><button class="action-button">Login</button></a>
+            <a href="{% url 'login' %}"><button class="action-button{% if user.is_authenticated %} display-hidden{% endif %}">Login</button></a>
         </div>
     </div>
 </div>
@@ -79,11 +82,13 @@
             </div>
         </div>
     </div>
+    {% if not user.is_authenticated %}
     <div class='row justify-content-center' style='width:100%; padding-top: 40px;'>
         <div class='col-4' style='text-align: center;'>
             <a href="{% url 'register' %}"><input type='button' class="action-button" value="Get Started" /></a>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 {% block body %}
@@ -92,11 +97,12 @@
     </div>
     <div class="heading">
         {% if user.is_authenticated %}
-        <h1>Hi {{ user.first_name }}!</h1>
+            <div class='row justify-content-center' style='width:100%'>
             {% if user.type == "DOCTOR" %}
-                <a href="{% url 'doctordashboard' %}"><button class="big-button">>> Your Dashboard >></button></a>
+                    <a href="{% url 'doctordashboard' %}"><button class="action-button">>> Your Dashboard >></button></a>
             {% else %}
-                <a href="{% url 'book' %}"><button class="big-button">>> Book Now >></button></a>
+                    <a href="{% url 'book' %}"><button class="action-button">>> Book Now >></button></a>
+                </div>
                 <div class="section" style='margin-top: 7%;'>
                     <h2>Your Upcoming Appointments</h2>
                     {% if user.getSomeAppts %}
