@@ -1,0 +1,90 @@
+/*custom font*/
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+/*basic reset*/
+* {margin: 0; padding: 0;}
+
+
+body {
+	font-family: montserrat, arial, verdana;
+}
+/*form styles*/
+#bookform {
+	margin: 50px auto;
+	text-align: center;
+	position: relative;
+	transition: all 2s;
+}
+#bookform fieldset {
+	background: white;
+	border: 0 none;
+	border-radius: 3px;
+	box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+	padding: 20px 30px;
+	box-sizing: border-box;
+	margin: 0 10%;
+	
+	/*stacking fieldsets above each other*/
+	position: relative;
+}
+fieldset:first-of-type {
+    width:300px;
+}
+@media (min-width: 768px) {
+    fieldset:first-of-type {
+        width:40%;
+        left:20%;
+    }
+}
+/*Hide all except first fieldset*/
+#bookform fieldset:not(:first-of-type) {
+	width: 80%;
+	display: none;
+}
+/*inputs*/
+#bookform input, #bookform textarea {
+	padding: 15px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: montserrat;
+	color: #2C3E50;
+	font-size: 13px;
+}
+/*buttons*/
+#bookform .action-button {
+	width: 100px;
+	background: #27AE60;
+	font-weight: bold;
+	color: white;
+	border: 0 none;
+	border-radius: 1px;
+	cursor: pointer;
+	padding: 10px 5px;
+	margin: 10px 5px;
+}
+@media (max-width: 768px) {  
+    #bookform .action-button{
+		width: 70px;
+    }
+}
+#bookform .action-button:disabled{
+	background: #729781;
+}
+#bookform .action-button:enabled:hover, #bookform .action-button:enabled:focus {
+	box-shadow: 0 0 0 2px white, 0 0 0 3px #27AE60;
+}
+/*headings*/
+.fs-title {
+	font-size: 15px;
+	color: #2C3E50;
+	margin-bottom: 20px;
+}
+.fs-subtitle {
+	font-weight: normal;
+	font-size: 13px;
+	color: #666;
+	margin-bottom: 20px;
+}

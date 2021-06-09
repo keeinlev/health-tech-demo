@@ -24,25 +24,32 @@ def send_reminder(appt_id, purpose):
         else:
             kwords = ['Reminder', 'a reminder for']
         
+        messageVar1 = f'Use the following link to join:\n{appt.meeting_link}'
+        messageVar2 = f'Use the following link to join:\n{appt.meeting_link}'
+
+        if not appt.type:
+            messageVar1 = f'The doctor will call you at the phone number you have provided: +1{appt.patient.phone}'
+            messageVar2 = f'Please call the Patient at +1{appt.patient.phone}'
+
         # message1 = client.messages.create(
-        #     body=f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.meeting_url}',
+        #     body=f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}\n\n{messageVar1}',
         #     from_=twilio_phone,
         #     to='+1' + patient_phone,
         # )
         # message2 = client.messages.create(
-        #     body=f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.meeting_url}',
+        #     body=f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}\n\n{messageVar2}',
         #     from_=twilio_phone,
         #     to='+1' + doctor_phone,
         # )
         send_mail(
             f'{kwords[0]} for Appointment with Dr. {doctor_name}',
-            f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.meeting_url}',
+            f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime()}\n\n{messageVar1}',
             'healthapptdemo@gmail.com',
             [patient_email],
         )
         send_mail(
             f'{kwords[0]} for Appointment with {patient_name}',
-            f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}\n\nUse the following link to join:\n{appt.meeting_url}',
+            f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime()}\n\n{messageVar2}',
             'healthapptdemo@gmail.com',
             [doctor_email],
         )

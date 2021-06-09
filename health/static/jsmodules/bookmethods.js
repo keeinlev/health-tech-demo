@@ -35,7 +35,7 @@ $('.doctor-label').change(function() {
                 str += `<option value='${consultations[i]}'>${consultations[i]}</option>\n`
             }
             $('#id_consultation').html(str);
-            $('#booksubmit').addClass('hidden')
+            $('#booksubmit').addClass('display-hidden')
             console.log(data['d_id'])
             $('#id_doctor').val(data['d_id'])
         }
@@ -60,7 +60,7 @@ function getApptTimes(date) {
                 if (data['message']) {
                     $('#id_time').html('');
                     $('#noappt').html(data['message']);
-                    $('#booksubmit').addClass('hidden')
+                    $('#booksubmit').addClass('display-hidden')
                 } else {
                     $('#noappt').html('');
                     keys = data['keys'];
@@ -72,7 +72,7 @@ function getApptTimes(date) {
                         str += `<option value='${keys[i]}'>${values[i]}</option>\n`
                     }
                     $('#id_time').html(str);
-                    $('#booksubmit').removeClass('hidden')
+                    $('#booksubmit').removeClass('display-hidden')
                 }
             }
         });

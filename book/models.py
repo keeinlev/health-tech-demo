@@ -49,6 +49,7 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, related_name="%(class)s_doctor", on_delete=models.CASCADE, null=True, default=None)
     reminder_sent = models.BooleanField(default=False)
     meeting_id = models.CharField(unique=True, max_length=48, null=True, default=None)
+    type = models.BooleanField(default=None, blank=True, null=True, choices=[(1, 'Video'), (0, 'Phone')])
 
     def dateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%A, %B %d at %I:%M%p %Z')

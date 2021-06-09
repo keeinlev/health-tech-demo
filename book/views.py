@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import BookForm, CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, EditAppointmentForm, CancelConfirmForm
+from .forms import CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, EditAppointmentForm, CancelConfirmForm
 from accounts.models import User, Doctor, DoctorInfo, Patient, PatientInfo
 from .models import Appointment
 from appointment.models import Prescription
@@ -318,6 +318,7 @@ def book(request):
             if (request.method == "POST"):
                 form = EditAppointmentForm(request.POST)
                 if form.is_valid():
+                    appt_type = form.cleaned_data['appt_type']
                     doc = form.cleaned_data['doctor']
                     pat = u
                     date = form.cleaned_data['date']
@@ -329,6 +330,7 @@ def book(request):
                         a = a.first()
                         a.patient = pat
                         a.consultation = consultation
+                        a.type = appt_type
                         a.booked = True
                         a.save()
                         while(1):

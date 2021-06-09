@@ -4,14 +4,6 @@ from .times import IntTimes
 from .models import Appointment
 from django.core.exceptions import ValidationError
 
-class BookForm(forms.Form):
-    date = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "form-control", 'id': "datetime", 'placeholder': "2020-02-20", 'max':"9999-12-31"}))
-    time = forms.TimeField(label=False, required=True)
-    doctor = forms.ModelChoiceField(label=False, queryset=Doctor.objects.all(), widget=forms.RadioSelect(attrs={'type': "radio", 'class': 'doctor-radio'}))
-    
-    
-    #fields = ['datetime', 'consultation', 'patient', 'doctor']
-
 class CreateAppointmentForm(forms.ModelForm):
     time = forms.ChoiceField(label=False, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select time-input'}))
     class Meta:
@@ -49,6 +41,7 @@ class EditAppointmentForm(forms.Form):
     date = forms.DateField(label=False, required=True, widget=forms.HiddenInput())
     time = forms.ChoiceField(label=False, required=True, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select'}))
     consultation = forms.CharField(label=False, max_length=100, required=True, widget=forms.Select(attrs={'class':'custom-select'}))
+    appt_type = forms.BooleanField(label=False, required=False, widget=forms.CheckboxInput(attrs={'data-toggle':'toggle', 'data-on': 'Video', 'data-off': 'Phone', 'data-onstyle':'success', 'data-offstyle':'primary'}))
 
 class CancelConfirmForm(forms.Form):
     doctor = forms.ModelChoiceField(label=False, queryset=Doctor.objects.all(), required=True, widget=forms.HiddenInput())
