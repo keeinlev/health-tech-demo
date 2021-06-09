@@ -2,3 +2,4 @@
 
 health/.env
 oauth_settings.yml
+db.sqlite3

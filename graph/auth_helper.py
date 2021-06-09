@@ -3,10 +3,20 @@ import msal
 import os
 import time
 from accounts.models import Doctor
+import environ
+
+env = environ.Env()
 
 # Load the oauth_settings.yml file
-stream = open('oauth_settings.yml', 'r')
-settings = yaml.load(stream, yaml.SafeLoader)
+#stream = open('oauth_settings.yml', 'r')
+#settings = yaml.load(stream, yaml.SafeLoader)
+settings = {
+    'app_id': env('MS_GRAPH_CLIENT_ID'),
+    'app_secret': env('MS_GRAPH_CLIENT_SECRET'),
+    'redirect': env('MS_GRAPH_REDIRECT_URI'),
+    'scopes' : ['user.read','mailboxsettings.read','calendars.readwrite'],
+    'authority': "https://login.microsoftonline.com/common",
+}
 
 def load_cache(request):
     # Check for a token cache in the session
