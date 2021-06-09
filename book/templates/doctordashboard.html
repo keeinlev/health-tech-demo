@@ -118,7 +118,7 @@
             </div>
             <br />
             <div class="section">
-                <h2>Your Upcoming Appointments - <a href="{{ doctor.more.meeting_url }}" target="_blank">Go to your Online Meeting Room</a></h2>
+                <h2>Your Upcoming Appointments</h2>
                 {% if doctor.getSomeAppts %}
                     {% for appt in doctor.getSomeAppts %}
                         <div class="appointment-box appointment-box-md">
@@ -139,9 +139,15 @@
                                             <b class="cancel-text hidden" id="confirm-no{{appt.id}}" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').addClass('hidden')">No</b>
                                         </div>
                                     </div>
-                                    
                                     <div class='row'>
-                                        <div class='col-12' style='margin-top:20px'><a href="{% url 'details' appt.pk %}">Details</a></div>
+                                        <div class='col-6' style='margin-top:20px'>
+                                            <a href="{% url 'details' appt.pk %}">Details</a>
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col-6' style='margin-top:40px'>
+                                            {% if appt.type %}<a href="{{ appt.meeting_link }}">Meeting Link</a>{% elif appt.booked %}<b>Phone Appointment</b>{% endif %}
+                                        </div>
                                     </div>
                                     
                                 </div>
