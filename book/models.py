@@ -48,6 +48,7 @@ class Appointment(models.Model):
     patient = models.ForeignKey(Patient, related_name="%(class)s_patient", on_delete=models.CASCADE, null=True, default=None, blank=True)
     doctor = models.ForeignKey(Doctor, related_name="%(class)s_doctor", on_delete=models.CASCADE, null=True, default=None)
     reminder_sent = models.BooleanField(default=False)
+    meeting_id = models.CharField(unique=True, max_length=48, null=True, default=None)
 
     def dateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%A, %B %d at %I:%M%p %Z')
@@ -69,3 +70,8 @@ class Appointment(models.Model):
             return p.first().prescription
         else:
             return None
+    
+    @property
+    def meeting_link(self):
+        from health.settings import MS_TEAMS_MEETING_URL_1 as meet_link1, MS_TEAMS_MEETING_URL_2 as meet_link2
+        return meet_link1 + self.meeting_id + meet_link2

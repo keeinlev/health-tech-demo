@@ -12,6 +12,13 @@
 <div class="home-alert{% if not message %} display-hidden{% endif %}">
     <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
 </div>
+
+{% if user.is_authenticated and user.type == 'DOCTOR' %}
+    {% if not user.userType.more.ms_authenticated %}
+        <a href="{% url 'graphsignin' %}"><button class='btn btn-secondary'>MS Sign in</button></a>
+    {% endif %}
+{% endif %}
+
 <div class='homepage-1'>
     <div class='row' style='width:100%'>
         <div class='col-md-6 col-12'>
@@ -113,7 +120,7 @@
                                         <div class='row'>
                                             <div class='col-12 appointment-status appointment-status-md'>
                                                 Appointment on {{ appt.dateTime }} with Dr. {{ appt.doctor }}<br>
-                                                <a href="{{ appt.doctor.more.meeting_url }}" target="_blank">Meeting link</a>
+                                                <a href="{{ appt.meeting_link }}" target="_blank">Meeting link</a>
                                             </div>
                                         </div>
                                         <!--<div class='row'>
@@ -138,6 +145,7 @@
                     {% endif %}
                 </div>
             {% endif %}
+            </div>
         {% endif %}
     </div>
 {% endblock %}

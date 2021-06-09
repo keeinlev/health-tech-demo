@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'scheduledreminders',
     'appointment',
     'storages',
+    'graph',
 ]
 
 MIDDLEWARE = [
@@ -154,6 +155,9 @@ TWILIO_SID = env('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
 TWILIO_CLIENT = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
+
+MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
+MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')
 
 if (env('DJANGO_DEVELOPMENT') == 'True'):
     from .development import *

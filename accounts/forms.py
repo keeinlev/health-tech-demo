@@ -33,7 +33,7 @@ class DoctorEditForm(forms.Form):
     qualifications = forms.CharField(label=False, required=True, widget=forms.Textarea(attrs={'class':'formcontrol'}))
     consultations = forms.CharField(label=False, widget=forms.HiddenInput())
     languages = forms.CharField(label=False, widget=forms.HiddenInput())
-    meeting_url = forms.CharField(label=False, widget=forms.TextInput(attrs={'type': "text", 'class': "formcontrol", 'placeholder': "Meeting Link"}))
+    #meeting_url = forms.CharField(label=False, widget=forms.TextInput(attrs={'type': "text", 'class': "formcontrol", 'placeholder': "Meeting Link"}))
 
 class PatientEditForm(forms.Form):
     first_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "first_name", 'class': "formcontrol", 'placeholder': "First name"}))

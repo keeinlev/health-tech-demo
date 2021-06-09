@@ -14,6 +14,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 
+from graph.auth_helper import remove_user_and_token
+
 
 # Create your views here.
 
@@ -95,7 +97,7 @@ def editprofile(request):
                     di.certification = form.cleaned_data['qualifications']
                     di.consultations = form.cleaned_data['consultations']
                     di.languages = form.cleaned_data['languages']
-                    di.meeting_url = form.cleaned_data['meeting_url']
+                    #di.meeting_url = form.cleaned_data['meeting_url']
                     di.save()
                 else:
                     try:
@@ -126,7 +128,7 @@ def editprofile(request):
                     'qualifications': d.more.certification,
                     'consultations': d.more.consultations,
                     'languages': d.more.languages,
-                    'meeting_url': d.more.meeting_url,
+                    #'meeting_url': d.more.meeting_url,
                 })
                 return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', '), 'languages': d.more.languages.split(', '),})
             else:
@@ -169,8 +171,15 @@ def validate_email(request):
 def login(request):
     return render(request, 'login.html')
 
-def logout(request):
-    return render(request, 'logout.html')
+def logout_redir(request):
+    user = request.user
+    print(user)
+    if (user.is_authenticated):
+        if (user.type == 'DOCTOR'):
+            remove_user_and_token(request)
+        return redirect('logout')
+        print('logout')
+    return redirect('index')
 
 def doctorlogin(request):
     pass

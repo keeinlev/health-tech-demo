@@ -11,6 +11,6 @@ urlpatterns = [
     path('need_activate', views.activateprompt, name='activateprompt'),
     path('editprofile', views.editprofile, name='editprofile'),
     #path("login", views.login, name="login"),
-    #path("logout", views.logout, name="logout"),
+    path("logout_redir", views.logout_redir, name="logout_redir"),
     #path("doctorlogin", views.doctorlogin, name="doctorlogin"),
 ]

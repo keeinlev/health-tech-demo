@@ -67,6 +67,13 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"username": self.username})
 
     @property
+    def userType(self):
+        if (self.type == 'DOCTOR'):
+            return Doctor.objects.get(pk=self.pk)
+        elif (self.type == 'PATIENT'):
+            return Patient.objects.get(pk=self.pk)
+
+    @property
     def getAppts(self):
         from book.models import Appointment
         if (self.type == 'PATIENT'):
@@ -123,7 +130,7 @@ class DoctorInfo(models.Model):
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
     consultations = models.TextField(_("Doctor's Applicable Consultations"))
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
-    meeting_url = models.CharField(_("Doctor's Meeting Link"), max_length=500, unique=True, default=None, null=True, blank=True)
+    ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
 
 def createdoctor():
     first_name = input("Enter first name: ")

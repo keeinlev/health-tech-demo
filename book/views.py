@@ -11,6 +11,14 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone
 from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone
+from random import choice
+from string import ascii_letters, digits, punctuation
+from django.db import IntegrityError
+
+allChars = ascii_letters + digits + digits
+
+def generateMeetingId():
+    return ''.join(choice(allChars) for i in range(48))
 
 def fromisoform(d):
     year = int(d[:4])
@@ -315,7 +323,7 @@ def book(request):
                     date = form.cleaned_data['date']
                     time = form.cleaned_data['time']
                     consultation = form.cleaned_data['consultation']
-
+                    meeting_id = generateMeetingId()
                     a = Appointment.objects.filter(doctor=doc, date=date, time=time, booked=False)
                     if a.exists():
                         a = a.first()
@@ -323,6 +331,14 @@ def book(request):
                         a.consultation = consultation
                         a.booked = True
                         a.save()
+                        while(1):
+                            try:
+                                a.meeting_id = meeting_id
+                                a.save()
+                                break
+                            except IntegrityError as e:
+                                print(e + ', trying new meeting_id')
+                                meeting_id = generateMeetingId()
 
                         send_reminder(a.id, 'confirm')
 
