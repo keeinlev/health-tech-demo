@@ -30,28 +30,28 @@ def callback(request):
         store_user(request, user)
         pprint(user)
         print(user.get('id'))
-        tz_info = tz.gettz('America/New_York')
+        #tz_info = tz.gettz('America/New_York')
 
   # Get midnight today in user's time zone
-        today = datetime.now(tz_info).replace(
-            hour=0,
-            minute=0,
-            second=0,
-            microsecond=0)
+        # today = datetime.now(tz_info).replace(
+        #     hour=0,
+        #     minute=0,
+        #     second=0,
+        #     microsecond=0)
 
-        # Based on today, get the start of the week (Sunday)
-        if (today.weekday() != 6):
-            start = today - timedelta(days=today.isoweekday())
-        else:
-            start = today
-        end = start + timedelta(days=7)
-        events = get_calendar_events(
-            result['access_token'],
-            start.isoformat(timespec='seconds'),
-            end.isoformat(timespec='seconds'),
-            'Eastern Standard Time')
-        print('\n\nevents:\n')
-        pprint(events)
+        # # Based on today, get the start of the week (Sunday)
+        # if (today.weekday() != 6):
+        #     start = today - timedelta(days=today.isoweekday())
+        # else:
+        #     start = today
+        # end = start + timedelta(days=7)
+        # events = get_calendar_events(
+        #     result['access_token'],
+        #     start.isoformat(timespec='seconds'),
+        #     end.isoformat(timespec='seconds'),
+        #     'Eastern Standard Time')
+        # print('\n\nevents:\n')
+        # pprint(events)
     except KeyError as e:
         print(e)
         return render(request, 'index.html', {'message': 'Oops! We weren\'t able to get access to your account!'})
