@@ -9,12 +9,15 @@ from datetime import date, datetime, timedelta
 from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
-from pytz import timezone
+from pytz import timezone, utc
 from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError
+from graph.graph_helper import create_event
+from graph.auth_helper import get_token
 
+eastern = timezone('America/New_York')
 allChars = ascii_letters + digits + digits
 
 def generateMeetingId():
@@ -30,6 +33,10 @@ def getCurrentTimeKey():
     hour = datetime.now().hour
     minute = datetime.now().minute
     return hour * 100 + minute
+
+def getDateTime(date, time):
+    non_loc = datetime(date.year, date.month, date.day, time // 100, time % 100).astimezone(utc)
+    return non_loc
 
 
 # Create your views here.
@@ -56,10 +63,6 @@ def apptcreated(request):
                 message = "Appointment slot(s) created!"
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
-
-def getDateTime(date, time):
-    non_loc = datetime(date.year, date.month, date.day, time // 100, time % 100)
-    return non_loc
 
 def booksingle(request):
     u=request.user
@@ -297,7 +300,7 @@ def update_calendar(request):
             d = Doctor.objects.filter(pk = doctor_id).first()
             for c in d.more.consultations.split(', '):
                 consultations.append(c)
-            for appt in Appointment.objects.filter(doctor = d, datetime__gt = datetime.utcnow(), booked=False).order_by('date', 'time'):
+            for appt in Appointment.objects.filter(doctor = d, datetime__gt = datetime.now().astimezone(utc), booked=False).order_by('date', 'time'):
                 if appt.date not in datesList:
                     datesList.append(appt.date)
             if len(datesList) == 1:
@@ -344,6 +347,13 @@ def book(request):
 
                         send_reminder(a.id, 'confirm')
 
+                        if u.ms_authenticated:
+                            start = a.datetime.astimezone(eastern)
+                            end = start + timedelta(minutes=15)
+                            start = start.strftime('%Y-%m-%dT%H:%M')
+                            end = end.strftime('%Y-%m-%dT%H:%M')
+                            create_event(get_token(request), f'Appointment with Dr. { a.doctor }', start, end, [u.email, a.doctor.email], 'body', 'Eastern Standard Time')
+
                         return redirect('booksuccess')
                     else:
                         error = 'The Appointment you tried to book either does not exist or has already been booked.'
@@ -372,7 +382,7 @@ def findtimes(request):
         if u.type == "PATIENT":
             d = request.GET.get('doctor-id')
             date = request.GET.get('date')
-            appts = Appointment.objects.filter(doctor = d, datetime__gt = datetime.utcnow(), date=date, booked=False).order_by('time')
+            appts = Appointment.objects.filter(doctor = d, datetime__gt = datetime.now().astimezone(utc), date=date, booked=False).order_by('time')
             data = {}
             if (appts.exists()):
                 values=[]

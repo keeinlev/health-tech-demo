@@ -64,9 +64,9 @@ def get_token_from_code(request):
 
 def store_user(request, user):
     try:
-        d = Doctor.objects.get(pk=request.user.pk)
-        d.more.ms_authenticated = True
-        d.more.save()
+        u = request.user
+        u.ms_authenticated = True
+        u.save()
     except Exception as e:
         print(e)
 
@@ -85,6 +85,11 @@ def get_token(request):
         return result['access_token']
 
 def remove_user_and_token(request):
+    print(request.user)
+    u = request.user
+    u.ms_authenticated = False
+    u.save()
+    print(u.ms_authenticated)
     if 'token_cache' in request.session:
         del request.session['token_cache']
     if 'user' in request.session:

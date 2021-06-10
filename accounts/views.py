@@ -175,10 +175,8 @@ def logout_redir(request):
     user = request.user
     print(user)
     if (user.is_authenticated):
-        if (user.type == 'DOCTOR'):
-            remove_user_and_token(request)
+        remove_user_and_token(request)
         return redirect('logout')
-        print('logout')
     return redirect('index')
 
 def doctorlogin(request):

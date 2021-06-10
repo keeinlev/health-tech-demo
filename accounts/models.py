@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.core.validators import RegexValidator, validate_email, EmailValidator, MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from datetime import datetime
+from pytz import utc
 
 # Create your models here.
 
@@ -55,6 +56,7 @@ class User(AbstractUser):
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
     dob = models.DateField(default=timezone.now)
+    ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -77,17 +79,17 @@ class User(AbstractUser):
     def getAppts(self):
         from book.models import Appointment
         if (self.type == 'PATIENT'):
-            return Appointment.objects.filter(patient=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
+            return Appointment.objects.filter(patient=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')
         elif (self.type == 'DOCTOR'):
-            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')
+            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')
     
     @property
     def getSomeAppts(self):
         from book.models import Appointment
         if (self.type == 'PATIENT'):
-            return Appointment.objects.filter(patient=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')[:10]
+            return Appointment.objects.filter(patient=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')[:10]
         elif (self.type == 'DOCTOR'):
-            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.utcnow()).order_by('date', 'time')[:10]
+            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')[:10]
 
 class PatientManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
@@ -130,7 +132,6 @@ class DoctorInfo(models.Model):
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
     consultations = models.TextField(_("Doctor's Applicable Consultations"))
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
-    ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
 
 def createdoctor():
     first_name = input("Enter first name: ")
