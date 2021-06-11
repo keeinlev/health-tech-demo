@@ -85,12 +85,13 @@ def get_token(request):
         return result['access_token']
 
 def remove_user_and_token(request):
-    print(request.user)
+    remove_token(request)
+    if 'user' in request.session:
+        del request.session['user']
+
+def remove_token(request):
     u = request.user
     u.ms_authenticated = False
     u.save()
-    print(u.ms_authenticated)
     if 'token_cache' in request.session:
         del request.session['token_cache']
-    if 'user' in request.session:
-        del request.session['user']
