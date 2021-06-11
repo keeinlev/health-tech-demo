@@ -41,12 +41,13 @@ def send_reminder(appt_id, purpose):
         #     from_=twilio_phone,
         #     to='+1' + doctor_phone,
         # )
-        send_mail(
-            f'{kwords[0]} for Appointment with Dr. {doctor_name}',
-            f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime}\n\n{messageVar1}',
-            'healthapptdemo@gmail.com',
-            [patient_email],
-        )
+        if patient_email:
+            send_mail(
+                f'{kwords[0]} for Appointment with Dr. {doctor_name}',
+                f'Hello, {patient_name} this is {kwords[1]} your appointment with Dr. {doctor_name} on {appt.dateTime}\n\n{messageVar1}',
+                'healthapptdemo@gmail.com',
+                [patient_email],
+            )
         send_mail(
             f'{kwords[0]} for Appointment with {patient_name}',
             f'Hello, Dr. {doctor_name} this is {kwords[1]} your appointment with Patient {patient_name} on {appt.dateTime}\n\n{messageVar2}',

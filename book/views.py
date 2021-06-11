@@ -250,12 +250,13 @@ def cancelappt(request, pk):
                     #     from_=twilio_phone,
                     #     to='+1' + target.phone,
                     # )
-                    send_mail(
-                        'Your Appointment has been Cancelled',
-                        'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
-                        'healthapptdemo@gmail.com',
-                        [target.email],
-                    )
+                    if target.email:
+                        send_mail(
+                            'Your Appointment has been Cancelled',
+                            'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                            'healthapptdemo@gmail.com',
+                            [target.email],
+                        )
                     a.delete()
                     return redirect('apptcanceled')
             else:

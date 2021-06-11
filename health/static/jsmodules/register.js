@@ -8,8 +8,6 @@ var emailmatchmsg = document.getElementById('email-match-help');
 
 var subbtn = document.getElementById('register-submit');
 
-var formelements = document.getElementsByClassName('formcontrol');
-console.log(formelements);
 
 var match_pass = function() {
     if (pass1.value || pass2.value) {
@@ -93,12 +91,54 @@ $('.formcontrol').keyup(function(e) {
         passmatch = match_pass();
     }
 
-    for (elem=0; elem < formelements.length; ++elem) {
+    emailsFilled = true;
+    phone = document.getElementById('phone');
+    emails = document.getElementsByClassName('email-inputs')
+
+    if ($('#phone').val()) {
+        if ($('.email-inputs').attr('class').includes('req')) {
+            $('.email-inputs').removeClass('req');
+        }
+        emails[0].required = false;
+        emails[1].required = false;
+    } else if (!$('#phone').val()) {
+        if (!$('.email-inputs').attr('class').includes('req')) {
+            $('.email-inputs').addClass('req');
+        }
+        emails[0].required = true;
+        emails[1].required = true;
+    }
+    
+
+    $('.email-inputs').each(function(index, value) {
+        if (!this.value && emailsFilled) {
+            emailsFilled = false;
+        }
+    })
+
+    if (emailsFilled) {
+        if ($('#phone').attr('class').includes('req')) {
+            $('#phone').removeClass('req');
+        }
+        phone.required = false;
+    } else if (!emailsFilled) {
+        if (!$('#phone').attr('class').includes('req')) {
+            $('#phone').addClass('req');
+        }
+        phone.required = true;
+    }
+
+    $('.req').each(function(index, value) {
+        if (!this.value && filled) {
+            filled = false;
+        }
+    })
+    /*for (elem=0; elem < formelements.length; ++elem) {
         if (!formelements[elem].value) {
             filled = false;
             break;
         }
-    }
+    }*/
     if (filled) {
         subbtn.disabled = false;
     } else {

@@ -24,13 +24,22 @@ def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
+            username=form.cleaned_data['username']
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             preferred_name = form.cleaned_data['preferred_name']
             dob = form.cleaned_data['dob']
             email = form.cleaned_data['email1']
+            if email == '':
+                email = None
+            email2 = form.cleaned_data['email2']
+            if email2 == '':
+                email2 = None
             password = form.cleaned_data['password1']
-            phone = str(form.cleaned_data['phone'])
+            phone = form.cleaned_data['phone']
+            print(phone)
+            if phone != None:
+                phone = str(form.cleaned_data['phone'])
             #phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
             ohip_number = str(form.cleaned_data['ohip'])
             ohip_number = ohip_number[:4] + '-' + ohip_number[4:7] + '-' + ohip_number[7:]
@@ -39,42 +48,50 @@ def register(request):
             ohip_number = ohip_number + '-' + ohip_version_code
             ohip_number = ohip_number.upper()
             ohip_expiry = form.cleaned_data['ohip_expiry']
-            if len(phone) != 10 or len(ohip_number) != 15:
+            if (phone != None and len(phone) != 10) or len(ohip_number) != 15:
                 message = "Registration unsuccessful. Please make sure phone and OHIP numbers are in the correct format."
                 return render(request, "register.html", {'form': form, 'message': message})
-            if (email != form.cleaned_data['email2'] or password != form.cleaned_data['password2']):
+            if (email != email2 or password != form.cleaned_data['password2']):
                 message = "Registration unsuccessful. Please make sure emails and passwords match."
 
                 return render(request, "register.html", {'form': form, 'message': message})
             try:
-                u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, password=password, dob=dob, type=User.Types.PATIENT)
+                u = User.objects.create(username=username, first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, password=password, dob=dob, type=User.Types.PATIENT)
                 PatientInfo.objects.create(user=u, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
             except IntegrityError as e:
                 #print(e.__cause__)
                 cause = str(e.__cause__)
-                cleancause = cause[cause.index("UNIQUE constraint failed: ") + len("UNIQUE constraint failed: "):]
-                unique_constraint = cleancause[cleancause.index('.') + 1:].capitalize().replace('_', ' ')
-                #print(unique_constraint)
-                if unique_constraint == 'Ohip number':
-                    unique_constraint = 'OHIP Number'
-                    User.objects.last().delete()
-                #print(User.objects.all())
-                return render(request, "register.html", {'form': form, 'message': unique_constraint + ' already registered to existing account!'})
+                if 'accounts_user_email_or_phone' in cause:
+                    return render(request, "register.html", {'form': form, 'message': 'At least one of email or phone is required!'})
+                else:
+                    cleancause = cause[cause.index("UNIQUE constraint failed: ") + len("UNIQUE constraint failed: "):]
+                    unique_constraint = cleancause[cleancause.index('.') + 1:].capitalize().replace('_', ' ')
+                    #print(unique_constraint)
+                    if unique_constraint == 'Ohip number':
+                        unique_constraint = 'OHIP Number'
+                        User.objects.last().delete()
+                    #print(User.objects.all())
+                    return render(request, "register.html", {'form': form, 'message': unique_constraint + ' already registered to existing account!'})
             
             u.set_password(password)
             u.is_active = False
             u.save()
-            domain = get_current_site(request).domain
-            uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
-            link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
-            activate_url = 'http://' + domain + link
-            send_mail(
-                'Confirm your Online Health Account',
-                'Hi,' + u.first_name + '\n\nPlease use the following link to confirm your email:\n' + activate_url,
-                'healthapptdemo@gmail.com',
-                [u.email],
-            )
-            return redirect('activateprompt')
+            if (u.email):
+                domain = get_current_site(request).domain
+                uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
+                link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
+                activate_url = 'http://' + domain + link
+                send_mail(
+                    'Confirm your Online Health Account',
+                    'Hi,' + u.first_name + '\n\nPlease use the following link to confirm your email:\n' + activate_url,
+                    'healthapptdemo@gmail.com',
+                    [u.email],
+                )
+                return redirect('activateprompt')
+            else:
+                u.is_active = True
+                u.save()
+                return redirect('login')
         else:
             message = "Registration unsuccessful. Please make sure you have filled all fields in correctly."
             return render(request, "register.html", {'form': form, 'message': message})
