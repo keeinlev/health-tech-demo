@@ -4,7 +4,7 @@ from .models import User
 
 class SignUpForm(forms.Form):
     first_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "first_name", 'class': "formcontrol", 'placeholder': "First name*"}))
-    preferred_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "preferred_name", 'class': "formcontrol", 'placeholder': "Preferred name"}))
+    preferred_name = forms.CharField(label=False, max_length=30, required=False, widget=forms.TextInput(attrs={'type': "text", 'id': "preferred_name", 'class': "formcontrol", 'placeholder': "Preferred name"}))
     last_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "last_name", 'class': "formcontrol", 'placeholder': "Last name*"}))
     dob = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "text", 'class': "formcontrol", 'id': "dob", 'placeholder': "Date of Birth*", "onfocus": "(this.type='date')", "onblur": "(this.value ? this.type='date' : this.type='text')", 'max':"9999-12-31"}))
     email1 = forms.EmailField(label=False, max_length=254, required=True, widget=forms.TextInput(attrs={'class': 'formcontrol email-inputs', 'maxlength': '50', 'placeholder': 'Email*', 'id':'email1', 'aria-describedby': 'email-match-help'}))

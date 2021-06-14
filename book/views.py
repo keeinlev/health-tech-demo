@@ -10,7 +10,7 @@ from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone, utc
-from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone
+from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone, MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError
@@ -45,7 +45,7 @@ def doctordashboard(request):
     u = request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
-            single_appt_form = CreateAppointmentForm()
+            single_appt_form = CreateAppointmentForm(initial={'doctor':u.pk})
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
@@ -56,7 +56,7 @@ def apptcreated(request):
     u=request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
-            single_appt_form = CreateAppointmentForm()
+            single_appt_form = CreateAppointmentForm(initial={'doctor':u.pk})
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
@@ -67,16 +67,23 @@ def apptcreated(request):
 def booksingle(request):
     u=request.user
     if u.is_authenticated:
+        print('checkpoint1')
         if u.type == "DOCTOR":
+            print('checkpoint2')
             if (request.method == "POST"):
+                print('checkpoint3')
                 form = CreateAppointmentForm(request.POST)
+                print(request.POST)
                 if form.is_valid():
+                    print('checkpoint4')
                     appt = form.save(commit=False)
                     appt.doctor = u
                     appt.datetime = getDateTime(form.cleaned_data['date'], int(form.cleaned_data['time']))
                     appt.save()
                     ps = Prescription.objects.create(date=appt.date, appt=appt)
                     return redirect('apptcreated')
+                else:
+                    return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm(), 'message':form.errors})
     return render(request, 'doctordashboard.html')
 
 def bookmult(request):
@@ -103,7 +110,7 @@ def bookmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcreated')
                 else:
-                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
     return render(request, 'doctordashboard.html')
@@ -132,7 +139,7 @@ def cancelmult(request):
                         d += timedelta(days=1)
                     return redirect('apptcanceled')
                 else:
-                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(), 'mult_appt_form': CreateAppointmentRangeForm() })
+                    return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm() })
         else:
             pass
     return render(request, 'doctordashboard.html')
@@ -279,7 +286,7 @@ def apptcanceled(request):
     u=request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
-            single_appt_form = CreateAppointmentForm()
+            single_appt_form = CreateAppointmentForm(initial={'doctor':u.pk})
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
             if (request.method == "GET"):
@@ -329,7 +336,10 @@ def book(request):
                     consultation = form.cleaned_data['consultation']
                     meeting_id = generateMeetingId()
                     a = Appointment.objects.filter(doctor=doc, date=date, time=time, booked=False)
-                    if a.exists():
+                    if Appointment.objects.filter(patient=pat, date=date, time=time).exists():
+                        error = 'You have already booked an appointment for this day and time.'
+                        return render(request, 'book.html', { 'error_message': error, 'doctors': Doctor.objects.all(), 'doctorsinfo': DoctorInfo.objects.all(), 'form': form })
+                    elif a.exists():
                         a = a.first()
                         a.patient = pat
                         a.consultation = consultation
@@ -352,7 +362,11 @@ def book(request):
                             end = start + timedelta(minutes=15)
                             start = start.strftime('%Y-%m-%dT%H:%M')
                             end = end.strftime('%Y-%m-%dT%H:%M')
-                            create_event(get_token(request), f'Appointment with Dr. { a.doctor }', start, end, [u.email, a.doctor.email], 'body', 'Eastern Standard Time')
+                            meeting_url = meeting_url_1 + a.meeting_id + meeting_url_2
+                            body = "Please join the meeting at this link: " + meeting_url
+                            create_event(get_token(request), f'Appointment with Dr. { a.doctor }', start, end, [a.doctor.email], body, 'Eastern Standard Time')
+                            a.ms_event_created = True
+                            a.save()
 
                         return redirect('booksuccess')
                     else:

@@ -8,14 +8,14 @@ class CreateAppointmentForm(forms.ModelForm):
     time = forms.ChoiceField(label=False, choices=IntTimes.choices, widget=forms.Select(attrs={'class':'custom-select time-input'}))
     class Meta:
         model = Appointment
-        fields = ['date', 'time']
-        widgets = {'date': forms.HiddenInput()}
+        fields = ['date', 'time', 'doctor']
+        widgets = {'date': forms.HiddenInput(), 'doctor': forms.HiddenInput()}
     
     def clean(self):
 
         cleaned_data = self.cleaned_data
         try:
-           Appointment.objects.get(date=cleaned_data['date'], time=cleaned_data['time'])
+           Appointment.objects.get(date=cleaned_data['date'], time=cleaned_data['time'], doctor=cleaned_data['doctor'])
         except Appointment.DoesNotExist:
            pass
         else:

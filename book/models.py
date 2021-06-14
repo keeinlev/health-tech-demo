@@ -38,7 +38,7 @@ def timeFromStringInt(time):
 
 class Appointment(models.Model):
     class Meta:
-        unique_together = ('date', 'time', 'doctor')
+        unique_together = ['date', 'time', 'doctor']
     date = models.DateField(default=None)
     time = models.IntegerField(default=None, choices=IntTimes.choices)
     #time = models.CharField(max_length=3, default=None, choices=Times.choices)
@@ -48,6 +48,7 @@ class Appointment(models.Model):
     patient = models.ForeignKey(Patient, related_name="%(class)s_patient", on_delete=models.CASCADE, null=True, default=None, blank=True)
     doctor = models.ForeignKey(Doctor, related_name="%(class)s_doctor", on_delete=models.CASCADE, null=True, default=None)
     reminder_sent = models.BooleanField(default=False)
+    ms_event_created = models.BooleanField(default=False)
     meeting_id = models.CharField(unique=True, max_length=48, null=True, default=None)
     type = models.BooleanField(default=None, blank=True, null=True, choices=[(1, 'Video'), (0, 'Phone')])
 
