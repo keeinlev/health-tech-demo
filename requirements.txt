@@ -1,8 +1,6 @@
 adal==1.2.7
-aiohttp==3.7.4.post0
 APScheduler==3.7.0
 asgiref==3.3.4
-async-timeout==3.0.1
 attrs==21.2.0
 azure==4.0.0
 azure-applicationinsights==0.1.0
