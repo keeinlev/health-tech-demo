@@ -15,6 +15,7 @@ import os
 import mimetypes
 import environ
 from twilio.rest import Client
+from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 
 env = environ.Env()
@@ -155,6 +156,11 @@ TWILIO_SID = env('TWILIO_ACCOUNT_SID')
 TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
 TWILIO_CLIENT = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
+
+SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
+SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
+SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
+SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
 
 MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
 MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')

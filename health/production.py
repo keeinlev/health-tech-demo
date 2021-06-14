@@ -28,3 +28,5 @@ DATABASES = {
         'PORT': env('RDS_PORT'),
     }
 }
+
+CURRENT_DOMAIN = 'health-tech.azurewebsites.net'

@@ -56,6 +56,10 @@ class Appointment(models.Model):
     def dateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%A, %B %d at %I:%M%p %Z')
     
+    @property
+    def shortDateTime(self):
+        return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%a %b %d %I:%M%p')
+
     def dateTimeValue(self):
         d = str(self.date)
         year = int(d[:4])

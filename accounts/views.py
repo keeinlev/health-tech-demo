@@ -173,7 +173,6 @@ def login(request):
 
 def logout_redir(request):
     user = request.user
-    print(user)
     if (user.is_authenticated):
         remove_user_and_token(request)
         return redirect('logout')

@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone, utc
 from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone, MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError
@@ -252,11 +253,11 @@ def cancelappt(request, pk):
                         target = a.patient
                         other = f'Dr. {a.doctor}'
                     r = form.cleaned_data['reason']
-                    # smsmessage = client.messages.create(
-                    #     body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
-                    #     from_=twilio_phone,
-                    #     to='+1' + target.phone,
-                    # )
+                    smsmessage = swclient.messages.create(
+                        body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
+                        from_=SIGNALWIRE_NUMBER,
+                        to='+1' + target.phone,
+                    )
                     send_mail(
                         'Your Appointment has been Cancelled',
                         'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
@@ -389,7 +390,6 @@ def booksuccess(request):
     return render(request, 'book.html')
 
 
-######## Reminder: make sure patients can't book two appts in the same time slot
 def findtimes(request):
     u = request.user
     if (u.is_authenticated):
