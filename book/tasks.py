@@ -3,8 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-#from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone, SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, SIGNALWIRE_CLIENT as swclient
-from health.settings import TWILIO_PHONE_NUMBER as twilio_phone, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
 from django.urls import reverse
 
 def send_reminder(appt_id, purpose):

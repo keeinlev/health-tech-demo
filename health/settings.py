@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 import mimetypes
 import environ
-from twilio.rest import Client
 from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 
@@ -151,11 +150,6 @@ EMAIL_HOST_USER = env('EMAIL_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
-TWILIO_SID = env('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = env('TWILIO_AUTH_TOKEN')
-TWILIO_CLIENT = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
-TWILIO_PHONE_NUMBER = env('TWILIO_PHONE_NUMBER')
 
 SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
 SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')

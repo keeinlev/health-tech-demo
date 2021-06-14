@@ -10,8 +10,7 @@ from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone, utc
-from health.settings import TWILIO_CLIENT as client, TWILIO_PHONE_NUMBER as twilio_phone, MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2
-from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
+from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError

@@ -3,7 +3,7 @@
 This is a project I've been working on during my 1B Co-op Term at SEEEG Data Inc.
 It's a Django-based web service that aids in facilitating patient-doctor connections and appointment scheduling.
 This app uses built-in Django authentication with a custom User Model, as well as Microsoft Graph and MSAL to connect to users' MS accounts and create Calendar events.
-Other main dependencies are Twilio for SMS sending, APScheduler for recurring tasks, MS Azure for Web App Hosting and Static File Blob Storage, and AWS for Database Storage and Connection.
+Other main dependencies are SignalWire for SMS sending, APScheduler for recurring tasks, MS Azure for Web App Hosting and Static File Blob Storage, and AWS for Database Storage and Connection.
 
 As of now, the demo version of this app is hosted on Azure App Services and uses an AWS RDS PostgreSQL database (I know, poor practice to use two different cloud services, but they're hosted in the same region and AWS gave a 12 month free option, okay?)
 
@@ -22,7 +22,7 @@ Here's a breakdown of the apps contained in the root project folder:
     * Pretty basic, contains a model for appointment details, and nowhere near as big as book or account
 - scheduledreminders
     * Self explanatory, handles the sending of scheduled reminders.
-    * Regularly checks database using APScheduler for any upcoming appointments (< 15 minutes) and uses Django send_mail as well as Twilio to send email and SMS notifications.
+    * Regularly checks database using APScheduler for any upcoming appointments (< 15 minutes) and uses Django send_mail as well as SignalWire to send email and SMS notifications.
 - graph
     * Everything pertaining to MS Graph connections and API usage, including authentication using OAuth 2.0, getting user profile info and creating events on Outlook Calendar.
     * Most functions are from MS Graph documentation [found here](https://docs.microsoft.com/en-us/graph/tutorials/python).
