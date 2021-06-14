@@ -27,20 +27,11 @@
                     <fieldset>
                         <h2 class="fs-title">Create your account</h2>
                         <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
-                        {{ form.username }}
-                        {{ form.username.errors }}
-                        <input type="button" name="next" class="next action-button" value="Next" />
-                    </fieldset>
-                    <fieldset>
-                        <h2 class="fs-title">Create your account</h2>
-                        <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
                         <h3 id="email-match-help" class="fs-subtitle display-hidden" style="color:red">Emails must match!</h3>
                         {{ form.email1 }}
                         {{ form.email1.errors }}
                         {{ form.email2 }}
                         {{ form.email2.errors }}
-                        {{ form.phone }}
-                        {{ form.phone.errors }}
                         <input type="button" name="previous" class="previous action-button" value="Previous" />
                         <input type="button" name="next" class="next action-button" value="Next" />
                     </fieldset>
@@ -66,6 +57,8 @@
                         {{ form.last_name.errors }}
                         {{ form.dob }}
                         {{ form.dob.errors }}
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
                         <input type="button" name="previous" class="previous action-button" value="Previous" />
                         <input type="button" name="next" class="next action-button" value="Next" />
                     </fieldset>

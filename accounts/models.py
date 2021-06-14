@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.contrib.auth import validators
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.core.validators import RegexValidator, validate_email, EmailValidator, MinValueValidator, MaxValueValidator
@@ -49,28 +48,17 @@ class User(AbstractUser):
         DOCTOR = "DOCTOR", "Doctor"
         #ADMIN = "ADMIN", "Admin"
 
-    class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name="%(app_label)s_%(class)s_email_or_phone",
-                check=(
-                    models.Q(email__isnull=True, phone__isnull=False)
-                    | models.Q(email__isnull=False, phone__isnull=True)
-                    | models.Q(email__isnull=False, phone__isnull=False)
-                ),
-            )
-        ]
-
-    username = models.CharField(_('Username'), max_length=50, unique=True, validators=[validators.UnicodeUsernameValidator()], default=None)
     type = models.CharField(_('Type'), max_length=50, choices=Types.choices)
-    phone = models.CharField(_("User Phone Number"), null=True, blank=True, max_length=10, validators=[RegexValidator(regex='^.{10}$', message="Phone number must be 10 digits long", code='nomatch')], default=None)
+    username = None
+    phone = models.CharField(_("User Phone Number"), max_length=10, validators=[RegexValidator(regex='^.{10}$', message="Phone number must be 10 digits long", code='nomatch')])    
     first_name = models.CharField(_("User First Name"), max_length=50)
     preferred_name = models.CharField(_("User Preferred Name"), max_length=50, blank=True, null=True, default=None)
     last_name = models.CharField(_("User Last Name"), max_length=50)
-    email = models.EmailField(_("User Email"), null=True, blank=True, validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True, default=None)
+    email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
     dob = models.DateField(default=timezone.now)
     ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
     
+    USERNAME_FIELD='email'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
@@ -114,7 +102,6 @@ class DoctorManager(CustomUserManager):
 
 class Patient(User):
     objects = PatientManager()
-    USERNAME_FIELD = 'username'
     @property
     def more(self):
         return self.patientinfo
@@ -131,7 +118,6 @@ class PatientInfo(models.Model):
 
 class Doctor(User):
     objects = DoctorManager()
-    USERNAME_FIELD = 'email'
     @property
     def more(self):
         return self.doctorinfo
