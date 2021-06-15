@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import mimetypes
 import environ
-from signalwire.rest import Client as signalwire_client
+#from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 
 env = environ.Env()
@@ -151,10 +151,10 @@ EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
-SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
-SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
-SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
+# SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
+# SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
+# SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
+# SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
 
 MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
 MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')
