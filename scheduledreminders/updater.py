@@ -7,6 +7,7 @@ def test():
 
 def start():
     s = BackgroundScheduler()
+    remindAllUpcoming()
     s.add_job(remindAllUpcoming, 'interval', minutes=1)
     s.start()
     #print('uncomment these later in scheduledreminders.updater line 9-11')

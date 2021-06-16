@@ -40,7 +40,7 @@ def send_reminder(appt_id, purpose):
             #     from_=SIGNALWIRE_NUMBER,
             #     to='+1' + patient_phone,
             # )
-            
+            print(kwords[0])
             message2 = client.messages.create(
                 body=f'Hello {doctor.first_name}\nthis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
                 from_=SIGNALWIRE_NUMBER,
