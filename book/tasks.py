@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-#from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
 from django.urls import reverse
 
 def send_reminder(appt_id, purpose):
@@ -41,11 +41,11 @@ def send_reminder(appt_id, purpose):
             #     to='+1' + patient_phone,
             # )
             
-            # message2 = client.messages.create(
-            #     body=f'Hello {doctor.first_name}\nthis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
-            #     from_=SIGNALWIRE_NUMBER,
-            #     to='+1' + doctor_phone,
-            # )
+            message2 = client.messages.create(
+                body=f'Hello {doctor.first_name}\nthis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
+                from_=SIGNALWIRE_NUMBER,
+                to='+1' + doctor_phone,
+            )
             
             messageVar1 = f'Use the following link to join:\n{appt.meeting_link}'
             messageVar2 = f'Use the following link to join:\n{appt.meeting_link}'
