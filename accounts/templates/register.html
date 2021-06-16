@@ -21,7 +21,7 @@
         <div>
             <br />
             <div class='outer-section' style='height: 850px;max-height: 1000px; text-align: center;'>
-                <form id="msform" class='site-form' style='opacity: 0%;' method="post" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email' %}" autocomplete="off">
+                <form id="msform" class='site-form' style='opacity: 0%;' method="post" action="{% url 'register' %}" data-validate-email-url="{% url 'validate_email_and_ohip' %}" autocomplete="off">
                     {% csrf_token %}
                     <!-- fieldsets -->
                     <fieldset>

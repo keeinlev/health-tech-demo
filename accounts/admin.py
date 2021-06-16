@@ -6,21 +6,29 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+
+# This class handles what gets shown on the User Model page in the Django Admin site
 class UserAdmin(BaseUserAdmin):
+
+    # Change what fields are displayed when viewing existing Users
     list_display = ('email', 'first_name', 'last_name', 'dob', 'type', 'is_active', 'is_superuser', 'id')
+
+    # Change what fields are accepted in User editing
     fieldsets = (
         (None, {'fields': ('email', 'password', 'type', 'is_active')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone', 'dob',)}),
+        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone', 'dob',)}),
     )
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
+
+    # Change what fields are accepted in User creation
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': ('type', 'email', 'dob', 'password1', 'password2')}
         ),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone', 'dob',)})
+        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone', 'dob',)})
     )
+    
+    # What field to search by
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()

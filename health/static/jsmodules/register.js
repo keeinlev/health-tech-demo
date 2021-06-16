@@ -16,21 +16,14 @@ var match_pass = function() {
             pass1.style.borderColor = 'red';
             pass2.style.borderColor = 'red';
             $('#password-match-help').removeClass('display-hidden');
-            //passmatchmsg.style.visibility = 'visible';
             return false;
         } else {
             pass1.style.borderColor = 'green';
             pass2.style.borderColor = 'green';
             $('#password-match-help').addClass('display-hidden');
-            //passmatchmsg.style.visibility = 'hidden';
             return true;
         }
     }
-    /*if (passmatch && emailmatch) {
-        subbtn.disabled = false;
-    } else {
-        subbtn.disabled = true;
-    }*/
 };
 
 var match_email = function() {
@@ -39,22 +32,15 @@ var match_email = function() {
             email1.style.borderColor = 'red';
             email2.style.borderColor = 'red';
             $('#email-match-help').removeClass('display-hidden');
-            //emailmatchmsg.style.visibility = 'visible';
             return false;
         }
         else {
             email1.style.borderColor = 'green';
             email2.style.borderColor = 'green';
             $('#email-match-help').addClass('display-hidden');
-            //emailmatchmsg.style.visibility = 'hidden';
             return true;
         }
     }
-    /*if (passmatch && emailmatch) {
-        subbtn.disabled = false;
-    } else {
-        subbtn.disabled = true;
-    }*/
 };
 
 var unique_fields = function (form) {

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-from django.core.validators import RegexValidator, validate_email, EmailValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import RegexValidator, EmailValidator, MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from datetime import datetime
 from pytz import utc
@@ -69,6 +69,7 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
+    # Returns the proxy model object associated to the User
     @property
     def userType(self):
         if (self.type == 'DOCTOR'):
@@ -76,6 +77,7 @@ class User(AbstractUser):
         elif (self.type == 'PATIENT'):
             return Patient.objects.get(pk=self.pk)
 
+    # Returns the Queryset of all Appointment objects that are scheduled to the User
     @property
     def getAppts(self):
         from book.models import Appointment
@@ -84,18 +86,17 @@ class User(AbstractUser):
         elif (self.type == 'DOCTOR'):
             return Appointment.objects.filter(doctor=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')
     
+    # Limits getAppts to the first 10 Appointment objects
     @property
     def getSomeAppts(self):
-        from book.models import Appointment
-        if (self.type == 'PATIENT'):
-            return Appointment.objects.filter(patient=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')[:10]
-        elif (self.type == 'DOCTOR'):
-            return Appointment.objects.filter(doctor=self, datetime__gt = datetime.now().astimezone(utc)).order_by('date', 'time')[:10]
+        return self.getAppts[:10]
 
+# Allows for querying within the Patient object
 class PatientManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.PATIENT)
 
+# Allows for querying within the Doctor object
 class DoctorManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.DOCTOR)
@@ -109,6 +110,7 @@ class Patient(User):
     class Meta:
         proxy = True
 
+# Details for Patient object, linked one-to-one
 class PatientInfo(models.Model):
     user = models.OneToOneField(Patient, on_delete=models.CASCADE, unique=True)
     ohip_number = models.CharField(_("OHIP Number"), max_length=15, unique=True, validators=[RegexValidator(regex='^.{15}$', message="Must be in format XXXX-XXX-XXX-XX", code='nomatch')])
@@ -125,13 +127,14 @@ class Doctor(User):
     class Meta:
         proxy = True
 
-
+# Details for Doctor object, linked one-to-one
 class DoctorInfo(models.Model):
     user = models.OneToOneField(Doctor, on_delete=models.CASCADE, unique=True)
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
     consultations = models.TextField(_("Doctor's Applicable Consultations"))
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
 
+# Function that can be run in Python shell to create a Doctor object and its corresponding DoctorInfo (temporary)
 def createdoctor():
     first_name = input("Enter first name: ")
     last_name = input("Enter last name: ")

@@ -8,10 +8,7 @@ eastern = timezone('America/New_York')
 def remindAllUpcoming(): 
     now = datetime.now().astimezone(utc)
     upcoming = Appointment.objects.filter(datetime__lte=now+timedelta(minutes=15), datetime__gte=now, booked=True, reminder_sent=False)
-    #print(upcoming)
-    print(now)
     for appt in upcoming:
-        print(appt.id, appt.datetime)
         send_reminder(appt.id, 'remind')
         appt.reminder_sent = True
         appt.save()
