@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import mimetypes
 import environ
-#from signalwire.rest import Client as signalwire_client
+from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 
 env = environ.Env()
