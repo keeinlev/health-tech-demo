@@ -8,6 +8,8 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 # This class handles what gets shown on the User Model page in the Django Admin site
+# This is required for the Custom User model since it inherits from the BaseUser, which will give its own set of fields to the Admin page,
+#   some of which do not align with our requirements
 class UserAdmin(BaseUserAdmin):
 
     # Change what fields are displayed when viewing existing Users
