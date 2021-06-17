@@ -1,5 +1,6 @@
 from django.db import models
 
+# Value, Display Tuples for an Appointment's time field.
 class IntTimes(models.IntegerChoices):
     T800AM = 800,"8:00AM"
     T815AM = 815,"8:15AM"

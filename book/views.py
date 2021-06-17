@@ -18,22 +18,23 @@ from graph.graph_helper import create_event
 from graph.auth_helper import get_token
 
 eastern = timezone('America/New_York')
+
 allChars = ascii_letters + digits + digits
 
+# Returns a random character to serve as a meeting_id
 def generateMeetingId():
     return ''.join(choice(allChars) for i in range(meeting_id_length))
 
+# Helper function that breaks down an ISO formatted date string into a tuple of integer values
+# Example: '2021-06-16' -> (2021, 6, 16)
 def fromisoform(d):
     year = int(d[:4])
     month = int(d[5:7])
     day = int(d[8:10])
     return (year, month, day)
 
-def getCurrentTimeKey():
-    hour = datetime.now().hour
-    minute = datetime.now().minute
-    return hour * 100 + minute
-
+# Helper function that takes in a datetime date and an integer representation of a time and returns it as a full datetime object in UTC
+# Example: (datetime.date(2021, 6, 16), 800) -> datetime.datetime(2021, 6, 16, 12, 0, 0)
 def getDateTime(date, time):
     non_loc = datetime(date.year, date.month, date.day, time // 100, time % 100).astimezone(utc)
     return non_loc
@@ -41,10 +42,13 @@ def getDateTime(date, time):
 
 # Create your views here.
 
+# View for Doctor Dashboard
 def doctordashboard(request):
     u = request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
+
+            # Forms for creating a single time slot opening, a range of time slots and cancelling a range of time slots
             single_appt_form = CreateAppointmentForm(initial={'doctor':u.pk})
             mult_appt_form = CreateAppointmentRangeForm()
             cancel_mult_form = CancelAppointmentRangeForm()
@@ -52,6 +56,7 @@ def doctordashboard(request):
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form })
     return render(request, 'doctordashboard.html')
 
+# Redirect view right after creating an appointment to prevent unexpected form resubmissions
 def apptcreated(request):
     u=request.user
     if u.is_authenticated:
@@ -64,28 +69,30 @@ def apptcreated(request):
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
     return render(request, 'doctordashboard.html')
 
+# View for Doctor opening an Appointment time slot
 def booksingle(request):
     u=request.user
     if u.is_authenticated:
-        print('checkpoint1')
         if u.type == "DOCTOR":
-            print('checkpoint2')
             if (request.method == "POST"):
-                print('checkpoint3')
                 form = CreateAppointmentForm(request.POST)
                 print(request.POST)
                 if form.is_valid():
-                    print('checkpoint4')
+
+                    # Uses model form to create object
                     appt = form.save(commit=False)
                     appt.doctor = u
                     appt.datetime = getDateTime(form.cleaned_data['date'], int(form.cleaned_data['time']))
                     appt.save()
+
+                    # Creates the corresponding Appointment Details object
                     ps = Prescription.objects.create(date=appt.date, appt=appt)
                     return redirect('apptcreated')
                 else:
                     return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm(), 'message':form.errors})
     return render(request, 'doctordashboard.html')
 
+# View for Doctor opening a range of Appointment time slots
 def bookmult(request):
     u=request.user
     if u.is_authenticated:
@@ -93,6 +100,8 @@ def bookmult(request):
             if (request.method == "POST"):
                 form = CreateAppointmentRangeForm(request.POST)
                 if form.is_valid():
+
+                    # Getting start and end date/time ranges
                     startdate = fromisoform(request.POST['startdate'])
                     startdate = date(startdate[0], startdate[1], startdate[2])
                     starttime = request.POST['starttime']
@@ -101,13 +110,22 @@ def bookmult(request):
                     endtime = request.POST['endtime']
                     d = startdate
                     while(d <= enddate):
+
+                        # Gets the list of all time integer values
                         timeKeys = IntTimes.getKeys()
+                            
+                        # Creates an Appointment for every time in the range and for every day in the range
                         for i in range(timeKeys.index(starttime), timeKeys.index(endtime) + 1):
                             t = timeKeys[i]
+                            
+                            # Create only if it does not exist yet
                             if not (Appointment.objects.filter(doctor = u, date = str(d), time = t).exists()):
                                 a = Appointment.objects.create(doctor = u, date = str(d), time = t, datetime=getDateTime(d, int(t)))
                                 Prescription.objects.create(appt=a, date=a.date)
+
+                        # Day increment
                         d += timedelta(days=1)
+
                     return redirect('apptcreated')
                 else:
                     return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm() })
@@ -115,6 +133,7 @@ def bookmult(request):
             pass
     return render(request, 'doctordashboard.html')
 
+# View for closing a range of open Appointment time slots
 def cancelmult(request):
     u=request.user
     if u.is_authenticated:
@@ -122,6 +141,8 @@ def cancelmult(request):
             if (request.method == "POST"):
                 form = CancelAppointmentRangeForm(request.POST)
                 if form.is_valid():
+
+                    # Uses same method as creation
                     startdate = fromisoform(request.POST['c_startdate'])
                     startdate = date(startdate[0], startdate[1], startdate[2])
                     starttime = request.POST['c_starttime']
@@ -144,6 +165,8 @@ def cancelmult(request):
             pass
     return render(request, 'doctordashboard.html')
 
+# View for handling AJAX request during Doctor time slot scheduling, will make sure end date selection only includes times after selected start date.
+# See docdash.js line 34
 def updateenddate(request):
     u = request.user
     if (u.is_authenticated):
@@ -169,6 +192,8 @@ def updateenddate(request):
             return JsonResponse(data)
     return JsonResponse({})
 
+# View for AJAX request fetching details for all Appointments on a selected date, updating Appointment table on dashboard
+# See docdash.js line 126
 def getdates(request):
     u = request.user
     if (u.is_authenticated):
@@ -188,15 +213,22 @@ def getdates(request):
             return JsonResponse(data)
     return JsonResponse({})
 
+# View for AJAX request fetching details for all Appointments on a selected date and scheduled for a searched Patient, updating Appointment table on dashboard
+# See docdash.js line 88
 def patientsearch(request):
     u = request.user
     if (u.is_authenticated):
         if u.type == "DOCTOR":
             searched = request.GET.get('patient-search')
             date = request.GET.get('date', None)
-            query = u.getAppts.filter(patient__first_name__contains=searched) | u.getAppts.filter(patient__last_name__contains=searched)
+
+            # Using searched keyword, get Appointments where Patient first, preferred or last name matches
+            # Will query all Appointments if no date is given
+            query = u.getAppts.filter(patient__first_name__contains=searched) | u.getAppts.filter(patient__preferred_name__contains=searched) | u.getAppts.filter(patient__last_name__contains=searched)
+            
+            # Narrows query to match date
             if date != '0':
-                query = u.getAppts.filter(date=date, patient__first_name__contains=searched) | u.getAppts.filter(date=date, patient__last_name__contains=searched)
+                query = u.getAppts.filter(date=date, patient__first_name__contains=searched) | u.getAppts.filter(date=date, patient__preferred_name__contains=searched) | u.getAppts.filter(date=date, patient__last_name__contains=searched)
             appts = []
             for a in query:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
@@ -211,6 +243,8 @@ def patientsearch(request):
             return JsonResponse(data)
     return JsonResponse({})
 
+# View for AJAX request to check if a selected date and time has already been booked or not, used when Doctor opens a single time slot using calendar UI.
+# See docdash.js line 155
 def checkifbooked(request):
     u = request.user
     if (u.is_authenticated):
@@ -236,6 +270,7 @@ def checkifbooked(request):
                 return JsonResponse(data)
     return JsonResponse({})
 
+# View for cancelling a single Appointment, booked or unbooked
 def cancelappt(request, pk):
     u = request.user
     if u.is_authenticated:
@@ -243,6 +278,8 @@ def cancelappt(request, pk):
         if a.exists():
             a = a.first()
             if request.method == "POST":
+                
+                # A confirm cancel form will only show up in the GET request if the Appointment is booked
                 form = CancelConfirmForm(request.POST)
                 if form.is_valid():
                     target = a.doctor
@@ -251,6 +288,8 @@ def cancelappt(request, pk):
                         target = a.patient
                         other = f'Dr. {a.doctor}'
                     r = form.cleaned_data['reason']
+                    
+                    # Sends other party an SMS and Email message to notify them of cancellation
                     smsmessage = swclient.messages.create(
                         body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
                         from_=SIGNALWIRE_NUMBER,
@@ -266,6 +305,7 @@ def cancelappt(request, pk):
                     return redirect('apptcanceled')
             else:
                 if a.booked:
+                    # Only creates a confirmation form if Appointment is booked
                     form = CancelConfirmForm(initial={
                         'doctor': a.doctor,
                         'patient': a.patient,
@@ -274,13 +314,14 @@ def cancelappt(request, pk):
                     })
                     return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime() })
                 else:
+                    # If not booked, just delete the Appointment
                     a.delete()
                     return redirect('apptcanceled')
         else:
             return render(request, 'alert.html', {'message': 'Appointment does not exist!'})
     return render(request, 'doctordashboard.html')
 
-
+# Redirect view once an Appointment has been cancelled to prevent unwanted form resubmissions
 def apptcanceled(request):
     u=request.user
     if u.is_authenticated:
@@ -296,6 +337,8 @@ def apptcanceled(request):
     
     return render(request, 'doctordashboard.html')
 
+# View for AJAX request to only show available date ranges for a selected Doctor with open time slots for Patient booking calendar
+# See bookmethods.js line 5
 def update_calendar(request):
     u = request.user
     if (u.is_authenticated):
@@ -319,6 +362,7 @@ def update_calendar(request):
             return JsonResponse(data)
     return JsonResponse({})
 
+# View for Patient-side booking
 def book(request):
     u = request.user
     if (u.is_authenticated):
@@ -335,6 +379,8 @@ def book(request):
                     consultation = form.cleaned_data['consultation']
                     meeting_id = generateMeetingId()
                     a = Appointment.objects.filter(doctor=doc, date=date, time=time, booked=False)
+
+                    # Catching case where Patient tries to book a time slot they have already booked
                     if Appointment.objects.filter(patient=pat, date=date, time=time).exists():
                         error = 'You have already booked an appointment for this day and time.'
                         return render(request, 'book.html', { 'error_message': error, 'doctors': Doctor.objects.all(), 'doctorsinfo': DoctorInfo.objects.all(), 'form': form })
@@ -345,6 +391,8 @@ def book(request):
                         a.type = appt_type
                         a.booked = True
                         a.save()
+
+                        # Generation of unique meeting_id
                         while(1):
                             try:
                                 a.meeting_id = meeting_id
@@ -354,8 +402,7 @@ def book(request):
                                 print(e + ', trying new meeting_id')
                                 meeting_id = generateMeetingId()
 
-                        send_reminder(a.id, 'confirm')
-
+                        # If Patient is logged in with MS, will create a third-party Calendar event and update Appointment ms_event_created field
                         if u.ms_authenticated:
                             start = a.datetime.astimezone(eastern)
                             end = start + timedelta(minutes=15)
@@ -367,6 +414,9 @@ def book(request):
                             a.ms_event_created = True
                             a.save()
 
+                        # Sends both parties a confirmation Email and SMS
+                        send_reminder(a.id, 'confirm')
+
                         return redirect('booksuccess')
                     else:
                         error = 'The Appointment you tried to book either does not exist or has already been booked.'
@@ -377,6 +427,7 @@ def book(request):
                 return render(request, 'book.html', {'form': form, 'doctors': Doctor.objects.all(), 'doctorsinfo': DoctorInfo.objects.all()})
     return render(request, 'book.html')
 
+# Redirect view for successfully booking Appointment to prevent unwanted form resubmissions
 def booksuccess(request):
     u=request.user
     if u.is_authenticated:
@@ -387,7 +438,8 @@ def booksuccess(request):
                 return render(request, 'book.html', {'form': form, 'doctors': Doctor.objects.all(), 'doctorsinfo': DoctorInfo.objects.all(), 'message':message})
     return render(request, 'book.html')
 
-
+# View for AJAX request to fetch available times on a valid selected date when Patient is booking
+# See bookmethods.js line 55
 def findtimes(request):
     u = request.user
     if (u.is_authenticated):
