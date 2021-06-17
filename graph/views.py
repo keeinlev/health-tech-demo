@@ -32,7 +32,7 @@ def callback(request):
         print(user.get('id'))
         #tz_info = tz.gettz('America/New_York')
 
-  # Get midnight today in user's time zone
+        # Get midnight today in user's time zone
         # today = datetime.now(tz_info).replace(
         #     hour=0,
         #     minute=0,
