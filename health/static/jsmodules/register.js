@@ -79,7 +79,7 @@ $('.formcontrol').keyup(function(e) {
     }
 
     for (elem=0; elem < formelements.length; ++elem) {
-        if (!formelements[elem].value) {
+        if (!formelements[elem].value && formelements[elem].id != 'preferred_name') {
             filled = false;
             break;
         }

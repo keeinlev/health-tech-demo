@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, EditAppointmentForm, CancelConfirmForm
 from accounts.models import User, Doctor, DoctorInfo, Patient, PatientInfo
 from .models import Appointment
-from appointment.models import Prescription
+from appointment.models import ApptDetails
 from django.http import HttpResponse, JsonResponse
 from .times import IntTimes
 from datetime import date, datetime, timedelta
@@ -86,10 +86,10 @@ def booksingle(request):
                     appt.save()
 
                     # Creates the corresponding Appointment Details object
-                    ps = Prescription.objects.create(date=appt.date, appt=appt)
+                    ps = ApptDetails.objects.create(date=appt.date, appt=appt)
                     return redirect('apptcreated')
                 else:
-                    return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm(), 'message':form.errors})
+                    return redirect('doctordashboard')
     return render(request, 'doctordashboard.html')
 
 # View for Doctor opening a range of Appointment time slots
@@ -121,7 +121,7 @@ def bookmult(request):
                             # Create only if it does not exist yet
                             if not (Appointment.objects.filter(doctor = u, date = str(d), time = t).exists()):
                                 a = Appointment.objects.create(doctor = u, date = str(d), time = t, datetime=getDateTime(d, int(t)))
-                                Prescription.objects.create(appt=a, date=a.date)
+                                ApptDetails.objects.create(appt=a, date=a.date)
 
                         # Day increment
                         d += timedelta(days=1)

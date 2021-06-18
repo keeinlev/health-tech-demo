@@ -35,16 +35,6 @@ class Appointment(models.Model):
     def shortDateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%a %b %d %I:%M%p')
     
-    # Returns the associated Appointment Details object
-    @property
-    def getPrescription(self):
-        from appointment.models import Prescription
-        p = Prescription.objects.filter(appt=self)
-        if (p.exists()):
-            return p.first().prescription
-        else:
-            return None
-    
     # Using the Appointment unique meeting_id, returns the full MS Teams meeting link
     # Prevents the need to redundantly store the same long URL segments in our database, just the unique values
     @property

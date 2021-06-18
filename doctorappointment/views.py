@@ -16,3 +16,13 @@ def login_redir(request):
             return redirect('doctordashboard')
         else:
             return redirect('index')
+
+def handler404(request, exception):
+    response = render(request, 'alert.html', {'message': 'Oops! An error occured (Error code 404)', 'valid': False})
+    response.status_code = 404
+    return response
+
+def handler500(request):
+    response = render(request, 'alert.html', {'message': 'Oops! An error occured (Error code 500)', 'valid': False})
+    response.status_code = 500
+    return response

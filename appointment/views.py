@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from book.models import Appointment
-from .models import Prescription
-from .forms import PrescriptionForm
+from .models import ApptDetails
+from .forms import ApptDetailsForm
 from health.settings import MS_TEAMS_MEETING_URL_1, MS_TEAMS_MEETING_URL_2, MS_TEAMS_MEETING_ID_LENGTH
 
 # Create your views here.
@@ -19,16 +19,16 @@ def details(request, pk):
 
                 # Query the Appointment details
                 # If the details don't exist, just create the object
-                p = Prescription.objects.filter(appt=appt)
+                p = ApptDetails.objects.filter(appt=appt)
                 if (p.exists()):
                     p = p.first()
                 else:
-                    p = Prescription.objects.create(appt=appt, date=appt.date)
+                    p = ApptDetails.objects.create(appt=appt, date=appt.date)
 
                 # Allow Doctors to edit the details
                 if u.type == 'DOCTOR':
                     if request.method == 'POST':
-                        form = PrescriptionForm(request.POST)
+                        form = ApptDetailsForm(request.POST)
                         if form.is_valid():
                             p.prescription = form.cleaned_data['prescription']
                             p.notes = form.cleaned_data['notes']
@@ -37,7 +37,7 @@ def details(request, pk):
                             return redirect('doctordashboard')
                     else:
                         # Set initial details in the form when GETting
-                        form = PrescriptionForm(initial={
+                        form = ApptDetailsForm(initial={
                             'prescription': p.prescription,
                             'notes': p.notes,
                             'track_number': p.track_number,
