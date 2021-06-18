@@ -10,14 +10,14 @@ from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone, utc
-from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length#, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
+from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError
 from graph.graph_helper import create_event
 from graph.auth_helper import get_token
 import asyncio
-from book.tasks import emailWrapper
+from book.tasks import emailWrapper, SMSWrapper
 
 eastern = timezone('America/New_York')
 

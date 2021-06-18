@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import CA_CARRIERS_LIST, DJANGO_DEVELOPMENT#SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
+from health.settings import CA_CARRIERS_LIST, DJANGO_DEVELOPMENT
 from django.urls import reverse
 import asyncio
 from asgiref.sync import sync_to_async
@@ -86,17 +86,6 @@ def send_reminder(appt_id, purpose):
                 )
             )]
             
-            # message1 = client.messages.create(
-            #     body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
-            #     from_=SIGNALWIRE_NUMBER,
-            #     to='+1' + patient_phone,
-            # )
-            # message2 = client.messages.create(
-            #     body=f'Hello {doctor.first_name}\nthis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
-            #     from_=SIGNALWIRE_NUMBER,
-            #     to='+1' + doctor_phone,
-            # )
-
             # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
             #   so no need to send them from here
             if not appt.ms_event_created:
