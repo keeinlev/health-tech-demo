@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import mimetypes
 import environ
-from signalwire.rest import Client as signalwire_client
+#from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 
 env = environ.Env()
@@ -151,16 +151,23 @@ EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
-SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
-SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
-SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
+# SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
+# SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
+# SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
+# SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
+
+#CA_CARRIERS_LIST = ['@txt.bellmobility.ca','@txt.bell.ca','@fido.ca','@pcs.rogers.com','@msg.telus.com',
+#'@vmobile.ca','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca','@mobiletxt.ca']
+
+CA_CARRIERS_LIST = ['@txt.bell.ca','@pcs.rogers.com','@msg.telus.com','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca']
 
 MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
 MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')
 MS_TEAMS_MEETING_ID_LENGTH = int(env('MS_TEAMS_MEETING_ID_LENGTH'))
 
-if (env('DJANGO_DEVELOPMENT') == 'True'):
+DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
+
+if (DJANGO_DEVELOPMENT == 'True'):
     from .development import *
 else:
     from .production import *

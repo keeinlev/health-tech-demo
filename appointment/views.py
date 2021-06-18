@@ -66,10 +66,14 @@ def details(request, pk):
 def meeting_redir(request, pk):
     u = request.user
     appt = Appointment.objects.filter(pk=pk)
-    if appt.exists():
-        appt = appt.first()
-        # Verify URL details and if user should have access to the Appointment
-        if len(appt.meeting_id) == MS_TEAMS_MEETING_ID_LENGTH and u == appt.patient or u == appt.doctor:
-            url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
-            return redirect(url)
+    if u.is_authenticated:
+        if appt.exists():
+            appt = appt.first()
+            # Verify URL details and if user should have access to the Appointment
+            if len(appt.meeting_id) == MS_TEAMS_MEETING_ID_LENGTH and u == appt.patient or u == appt.doctor:
+                url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
+                return redirect(url)
+    else:
+        request.session['meeting_request'] = pk
+        return redirect('login')
     return redirect('index')
