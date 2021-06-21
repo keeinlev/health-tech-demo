@@ -153,7 +153,9 @@ EMAIL_USE_SSL = False
 #CA_CARRIERS_LIST = ['@txt.bellmobility.ca','@txt.bell.ca','@fido.ca','@pcs.rogers.com','@msg.telus.com',
 #'@vmobile.ca','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca','@mobiletxt.ca']
 
-CA_CARRIERS_LIST = ['@txt.bell.ca','@pcs.rogers.com','@msg.telus.com','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca']
+#CA_CARRIERS_LIST = ['@txt.bell.ca','@pcs.rogers.com','@msg.telus.com','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca']
+
+SMS_CARRIER = env('SMS_CARRIER_DOMAIN')
 
 MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
 MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')

@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import CA_CARRIERS_LIST, DJANGO_DEVELOPMENT
+from health.settings import SMS_CARRIER, DJANGO_DEVELOPMENT
 from django.urls import reverse
 import asyncio
 from asgiref.sync import sync_to_async
@@ -30,7 +30,7 @@ async def SMSWrapper(subject, body, to):
         subject,
         body,
         'healthapptdemo@gmail.com',
-        [f'{to}{c}' for c in CA_CARRIERS_LIST]
+        [f'{to}{SMS_CARRIER}']
     )
 
 # Function for sending Email and SMS confirmations/reminders for an Appointment.

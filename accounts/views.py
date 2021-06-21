@@ -16,6 +16,8 @@ from django.contrib.auth.tokens import default_token_generator
 
 from graph.auth_helper import remove_user_and_token
 
+from health.settings import SMS_CARRIER
+
 
 # Create your views here.
 
@@ -100,6 +102,14 @@ def register(request):
             uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
             link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
             activate_url = 'http://' + domain + link
+
+            # Send initial SMS consent Message
+            send_mail(
+                '',
+                'You will now receive SMS notifications for your booked appointments',
+                'healthapptdemo@gmail.com',
+                [u.phone + SMS_CARRIER],
+            )
 
             # Send a confirmation email
             send_mail(
@@ -233,7 +243,7 @@ def logout_redir(request):
 
 def activateprompt(request):
     message = f'Please check your email for a confirmation message.'
-    return render(request, 'alert.html', { 'message': message, 'valid': True })
+    return render(request, 'alert.html', { 'message': message, 'valid': True, 'media': 'sms' })
 
 # View for activating a new User
 def activate(request, uidb64, token):

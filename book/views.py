@@ -10,7 +10,7 @@ from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
 from pytz import timezone, utc
-from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length
+from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SMS_CARRIER
 from random import choice
 from string import ascii_letters, digits, punctuation
 from django.db import IntegrityError
@@ -292,14 +292,15 @@ def cancelappt(request, pk):
                     r = form.cleaned_data['reason']
                     
                     # Sends other party an SMS and Email message to notify them of cancellation
-                    # smsmessage = swclient.messages.create(
-                    #     body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
-                    #     from_=SIGNALWIRE_NUMBER,
-                    #     to='+1' + target.phone,
-                    # )
+                    send_mail(
+                        ''
+                        'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
+                        'healthapptdemo@gmail.com',
+                        [target.phone + SMS_CARRIER],
+                    )
                     send_mail(
                         'Your Appointment has been Cancelled',
-                        'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime() + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                        'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
                         'healthapptdemo@gmail.com',
                         [target.email],
                     )
@@ -314,7 +315,7 @@ def cancelappt(request, pk):
                         'date': a.date,
                         'time': a.time,
                     })
-                    return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime() })
+                    return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime })
                 else:
                     # If not booked, just delete the Appointment
                     a.delete()

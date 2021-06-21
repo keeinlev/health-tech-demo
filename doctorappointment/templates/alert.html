@@ -5,7 +5,10 @@
 {% block body %}
 <div class="alert{% if message %}{% else %} hidden{% endif %}">
     <div style='text-align: center;'>
-        <small style="margin: auto auto auto 30px" id="alert-message"><b>{{ message }}&nbsp;</b>
+        <small style="margin: auto auto auto 30px" id="alert-message"><b>{{ message }}&nbsp;
+            {% if media == 'sms' %}
+            <br>Please check your messages for the following SMS and reply with "Yes" to receive SMS notifications
+            {% endif %}</b>
             <br>
             {% if valid %}
             <a href="{% url 'login' %}">Login Now</a>
@@ -15,5 +18,11 @@
         </small>
     </div>
 </div>
+{% if media == 'sms' %}
+<div style='text-align: center; margin-left: auto; margin-right: auto; width: 80%; padding-bottom: 100px;'>
+    {% load static %}
+    <img src="{% static 'images/smsconfirm.png' %}" style='width: 50%;' />
+</div>
+{% endif %}
 
 {% endblock %}
