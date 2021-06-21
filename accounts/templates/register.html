@@ -5,13 +5,13 @@
 {% block title %}Create a New Account{% endblock %}
 
 {% block styles %}
-<link href="{% static 'appstyles/modal.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'appstyles/customform.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
 {% block body %}
     <div>
+        
         <div id="myModal" class="modal" >
             <div class="modal-content" >
                 <span class="close">&times;</span>
@@ -81,7 +81,7 @@
                             </div>
                         </div>
                         <input type="button" name="previous" class="previous action-button" value="Previous" />
-                        <input type="submit" id='register-submit' class="action-button" href="{% url 'register' %}" value="Register" disabled />
+                        <input type="submit" id='register-submit' class="action-button subBtn" href="{% url 'register' %}" value="Register" disabled />
                     </fieldset>
                 </form>
             </div>

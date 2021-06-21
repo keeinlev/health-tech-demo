@@ -17,6 +17,7 @@
         <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
         <link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
         <link href="{% static 'appstyles/general.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'appstyles/modal.css' %}" rel="stylesheet" type="text/css" />
         {% block styles %}
         {% endblock %}
     </head>
@@ -90,6 +91,15 @@
         {% block top %}
         {% endblock %}
         <div class="container">
+            
+            <div id='loadModal' class='modal'>
+                <div class="modal-content" id='loading-content'>
+                    Loading
+                    <div class='spinner-cont'>
+                        <img src='https://cdn0.iconfinder.com/data/icons/ui-basic/48/spinner-512.png' id="modalspinner" class="spinner"></img>
+                    </div>
+                </div>
+            </div>
             <br />
             {% block body %}
             {% endblock %}
@@ -104,6 +114,7 @@
         <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
         <script src="{% static 'jsmodules/navbar.js' %}" type="text/javascript"></script>
+        <script src="{% static 'jsmodules/loadModal.js' %}" type="text/javascript"></script>
         {% block javascript %}{% endblock %}
     </body>
 </html>

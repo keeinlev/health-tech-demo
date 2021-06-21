@@ -1,8 +1,40 @@
+.spinner-cont {
+    padding: 30px;
+}
+
+.spinner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+    height: 100px;
+    animation-name: spin;
+    animation-duration: 2500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+#loadModal {
+    text-align: center;
+}
+
+#loading-content {
+    width: 300px;
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 150px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
