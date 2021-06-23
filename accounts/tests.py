@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 from datetime import date
-from accounts.models import User
+from accounts.models import User, PatientInfo
 
 # Create your tests here.
 regData = {'email1': '',
@@ -61,7 +61,7 @@ class UserTest(StaticLiveServerTestCase):
         expiryfield.send_keys(Keys.BACKSPACE)
         expiryfield.send_keys(data['ohipe'])
 
-    def testBadRegistration(self):
+    def untestBadRegistration(self):
         User.objects.create(email='test@gmail.com')
         selenium = self.selenium
         regData = {'email1': 'test@gmail.com',
@@ -77,10 +77,12 @@ class UserTest(StaticLiveServerTestCase):
             'ohipe': '20220202'
         }
         self.registrationHelper(regData)
-        selenium.find_element_by_id('register-submit').click()
         assert self.live_server_url + '/accounts/register' == selenium.current_url and selenium.find_element_by_class_name('not-unique').get_attribute('innerHTML') == 'Email already registered to existing account!'
+        selenium.find_element_by_id('register-submit').click()
+        assert self.live_server_url + '/accounts/register' == selenium.current_url and 'Error code 500' in selenium.find_element_by_id('alert-message')
+        print(f'{"Existing Email":.<30}OK')
 
-    def testSuccessfulRegistration(self):
+    def untestSuccessfulRegistration(self):
         selenium = self.selenium
         regData = {'email1': 'test@gmail.com',
             'email2': 'test@gmail.com',
@@ -109,6 +111,8 @@ class UserTest(StaticLiveServerTestCase):
         assert test_user.dob == date(2000, 2, 2)
         assert test_user.userType.more.ohip_number == '1234-123-123-GF'
         assert test_user.userType.more.ohip_expiry == date(2022, 2, 2)
+        print(f'{"Successful Registration":.<30}OK')
+
 
     def missingFieldHelper(self, data, field):
         selenium = self.selenium
@@ -118,8 +122,9 @@ class UserTest(StaticLiveServerTestCase):
         btndisabled = selenium.find_element_by_id('register-submit').get_property('disabled')
         print(btndisabled)
         assert btndisabled
+        print(f'Missing {field:.<30}OK')
 
-    def testMissingFields(self):
+    def untestMissingFields(self):
         regData = {'email1': 'test@gmail.com',
             'email2': 'test@gmail.com',
             'pw1': 'asdfghjkl',
@@ -135,4 +140,25 @@ class UserTest(StaticLiveServerTestCase):
         for k in regData.keys():
             self.missingFieldHelper(regData.copy(), k)
 
-    
+    def testUserFunctions(self):
+        new = User.objects.create(type='PATIENT', email='test@gmail.com', first_name='test', last_name='user', dob='2000-02-02', phone='1239393921')
+        new.set_password('asdfghjkl')
+        new.save()
+        PatientInfo.objects.create(user=new, ohip_number="4321-123-123-HJ", ohip_expiry="2022-02-02")
+        selenium = self.selenium
+        selenium.get('%s%s' % (self.live_server_url, '/accounts/login'))
+        time.sleep(2)
+        selenium.find_element_by_name('username').send_keys(new.email)
+        selenium.find_element_by_name('password').send_keys('asdfghjkl')
+        selenium.find_element_by_id('login-submit').click()
+        assert self.live_server_url + '/' == selenium.current_url
+        print(f'{"Login":.<30}OK')
+        selenium.get('%s%s' % (self.live_server_url, '/accounts/editprofile'))
+        time.sleep(2)
+        assert selenium.find_element_by_name('first_name').get_attribute('value') == new.first_name
+        assert selenium.find_element_by_name('last_name').get_attribute('value') == new.last_name
+        assert selenium.find_element_by_name('dob').get_attribute('value') == str(new.dob)
+        assert selenium.find_element_by_name('phone1').get_attribute('value') + selenium.find_element_by_name('phone2').get_attribute('value') + selenium.find_element_by_name('phone3').get_attribute('value') == new.phone
+        assert selenium.find_element_by_name('ohip1').get_attribute('value') + '-' + selenium.find_element_by_name('ohip2').get_attribute('value') + '-' + selenium.find_element_by_name('ohip3').get_attribute('value') + '-' + selenium.find_element_by_name('ohip_version').get_attribute('value')  == new.userType.more.ohip_number
+        assert selenium.find_element_by_name('ohip_expiry').get_attribute('value') == str(new.userType.more.ohip_expiry)
+        print(f'{"GET Edit Profile":.<30}OK')

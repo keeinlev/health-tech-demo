@@ -13,7 +13,7 @@
     <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
 </div>
 
-{% if user.is_authenticated %}
+{% if user.is_authenticated and user.type %}
     {% if not user.ms_authenticated %}
         <a href="{% url 'graphsignin' %}"><button class='btn btn-secondary'>MS Sign in</button></a>
     {% endif %}
@@ -107,7 +107,7 @@
             <div class='row justify-content-center' style='width:100%'>
             {% if user.type == "DOCTOR" %}
                     <a href="{% url 'doctordashboard' %}"><button class="action-button">>> Your Dashboard >></button></a>
-            {% else %}
+            {% elif user.type == 'PATIENT' %}
                     <a href="{% url 'book' %}"><button class="action-button">>> Book Now >></button></a>
                 </div>
                 <div class="section" style='margin-top: 7%;'>

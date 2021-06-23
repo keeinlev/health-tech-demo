@@ -18,7 +18,7 @@
                         <br />
                         {% csrf_token %}
                         <div class="form-group">
-                            <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="30" name="{{ form.username.html_name }}" placeholder="Username" type="text" /> 
+                            <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="30" name="{{ form.username.html_name }}" placeholder="Email" type="text" /> 
                             {% for e in form.username.errors %}
                                 <small style="color: red;">{{e}}</small>
                             {% endfor %}
