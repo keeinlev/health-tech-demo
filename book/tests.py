@@ -48,6 +48,14 @@ class BookTest(StaticLiveServerTestCase):
         selenium.find_element_by_name('next').click()
         time.sleep(2)
         selenium.find_elements_by_class_name('doctor-container')[0].click()
-        
-        print(Appointment.objects.filter(doctor=self.test_doctor).first().dateTime)
-
+        selenium.execute_script(f'$("#bookcalendar").calendar("set date", "{str(self.test_appt.date)}");')
+        #selenium.execute_script(f'document.getElementById("id_date").value = "{str(self.test_appt.date)}";')
+        selenium.execute_script('console.log(document.getElementById("id_date").value);')
+        selenium.find_element_by_id('booksubmit').click()
+        assert len(Appointment.objects.all()) == 1
+        assert Appointment.objects.last().patient == self.test_user
+        assert Appointment.objects.last().consultation in self.test_doctor.userType.more.consultations
+        assert not Appointment.objects.last().reminder_sent
+        assert not Appointment.objects.last().ms_event_created
+        assert Appointment.objects.last().booked
+        print(f'{"POST Appointment":.<30}OK')

@@ -13,12 +13,6 @@
     <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
 </div>
 
-{% if user.is_authenticated and user.type %}
-    {% if not user.ms_authenticated %}
-        <a href="{% url 'graphsignin' %}"><button class='btn btn-secondary'>MS Sign in</button></a>
-    {% endif %}
-{% endif %}
-
 <div class='homepage-1'>
     <div class='row' style='width:100%'>
         <div class='col-md-6 col-12'>

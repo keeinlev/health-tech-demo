@@ -39,6 +39,14 @@
                             <li class="nav-item" style="margin-right: 40px;">
                                 <h4 style="margin-top:7px;">Hello, {{ user }}</h5>
                             </li>
+                            {% if user.is_authenticated and user.type %}
+                                {% if not user.ms_authenticated %}
+                                    <li class="nav-item" style="margin-right: 40px;">
+                                        <a href="{% url 'graphsignin' %}"><button class='btn btn-primary'>MS Sign in</button></a>
+                                    </li>
+                                        
+                                {% endif %}
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                     <li class="nav-item">
