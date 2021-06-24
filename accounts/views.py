@@ -162,6 +162,10 @@ def editprofile(request):
                 u.last_name = form.cleaned_data['last_name']
                 u.dob = form.cleaned_data['dob']
                 u.phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
+                print(form.cleaned_data['sms_notis'])
+                print(form.cleaned_data['email_notis'])
+                u.sms_notifications = form.cleaned_data['sms_notis']
+                u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
 
             return redirect('index')
@@ -179,6 +183,8 @@ def editprofile(request):
                     'phone1': d.phone[:3],
                     'phone2': d.phone[3:6],
                     'phone3': d.phone[6:],
+                    'email_notis': d.email_notifications,
+                    'sms_notis': d.sms_notifications,
                     'qualifications': d.more.certification,
                     'consultations': d.more.consultations,
                     'languages': d.more.languages,
@@ -195,6 +201,8 @@ def editprofile(request):
                     'phone1': p.phone[:3],
                     'phone2': p.phone[3:6],
                     'phone3': p.phone[6:],
+                    'email_notis': p.email_notifications,
+                    'sms_notis': p.sms_notifications,
                     'ohip1': p.more.ohip_number[:4],
                     'ohip2': p.more.ohip_number[5:8],
                     'ohip3': p.more.ohip_number[9:12],

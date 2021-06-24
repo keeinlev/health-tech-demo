@@ -70,16 +70,18 @@ def send_reminder(appt_id, purpose):
             
             # Sending of messages
             #futures = []
-            SMSWrapper(
-                f'Appointment {kwords[0]}',
-                messageVar1,
-                patient_phone
-            )
-            SMSWrapper(
-                f'Appointment {kwords[0]}',
-                messageVar2,
-                doctor_phone
-            )
+            if patient.sms_notifications:
+                SMSWrapper(
+                    f'Appointment {kwords[0]}',
+                    messageVar1,
+                    patient_phone
+                )
+            if doctor.sms_notifications:
+                SMSWrapper(
+                    f'Appointment {kwords[0]}',
+                    messageVar2,
+                    doctor_phone
+                )
             
             # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
             #   so no need to send them from here
@@ -93,16 +95,18 @@ def send_reminder(appt_id, purpose):
                     messageVar2 = f'Please call the Patient at +1{patient_phone}'
 
                 # Sending of Emails
-                emailWrapper(
-                    f'{kwords[0]} for Appointment with Dr. {doctor}',
-                    f'Hello, {patient} this is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
-                    [patient_email],
-                )
-                emailWrapper(
-                    f'{kwords[0]} for Appointment with {patient}',
-                    f'Hello, Dr. {doctor} this is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
-                    [doctor_email],
-                )
+                if patient.email_notifications:
+                    emailWrapper(
+                        f'{kwords[0]} for Appointment with Dr. {doctor}',
+                        f'Hello, {patient} this is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
+                        [patient_email],
+                    )
+                if doctor.email_notifications:
+                    emailWrapper(
+                        f'{kwords[0]} for Appointment with {patient}',
+                        f'Hello, Dr. {doctor} this is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
+                        [doctor_email],
+                    )
 
             #print(futures)
 

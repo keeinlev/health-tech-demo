@@ -57,6 +57,8 @@ class User(AbstractUser):
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
     dob = models.DateField(default=timezone.now)
     ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
+    email_notifications = models.BooleanField(_("Email Notifications"), default=True)
+    sms_notifications = models.BooleanField(_("SMS Notifications"), default=True)
     
     USERNAME_FIELD='email'
     REQUIRED_FIELDS = []
