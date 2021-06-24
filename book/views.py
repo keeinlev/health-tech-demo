@@ -418,7 +418,7 @@ def book(request):
                             a.save()
 
                         # Sends both parties a confirmation Email and SMS
-                        asyncio.run(send_reminder(a.id, 'confirm'))
+                        send_reminder(a.id, 'confirm')
 
                         return redirect('booksuccess')
                     else:

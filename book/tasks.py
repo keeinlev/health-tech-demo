@@ -17,7 +17,7 @@ def get_or_create_eventloop():
             asyncio.set_event_loop(loop)
             return asyncio.get_event_loop()
 
-async def emailWrapper(subject, body, to=[]):
+def emailWrapper(subject, body, to=[]):
     send_mail(
         subject,
         body,
@@ -25,7 +25,7 @@ async def emailWrapper(subject, body, to=[]):
         to,
     )
 ############################################################################## IT LOOKS LIKE FIDO MIGHT WORK FOR EVERY CARRIER!!!!!!!!!!!!!!
-async def SMSWrapper(subject, body, to):
+def SMSWrapper(subject, body, to):
     send_mail(
         subject,
         body,
@@ -69,22 +69,17 @@ def send_reminder(appt_id, purpose):
                 messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
             
             # Sending of messages
-            loop = get_or_create_eventloop()
             #futures = []
-            futures = [loop.create_task(
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar1,
-                    patient_phone
-                )
-            )]
-            futures = futures + [loop.create_task(
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar2,
-                    doctor_phone
-                )
-            )]
+            SMSWrapper(
+                f'Appointment {kwords[0]}',
+                messageVar1,
+                patient_phone
+            )
+            SMSWrapper(
+                f'Appointment {kwords[0]}',
+                messageVar2,
+                doctor_phone
+            )
             
             # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
             #   so no need to send them from here
@@ -98,24 +93,17 @@ def send_reminder(appt_id, purpose):
                     messageVar2 = f'Please call the Patient at +1{patient_phone}'
 
                 # Sending of Emails
-                futures.append(loop.create_task(
-                    emailWrapper(
-                        f'{kwords[0]} for Appointment with Dr. {doctor}',
-                        f'Hello, {patient} this is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
-                        [patient_email],
-                    )
-                ))
-                futures.append(loop.create_task(
-                    emailWrapper(
-                        f'{kwords[0]} for Appointment with {patient}',
-                        f'Hello, Dr. {doctor} this is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
-                        [doctor_email],
-                    )
-                ))
+                emailWrapper(
+                    f'{kwords[0]} for Appointment with Dr. {doctor}',
+                    f'Hello, {patient} this is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
+                    [patient_email],
+                )
+                emailWrapper(
+                    f'{kwords[0]} for Appointment with {patient}',
+                    f'Hello, Dr. {doctor} this is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
+                    [doctor_email],
+                )
 
             #print(futures)
-            loop.run_until_complete(asyncio.wait(futures))
-            loop.close()
-            #asyncio.gather(*futures)
 
                 
