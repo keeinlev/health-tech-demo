@@ -15,8 +15,9 @@ from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 
 from graph.auth_helper import remove_user_and_token
+from maps.maps_helper import geocode, get_nearby, find_place_by_place_id
 
-from health.settings import SMS_CARRIER
+from health.settings import SMS_CARRIER, GOOGLE_MAPS_API_KEY
 
 
 # Create your views here.
@@ -43,6 +44,18 @@ def register(request):
             email = form.cleaned_data['email1']
             password = form.cleaned_data['password1']
             phone = str(form.cleaned_data['phone'])
+
+            # Getting Address lat/long
+            address = form.cleaned_data['address']
+            postal_code = form.cleaned_data['postal_code']
+            geocode_res = geocode(address, postal_code)
+            if (geocode_res['status'] != 'OK'):
+                message = "Registration unsuccessful. Address and/or Postal Code not found."
+                return render(request, "register.html", {'form': form, 'message': message})
+            coords = geocode_res["results"][0]["geometry"]["location"]
+            coords = f'{coords["lat"]},{coords["lng"]}'
+            print(geocode_res['results'][0]['formatted_address'])
+
             ohip_number = str(form.cleaned_data['ohip'])
             ohip_version_code = form.cleaned_data['ohip_version']
 
@@ -73,7 +86,7 @@ def register(request):
                 # We verified the length/format of ohip_number already and ohip_expiry was verified by the form
                 # If we get an error here, it's because the ohip number was valid, but already exists
                 # However, we already created u, so we must delete it later (it should be the last user in the model Queryset)
-                PatientInfo.objects.create(user=u, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
+                PatientInfo.objects.create(user=u, address=address, postal_code=postal_code, address_coords=coords, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
 
             except IntegrityError as e:
                 # IntegrityError catches non-unique entries for fields that must be unique
@@ -151,6 +164,19 @@ def editprofile(request):
                     try:
                         # Updates the PatientInfo object associated to u, but have to catch possible non-unique OHIP number
                         pi = PatientInfo.objects.filter(user = u).first()
+                        # Getting Address lat/long
+                        address = form.cleaned_data['address']
+                        postal_code = form.cleaned_data['postal_code']
+                        if address != pi.address or postal_code != pi.postal_code:
+                            geocode_res = geocode(address, postal_code)
+                            if (geocode_res['status'] != 'OK'):
+                                message = "Registration unsuccessful. Address and/or Postal Code not found."
+                                return render(request, "editprofile.html", {'form': form, 'message': message})
+                            coords = geocode_res["results"][0]["geometry"]["location"]
+                            coords = f'{coords["lat"]},{coords["lng"]}'
+                            pi.address = address
+                            pi.postal_code = postal_code
+                            pi.address_coords = coords
                         pi.ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3']) + '-' + form.cleaned_data['ohip_version'].upper()
                         pi.ohip_expiry = form.cleaned_data['ohip_expiry']
                         pi.save()
@@ -162,8 +188,6 @@ def editprofile(request):
                 u.last_name = form.cleaned_data['last_name']
                 u.dob = form.cleaned_data['dob']
                 u.phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
-                print(form.cleaned_data['sms_notis'])
-                print(form.cleaned_data['email_notis'])
                 u.sms_notifications = form.cleaned_data['sms_notis']
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
@@ -203,6 +227,8 @@ def editprofile(request):
                     'phone3': p.phone[6:],
                     'email_notis': p.email_notifications,
                     'sms_notis': p.sms_notifications,
+                    'address': p.more.address,
+                    'postal_code': p.more.postal_code,
                     'ohip1': p.more.ohip_number[:4],
                     'ohip2': p.more.ohip_number[5:8],
                     'ohip3': p.more.ohip_number[9:12],
@@ -278,3 +304,47 @@ def confirmsuccess(request):
 # Redirects after failed activation
 def confirmfail(request):
     return render(request, 'alert.html', { 'message': 'Email activation invalid.', 'valid': False })
+
+def findpharmacy(request):
+    u = request.user
+    if u.is_authenticated and u.type == 'PATIENT':
+        if request.method == 'GET':
+            pinfo = u.userType.more
+            nearby = get_nearby(pinfo.address_coords, 'pharmacy')
+            if nearby['status'] != 'OK':
+               return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'message':'Location Service Error. Please check your address and postal code.' })
+            nearby = nearby['results']
+            data = []
+            for place in nearby:
+                ignore = ['BPG', 'ANIMAL', 'VET', 'HM GROUPS', 'FOOD', 'NUTRITION']
+                ignored = False
+                for term in ignore:
+                    if term in place['name'].upper():
+                        ignored = True
+                if not ignored:
+                    data.append({'name': place['name'], 'address': place['vicinity'], 'place_id':place['place_id']})
+            print(pinfo.postal_code)
+            print(pinfo.address_coords)  
+            #return render(request, 'findpharmacy.html', { 'querytext':f'place?key={GOOGLE_MAPS_API_KEY}&q=place_id:ChIJJezxiLRCK4gRaYFq3-uLzcI' })
+            return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'places':data })
+            #return render(request, 'findpharmacy.html', { 'querytext':f'view?key={GOOGLE_MAPS_API_KEY}&center=43.56465615772579,-79.67794135999671&zoom=9' })
+        else:
+            pid = request.POST.get('pharmacy-id', None)
+            if pid:
+                patient_info = PatientInfo.objects.get(user=u)
+                if patient_info:
+                    r = find_place_by_place_id(pid)
+                    if r['status'] == 'OK':
+                        place = r['result']
+                        pharmacy = place['name'] + ', ' + place['formatted_address']
+                        patient_info.pharmacy = pharmacy
+                        patient_info.save()
+                return redirect('editprofile')
+            else:
+                return redirect('findpharmacy')
+            return redirect('index')
+    return redirect('index')
+def focuspharmacy(request):
+    pid = request.GET.get('pharmacy-id', None)
+    return JsonResponse({})
+    ## find the actual formatted address here

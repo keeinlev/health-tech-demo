@@ -52,6 +52,8 @@ var unique_fields = function (form) {
             if (data.email_is_taken || data.ohip_is_taken) {
                 $('.not-unique').html(data.error_message);
                 $('.not-unique').removeClass('display-hidden');
+                email1.style.borderColor = 'red';
+                email2.style.borderColor = 'red';
             } else {
                 $('.not-unique').html('');
                 $('.not-unique').addClass('display-hidden');
@@ -72,8 +74,13 @@ $('.formcontrol').keyup(function(e) {
     if ($(this).attr('class').includes('email-inputs') || $(this).attr('id').includes('ohip')) {
         if ($(this).attr('class').includes('email-inputs')) {
             emailmatch = match_email();
+            if (emailmatch) {
+                unique_fields($(this).closest("form"));
+            }
+        } else if ($('#ohip').val().length == 10 && $('#ohip-version').val().length == 2) {
+            unique_fields($(this).closest("form"));
         }
-        unique_fields($(this).closest("form"));
+        
     } else if ($(this).attr('class').includes('pass-inputs')) {
         passmatch = match_pass();
     }

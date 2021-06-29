@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Find a Pharmacy{% endblock %}
+
+{% block styles %}
+<link href="{% static 'appstyles/pharmacies.css' %}" rel='stylesheet' type="text/css" />
+{% endblock %}
+
+{% block body %}
+<div class="alert{% if message %}{% else %} display-hidden{% endif %}">
+    <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+</div>
+{% if user.is_authenticated and user.type == 'PATIENT' %}
+<form method='post' action="{% url 'findpharmacy' %}" id='pharmacyform' focus-pharmacy-url="{% url 'focuspharmacy' %}">
+    {% csrf_token %}
+    <div class='heading'>Current Pharmacy: {% if user.userType.more.pharmacy %}{{ user.userType.more.pharmacy }}{% else %}None{% endif %}</div>
+    <div class='row'>
+        <div class='col-md-6 col-12'>
+            <iframe width="540" height="450" id='pharmacy-map' style="border:0" loading="lazy" allowfullscreen src="https://www.google.com/maps/embed/v1/{{querytext}}"></iframe>
+        </div>
+        <div class='col-md-6 col-12' style='height: 450px; background-color:rgb(243, 243, 243); border-radius: 3px;overflow-y: scroll;'>
+            {% for p in places %}
+            <label class='pharmacy-label'>
+                <input type='radio' value='{{ p.place_id }}' name='pharmacy-id' class='pharmacy-radio' />
+                <div class='pharmacy-container'>{{ p.name }} - {{ p.address }}</div><br>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    <input type="submit" id='pharmacy-submit' disabled />
+</form>
+{% else %}
+
+{% endif %}
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'jsmodules/pharmacies.js' %}" type='text/javascript'></script>
+{% endblock %}

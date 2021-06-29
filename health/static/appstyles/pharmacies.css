@@ -1,0 +1,20 @@
+.pharmacy-radio {
+    visibility: hidden;
+}
+.pharmacy-label {
+    min-width: 100%;
+    cursor: pointer;
+}
+.pharmacy-container {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 5px;
+    margin-top:2%;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+}
+
+.pharmacy-radio:checked + .pharmacy-container{
+    background: rgb(198, 227, 255);
+}

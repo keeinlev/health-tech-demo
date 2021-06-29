@@ -18,4 +18,8 @@ urlpatterns = [
     path('editprofile', views.editprofile, name='editprofile'), # views line 85
     
     path("logout_redir", views.logout_redir, name="logout_redir"), # views line 174
+
+    path('findpharmacy', views.findpharmacy, name='findpharmacy'),
+
+    url(r'^ajax/focuspharmacy/$', views.focuspharmacy, name='focuspharmacy')
 ]

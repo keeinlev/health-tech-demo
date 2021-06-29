@@ -18,7 +18,7 @@
             <h1>Edit your Profile</h1>
         </div>
         <div class='outer-section' style='padding-bottom: 50px;'>
-            <form method='POST' class='siteform' autocomplete="off">
+            <form method='POST' class='siteform' action="{% url 'editprofile' %}" autocomplete="off">
                 
                 {% csrf_token %}
                 {{ form.errors }}
@@ -115,7 +115,32 @@
                     {{ form.languages.errors }}
                 </div>
                 {% else %}
-                <div class="row">
+                <div class='row'>
+                    <div class='col'>
+                        <label for='address'>Address</label>
+                    </div>
+                    <div class='col'>
+                        <label for='postal_code'>Postal Code</label>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col'>
+                        {{ form.address }}
+                        {{ form.address.errors }}
+                    </div>
+                    <div class='col'>
+                        {{ form.postal_code }}
+                        {{ form.postal_code.errors }}
+                    </div>
+                </div>
+                <div class='row' style='margin-top: 30px;'>
+                    <div class='col'>
+                        <b>Current Pharmacy:</b><br>
+                        {% if user.userType.more.pharmacy %}{{ user.userType.more.pharmacy }}{% else %}None{% endif %}&nbsp;
+                        <a href="{% url 'findpharmacy' %}">Change</a>
+                    </div>
+                </div>
+                <div class="row" style='margin-top: 30px;'>
                     <div class="col">
                         <label for="ohipcard">OHIP Number</label>
                     </div>

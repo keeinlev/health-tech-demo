@@ -118,6 +118,10 @@ class PatientInfo(models.Model):
     ohip_number = models.CharField(_("OHIP Number"), max_length=15, unique=True, validators=[RegexValidator(regex='^.{15}$', message="Must be in format XXXX-XXX-XXX-XX", code='nomatch')])
     #ohip_version_code = models.CharField(_("OHIP Version Code"), max_length=2, validators=[RegexValidator(regex='^{2}$', message="Length must be 2", code='nomatch')])
     ohip_expiry = models.DateField(_("OHIP Expiry Date"), default=timezone.now)
+    address = models.CharField(_("User Address"), null=True, blank=True, max_length=100, default=None)
+    postal_code = models.CharField(_("User Postal Code"), null=True, blank=True, max_length=7, default=None)
+    address_coords = models.CharField(_("User Address (lat,long)"), null=True, blank=True, max_length=50, default=None)
+    pharmacy = models.CharField(_("User Preferred Pharmacy"), max_length=250, null=True, blank=True, default=None)
 
 
 class Doctor(User):

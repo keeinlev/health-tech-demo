@@ -62,6 +62,16 @@
                         <input type="button" name="next3" class="next action-button" value="Next" />
                     </fieldset>
                     <fieldset>
+                        <h2 class="fs-title">Address</h2>
+                        <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
+                        {{ form.address }}
+                        {{ form.address.errors }}
+                        {{ form.postal_code }}
+                        {{ form.postal_code.errors }}
+                        <input type="button" name="previous" class="previous action-button" value="Previous" />
+                        <input type="button" name="next3" class="next action-button" value="Next" />
+                    </fieldset>
+                    <fieldset>
                         <h2 class="fs-title">OHIP Details</h2>
                         <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
                         {{ form.ohip }}
