@@ -1,4 +1,4 @@
-$('.doctor-label').change(function() {
+$('.doctor-label').on("change", function() {
     var form = $(this).closest("form");
     $('#id_time').html('');
     

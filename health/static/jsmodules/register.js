@@ -66,7 +66,7 @@ emailmatch = false;
 passmatch = false;
 complete = false;
 
-$('.formcontrol').keyup(function(e) {
+$('.formcontrol').on("keyup", function(e) {
 
     
     filled = true;

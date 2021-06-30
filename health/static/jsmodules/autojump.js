@@ -1,4 +1,4 @@
-$(".phone-inputs").keyup(function() {
+$(".phone-inputs").on("keyup", function() {
     if (this.value.length == this.maxLength) {
         if (this.id == 'phone1') {
             document.getElementById('phone2').focus();
@@ -9,7 +9,7 @@ $(".phone-inputs").keyup(function() {
         }
     }
 });
-$(".ohip-inputs").keyup(function() {
+$(".ohip-inputs").on("keyup", function() {
     if (this.value.length == this.maxLength) {
         if (this.id == 'ohip1') {
             document.getElementById('ohip2').focus();

@@ -6,15 +6,15 @@ window.onload = function() {
     document.getElementById('id_c_startdate').setAttribute('min', todayISO);
 }
 
-$('#id_startdate').change(function() {
+$('#id_startdate').on("change", function() {
     var minEndDate = $('#id_startdate').val();
     document.getElementById('id_enddate').setAttribute('min', minEndDate);
 });
-$('#id_c_startdate').change(function() {
+$('#id_c_startdate').on("change", function() {
     var minEndDate = $('#id_c_startdate').val();
     document.getElementById('id_c_enddate').setAttribute('min', minEndDate);
 });
-$('#id_starttime').click(function() {
+$('#id_starttime').on("change", function() {
     if (this.value > $('#id_endtime').val()) {
         $('#id_endtime').html('');
         form_url = $('#bookmultform').attr("update-end-date-url");
@@ -22,7 +22,7 @@ $('#id_starttime').click(function() {
         update_end_date(form_url, form_data);
     }
 });
-$('#id_c_starttime').click(function() {
+$('#id_c_starttime').on("change", function() {
     if (this.value > $('#id_c_endtime').val()) {
         $('#id_c_endtime').html('');
         form_url = $('#cancelmultform').attr("update-end-date-url");
@@ -85,7 +85,7 @@ function updateApptTable(details) {
     }
 }
 
-$('#search-bar').keyup(function() {
+$('#search-bar').on("keyup", function() {
     bar = $('#search-bar').val();
     $('#patient-search').val(bar);
     if (bar != '') {
