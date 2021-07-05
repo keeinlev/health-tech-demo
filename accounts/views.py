@@ -19,6 +19,8 @@ from maps.maps_helper import geocode, get_nearby, find_place_by_place_id
 
 from health.settings import SMS_CARRIER, GOOGLE_MAPS_API_KEY
 
+from pprint import pprint
+
 
 # Create your views here.
 
@@ -43,7 +45,11 @@ def register(request):
             dob = form.cleaned_data['dob']
             email = form.cleaned_data['email1']
             password = form.cleaned_data['password1']
-            phone = str(form.cleaned_data['phone'])
+            phone = form.cleaned_data['phone']
+            if phone:
+                phone = str(phone)
+            else:
+                phone = None
 
             # Getting Address lat/long
             address = form.cleaned_data['address']
@@ -60,8 +66,8 @@ def register(request):
             ohip_version_code = form.cleaned_data['ohip_version']
 
             # Making sure phone and ohip number are both 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
-            if len(phone) != 10 or len(ohip_number) != 10 or len(ohip_version_code) != 2:
-                message = "Registration unsuccessful. Please make sure phone and OHIP numbers are in the correct format."
+            if (phone and len(phone) != 10) or len(ohip_number) != 10 or len(ohip_version_code) != 2:
+                message = "Registration unsuccessful. Please make sure phone and/or OHIP numbers are in the correct format."
                 return render(request, "register.html", {'form': form, 'message': message})
 
             # OHIP formatting into 'XXXX-XXX-XXX-XX'
@@ -117,12 +123,12 @@ def register(request):
             activate_url = 'http://' + domain + link
 
             # Send initial SMS consent Message
-            send_mail(
-                '',
-                'You will now receive SMS notifications for your booked appointments',
-                'healthapptdemo@gmail.com',
-                [u.phone + SMS_CARRIER],
-            )
+            # send_mail(
+            #     '',
+            #     'You will now receive SMS notifications for your booked appointments',
+            #     'healthapptdemo@gmail.com',
+            #     [u.phone + SMS_CARRIER],
+            # )
 
             # Send a confirmation email
             send_mail(
@@ -277,7 +283,7 @@ def logout_redir(request):
 
 def activateprompt(request):
     message = f'Please check your email for a confirmation message.'
-    return render(request, 'alert.html', { 'message': message, 'valid': True, 'media': 'sms' })
+    return render(request, 'alert.html', { 'message': message, 'valid': True })
 
 # View for activating a new User
 def activate(request, uidb64, token):
@@ -311,6 +317,10 @@ def findpharmacy(request):
         if request.method == 'GET':
             pinfo = u.userType.more
             nearby = get_nearby(pinfo.address_coords, 'pharmacy')
+            print(nearby['status'])
+            if nearby['status'] != 'OK':
+                print(nearby['error_message'])
+                pprint(nearby['results'])
             if nearby['status'] != 'OK':
                return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'message':'Location Service Error. Please check your address and postal code.' })
             nearby = nearby['results']

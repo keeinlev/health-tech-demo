@@ -61,15 +61,13 @@ var unique_fields = function (form) {
         }
     });
 };
-unique = false;
 emailmatch = false;
 passmatch = false;
-complete = false;
 
 $('.formcontrol').on("keyup", function(e) {
 
     
-    filled = true;
+    var filled = true;
 
     if ($(this).attr('class').includes('email-inputs') || $(this).attr('id').includes('ohip')) {
         if ($(this).attr('class').includes('email-inputs')) {
@@ -86,16 +84,24 @@ $('.formcontrol').on("keyup", function(e) {
     }
 
     for (elem=0; elem < formelements.length; ++elem) {
-        if (!formelements[elem].value && formelements[elem].id != 'preferred_name') {
+        if (!formelements[elem].value && formelements[elem].hasAttribute('required')) {
             filled = false;
             break;
         }
     }
-    
-    if (filled) {
+    console.log(filled, emailmatch, passmatch)
+    if (filled && emailmatch && passmatch) {
         subbtn.disabled = false;
     } else {
         subbtn.disabled = true;
     }
     
 });
+
+$('#phone').on("focus", function() {
+    $('#phone-help').removeClass('display-hidden');
+})
+
+$('#phone').on("blur", function() {
+    $('#phone-help').addClass('display-hidden');
+})
