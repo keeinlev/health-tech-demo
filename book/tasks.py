@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import SMS_CARRIER, DJANGO_DEVELOPMENT
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN
 from django.urls import reverse
 import asyncio
 from asgiref.sync import sync_to_async
@@ -69,19 +69,28 @@ def send_reminder(appt_id, purpose):
                 messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
             
             # Sending of messages
-            #futures = []
             if patient.sms_notifications:
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar1,
-                    patient_phone
+                message1 = client.messages.create(
+                    body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
+                    from_=SIGNALWIRE_NUMBER,
+                    to='+1' + patient_phone,
                 )
+            #     SMSWrapper(
+            #         f'Appointment {kwords[0]}',
+            #         messageVar1,
+            #         patient_phone
+            #     )
             if doctor.sms_notifications:
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar2,
-                    doctor_phone
+                message2 = client.messages.create(
+                    body=f'Hello {doctor.first_name}\nthis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
+                    from_=SIGNALWIRE_NUMBER,
+                    to='+1' + doctor_phone,
                 )
+            #     SMSWrapper(
+            #         f'Appointment {kwords[0]}',
+            #         messageVar2,
+            #         doctor_phone
+            #     )
             
             # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
             #   so no need to send them from here
@@ -107,7 +116,4 @@ def send_reminder(appt_id, purpose):
                         f'Hello, Dr. {doctor} this is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
                         [doctor_email],
                     )
-
-            #print(futures)
-
                 
