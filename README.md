@@ -26,3 +26,6 @@ Here's a breakdown of the apps contained in the root project folder:
 - graph
     * Everything pertaining to MS Graph connections and API usage, including authentication using OAuth 2.0, getting user profile info and creating events on Outlook Calendar.
     * Most functions are from MS Graph documentation [found here](https://docs.microsoft.com/en-us/graph/tutorials/python).
+- maps
+    * Helper app that handles usage of the Google Maps REST API
+    * Specifically, Places API, Embed Map API and Geocode API
