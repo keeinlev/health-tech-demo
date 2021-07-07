@@ -25,6 +25,8 @@ from datetime import date, datetime, timedelta
 from graph.graph_helper import create_event
 from graph.auth_helper import get_token
 
+import xlwt
+
 eastern = timezone('America/New_York')
 
 allChars = ascii_letters + digits + digits
@@ -64,6 +66,64 @@ def doctordashboard(request):
             if (request.method == "GET"):
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form })
     return render(request, 'doctordashboard.html')
+
+@login_required
+def downloadApptHistory(request):
+    u=request.user
+    if u.is_authenticated:
+        if u.type == 'DOCTOR':
+            appts = Appointment.objects.filter(doctor=u, booked=True, datetime__lt=datetime.now().astimezone(utc))
+            
+            # content-type of response
+            response = HttpResponse(content_type='application/ms-excel')
+
+            #decide file name
+            response['Content-Disposition'] = 'attachment; filename="djangoExcelTest.xls"'
+
+            #creating workbook
+            wb = xlwt.Workbook(encoding='utf-8')
+
+            #adding sheet
+            ws = wb.add_sheet("sheet1")
+
+            # Sheet header, first row
+            row_num = 0
+
+            font_style = xlwt.XFStyle()
+            # headers are bold
+            font_style.font.bold = True
+
+            #column header names, you can use your own headers here
+            columns = ['Date', 'Time', 'Consultation', 'Patient Name', 'Patient DOB', 'Patient Address', 'Patient Email', 'Patient Phone #', 'Patient OHIP', 'Patient OHIP Expiry', 'Patient Pharmacy', 'Doctor Notes', 'Prescription']
+
+            #write column headers in sheet
+            for col_num in range(len(columns)):
+                ws.write(row_num, col_num, columns[col_num], font_style)
+
+            # Sheet body, remaining rows
+            font_style = xlwt.XFStyle()
+
+            #get your data, from database or from a text file...
+            for appt in appts:
+                row_num += 1
+                print(appt.date)
+                ws.write(row_num, 0, str(appt.date), font_style)
+                ws.write(row_num, 1, dict(IntTimes.choices)[appt.time], font_style)
+                ws.write(row_num, 2, appt.consultation, font_style)
+                ws.write(row_num, 3, str(appt.patient), font_style)
+                ws.write(row_num, 4, str(appt.patient.dob), font_style)
+                ws.write(row_num, 5, f'{appt.patient.more.address}, {appt.patient.more.postal_code}', font_style)
+                ws.write(row_num, 6, appt.patient.email, font_style)
+                ws.write(row_num, 7, appt.patient.phone, font_style)
+                ws.write(row_num, 8, appt.patient.more.ohip_number, font_style)
+                ws.write(row_num, 9, str(appt.patient.more.ohip_expiry), font_style)
+                ws.write(row_num, 10, appt.patient.more.pharmacy, font_style)
+                ws.write(row_num, 11, ApptDetails.objects.get(appt=appt).notes, font_style)
+                ws.write(row_num, 12, ApptDetails.objects.get(appt=appt).prescription, font_style)
+
+            wb.save(response)
+            return response
+
 
 # Redirect view right after creating an appointment to prevent unexpected form resubmissions
 @login_required

@@ -37,7 +37,6 @@ def details(request, pk):
                         if form.is_valid():
                             p.prescription = form.cleaned_data['prescription']
                             p.notes = form.cleaned_data['notes']
-                            p.track_number = form.cleaned_data['track_number']
                             p.save()
                             return redirect('doctordashboard')
                     else:
@@ -45,7 +44,6 @@ def details(request, pk):
                         form = ApptDetailsForm(initial={
                             'prescription': p.prescription,
                             'notes': p.notes,
-                            'track_number': p.track_number,
                         })
                         return render(request, 'prescription.html', {'appt': appt, 'form': form})
                 else:

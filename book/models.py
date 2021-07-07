@@ -41,3 +41,8 @@ class Appointment(models.Model):
     def meeting_link(self):
         from health.settings import MS_TEAMS_MEETING_URL_1 as meet_link1, MS_TEAMS_MEETING_URL_2 as meet_link2
         return meet_link1 + self.meeting_id + meet_link2
+
+    @property
+    def details(self):
+        from appointment.models import ApptDetails
+        return ApptDetails.objects.get(appt=self)

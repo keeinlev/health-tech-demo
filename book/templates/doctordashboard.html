@@ -118,7 +118,7 @@
             </div>
             <br />
             <div class="section">
-                <h2>Your Upcoming Appointments</h2>
+                <h2>Your Upcoming Appointments <a href="{% url 'downloadappthistory' %}"> - Download Appointment History (.xls file)</a></h2>
                 {% if doctor.getSomeAppts %}
                     {% for appt in doctor.getSomeAppts %}
                         <div class="appointment-box appointment-box-md">

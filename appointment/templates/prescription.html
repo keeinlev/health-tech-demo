@@ -37,17 +37,6 @@
                             {{ form.notes }}
                         </div>
                     </div>
-                    <div class='row' style='margin-top:20px'>
-                        <div class='col-12'>
-                            {{ form.track_number.label }}
-                        </div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-6'>
-                            {{ form.track_number.errors }}
-                            {{ form.track_number }}
-                        </div>
-                    </div>
                     <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
                 </form>
             {% else %}
@@ -59,18 +48,6 @@
                                 <div id='presc'>
                                     {% if details.prescription %}
                                         {{ details.prescription }}
-                                    {% else %}
-                                        None
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <label for='p_track'>Prescription Tracking Number:</label>
-                        <div class='row' style='margin-bottom: 20px;'>
-                            <div class='col'>
-                                <div id='p_track'>
-                                    {% if details.track_number %}
-                                        {{ details.track_number }}
                                     {% else %}
                                         None
                                     {% endif %}

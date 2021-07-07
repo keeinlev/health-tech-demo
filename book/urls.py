@@ -17,5 +17,6 @@ urlpatterns = [
     url(r'^ajax/findtimes/$', views.findtimes, name='findtimes'),
     path('cancelappointment/<int:pk>', views.cancelappt, name='cancelappt'),
     path('cancelmult', views.cancelmult, name='cancelmult'),
-    path('cancelappointment/success', views.apptcanceled, name='apptcanceled')
+    path('cancelappointment/success', views.apptcanceled, name='apptcanceled'),
+    path('doctordashboard/downloadappthistory', views.downloadApptHistory, name='downloadappthistory'),
 ]
