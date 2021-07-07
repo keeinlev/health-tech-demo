@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
-from book.models import Appointment
-from .models import ApptDetails
-from .forms import ApptDetailsForm
+from django.contrib.auth.decorators import login_required
+
 from health.settings import MS_TEAMS_MEETING_URL_1, MS_TEAMS_MEETING_URL_2, MS_TEAMS_MEETING_ID_LENGTH
 
+from .models import ApptDetails
+from .forms import ApptDetailsForm
+
+from book.models import Appointment
+
 # Create your views here.
+@login_required
 def details(request, pk):
     u = request.user
     if u.is_authenticated:
@@ -57,12 +62,13 @@ def details(request, pk):
 # View that redirects user to the MS Teams meeting link
 # I created this as an alternative to using the entire meeting link, which can be quite lengthy
 #   This is to ensure the entire link can fit into an SMS message, instead of breaking up into
-#   multiple sections, becoming inconvenient for the user. This redirect only needs to add on the
+#   multiple sections, becoming inaccessible for the user. This redirect only needs to add on the
 #   primary key of the Appointment to the URL path.
 
 # Example:
 #   Default MS Teams Link, very long :(     : https://teams.microsoft.com/l/meetup-join/19%3ameeting_JVICXJO98BVC7Y12JF0B9IOQSACVJ98CQ1UIV7UIJ23KX2HS%40thread.v2/0?context=%7b%22Tid%22%3a%229f7e3je3-1849-3549-v55g-515f6v2s74gw%22%2c%22Oid%22%3a%220817bnr6-8y54-31t1-52x7-8h5d1c2w3a6f%22%7d
 #   Redirect Link, nice, short :)           : https://health-tech.azurewebsites.net/appt/meetrdir/2
+@login_required
 def meeting_redir(request, pk):
     u = request.user
     appt = Appointment.objects.filter(pk=pk)

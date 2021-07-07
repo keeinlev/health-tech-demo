@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import View
-from .forms import SignUpForm, DoctorEditForm, PatientEditForm
-from .models import User, Patient, Doctor, PatientInfo, DoctorInfo
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
+
+from .forms import SignUpForm, DoctorEditForm, PatientEditForm
+from .models import User, Patient, Doctor, PatientInfo, DoctorInfo
 
 from graph.auth_helper import remove_user_and_token
 from maps.maps_helper import geocode, get_nearby, find_place_by_place_id
@@ -26,126 +28,128 @@ from pprint import pprint
 
 # View for registration
 def register(request):
-    form = SignUpForm()
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            # If the form is valid, we know there are valid entries for:
-            #   First/Last name
-            #   Both email fields                                       (these will be verified to match again later)
-            #   Both password fields                                    (these will be verified to match again later)
-            #   DOB
-            #   Phone                                                   (not null, but length will be verified)
-            #   OHIP number                                             (not null, but length will be verified)
-            #   OHIP version and expiry                                 (not null, but length will be verified)
-            # Getting all the data into shape for saving
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            preferred_name = form.cleaned_data['preferred_name']
-            dob = form.cleaned_data['dob']
-            email = form.cleaned_data['email1']
-            password = form.cleaned_data['password1']
-            phone = form.cleaned_data['phone']
-            if phone:
-                phone = str(phone)
-            else:
-                phone = None
-
-            # Getting Address lat/long
-            address = form.cleaned_data['address']
-            postal_code = form.cleaned_data['postal_code']
-            geocode_res = geocode(address, postal_code)
-            if (geocode_res['status'] != 'OK'):
-                message = "Registration unsuccessful. Address and/or Postal Code not found."
-                return render(request, "register.html", {'form': form, 'message': message})
-            coords = geocode_res["results"][0]["geometry"]["location"]
-            coords = f'{coords["lat"]},{coords["lng"]}'
-            print(geocode_res['results'][0]['formatted_address'])
-
-            ohip_number = str(form.cleaned_data['ohip'])
-            ohip_version_code = form.cleaned_data['ohip_version']
-
-            # Making sure phone and ohip number are both 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
-            if (phone and len(phone) != 10) or len(ohip_number) != 10 or len(ohip_version_code) != 2:
-                message = "Registration unsuccessful. Please make sure phone and/or OHIP numbers are in the correct format."
-                return render(request, "register.html", {'form': form, 'message': message})
-
-            # OHIP formatting into 'XXXX-XXX-XXX-XX'
-            ohip_number = ohip_number[:4] + '-' + ohip_number[4:7] + '-' + ohip_number[7:]
-            ohip_number = ohip_number + '-' + ohip_version_code
-            ohip_number = ohip_number.upper()
-            ohip_expiry = form.cleaned_data['ohip_expiry']
-            
-            # Emails and passwords must match, this is the second layer of verification after frontend in register.js
-            if (email != form.cleaned_data['email2'] or password != form.cleaned_data['password2']):
-                message = "Registration unsuccessful. Please make sure emails and passwords match."
-                return render(request, "register.html", {'form': form, 'message': message})
-
-            # See if all fields can create a valid User object
-            try:
-                # If u is not created, will go straight to except block
-                # Through the form, first_name, last_name and dob have already been verified
-                # Through manual checking, phone and email have already been verified
-                # If we get an error here, it's because the email was valid, but already exists
-                u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, dob=dob, type=User.Types.PATIENT, is_active=False)
-                
-                # We verified the length/format of ohip_number already and ohip_expiry was verified by the form
-                # If we get an error here, it's because the ohip number was valid, but already exists
-                # However, we already created u, so we must delete it later (it should be the last user in the model Queryset)
-                PatientInfo.objects.create(user=u, address=address, postal_code=postal_code, address_coords=coords, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
-
-            except IntegrityError as e:
-                # IntegrityError catches non-unique entries for fields that must be unique
-                cause = str(e.__cause__)
-
-                # String splicing to get the cause of the error
-                cleancause = cause[cause.index("UNIQUE constraint failed: ") + len("UNIQUE constraint failed: "):]
-                unique_constraint = cleancause[cleancause.index('.') + 1:].capitalize().replace('_', ' ')
-                
-                if unique_constraint == 'Ohip number':
-                    unique_constraint = 'OHIP Number'
-
-                    # As mentioned before, we delete the last created Patient
-                    Patient.objects.last().delete()
-                
-                # Error message returned to the template
-                return render(request, "register.html", {'form': form, 'message': unique_constraint + ' already registered to existing account!'})
-            
-            # If nothing goes wrong, set the password.
-            # set_password is Django built-in and uses PBKDF2 algorithm and SHA256 hash
-            u.set_password(password)
-            u.save()
-
-            # Build the token for account confirmation
-            domain = get_current_site(request).domain
-            uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
-            link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
-            activate_url = 'http://' + domain + link
-
-            # Send initial SMS consent Message
-            # send_mail(
-            #     '',
-            #     'You will now receive SMS notifications for your booked appointments',
-            #     'healthapptdemo@gmail.com',
-            #     [u.phone + SMS_CARRIER],
-            # )
-
-            # Send a confirmation email
-            send_mail(
-                'Confirm your Online Health Account',
-                'Hi,' + u.first_name + '\n\nPlease use the following link to confirm your email:\n' + activate_url,
-                'healthapptdemo@gmail.com',
-                [u.email],
-            )
-            return redirect('activateprompt')
-        else:
-            message = "Registration unsuccessful. Please make sure you have filled all fields in correctly."
-            return render(request, "register.html", {'form': form, 'message': message})
-    
-    # If the request is GET, just return an empty form to the template
-    else:
+    if not request.user.is_authenticated:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                # If the form is valid, we know there are valid entries for:
+                #   First/Last name
+                #   Both email fields                                       (these will be verified to match again later)
+                #   Both password fields                                    (these will be verified to match again later)
+                #   DOB
+                #   Phone                                                   (not null, but length will be verified)
+                #   OHIP number                                             (not null, but length will be verified)
+                #   OHIP version and expiry                                 (not null, but length will be verified)
+                # Getting all the data into shape for saving
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+                preferred_name = form.cleaned_data['preferred_name']
+                dob = form.cleaned_data['dob']
+                email = form.cleaned_data['email1']
+                password = form.cleaned_data['password1']
+                phone = form.cleaned_data['phone']
+                if phone:
+                    phone = str(phone)
+                else:
+                    phone = None
+
+                # Getting Address lat/long
+                address = form.cleaned_data['address']
+                postal_code = form.cleaned_data['postal_code']
+                geocode_res = geocode(address, postal_code)
+                if (geocode_res['status'] != 'OK'):
+                    message = "Registration unsuccessful. Address and/or Postal Code not found."
+                    return render(request, "register.html", {'form': form, 'message': message})
+                coords = geocode_res["results"][0]["geometry"]["location"]
+                coords = f'{coords["lat"]},{coords["lng"]}'
+                print(geocode_res['results'][0]['formatted_address'])
+
+                ohip_number = str(form.cleaned_data['ohip'])
+                ohip_version_code = form.cleaned_data['ohip_version']
+
+                # Making sure phone and ohip number are both 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
+                if (phone and len(phone) != 10) or len(ohip_number) != 10 or len(ohip_version_code) != 2:
+                    message = "Registration unsuccessful. Please make sure phone and/or OHIP numbers are in the correct format."
+                    return render(request, "register.html", {'form': form, 'message': message})
+
+                # OHIP formatting into 'XXXX-XXX-XXX-XX'
+                ohip_number = ohip_number[:4] + '-' + ohip_number[4:7] + '-' + ohip_number[7:]
+                ohip_number = ohip_number + '-' + ohip_version_code
+                ohip_number = ohip_number.upper()
+                ohip_expiry = form.cleaned_data['ohip_expiry']
+                
+                # Emails and passwords must match, this is the second layer of verification after frontend in register.js
+                if (email != form.cleaned_data['email2'] or password != form.cleaned_data['password2']):
+                    message = "Registration unsuccessful. Please make sure emails and passwords match."
+                    return render(request, "register.html", {'form': form, 'message': message})
+
+                # See if all fields can create a valid User object
+                try:
+                    # If u is not created, will go straight to except block
+                    # Through the form, first_name, last_name and dob have already been verified
+                    # Through manual checking, phone and email have already been verified
+                    # If we get an error here, it's because the email was valid, but already exists
+                    u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, dob=dob, type=User.Types.PATIENT, is_active=False)
+                    
+                    # We verified the length/format of ohip_number already and ohip_expiry was verified by the form
+                    # If we get an error here, it's because the ohip number was valid, but already exists
+                    # However, we already created u, so we must delete it later (it should be the last user in the model Queryset)
+                    PatientInfo.objects.create(user=u, address=address, postal_code=postal_code, address_coords=coords, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
+
+                except IntegrityError as e:
+                    # IntegrityError catches non-unique entries for fields that must be unique
+                    cause = str(e.__cause__)
+
+                    # String splicing to get the cause of the error
+                    cleancause = cause[cause.index("UNIQUE constraint failed: ") + len("UNIQUE constraint failed: "):]
+                    unique_constraint = cleancause[cleancause.index('.') + 1:].capitalize().replace('_', ' ')
+                    
+                    if unique_constraint == 'Ohip number':
+                        unique_constraint = 'OHIP Number'
+
+                        # As mentioned before, we delete the last created Patient
+                        Patient.objects.last().delete()
+                    
+                    # Error message returned to the template
+                    return render(request, "register.html", {'form': form, 'message': unique_constraint + ' already registered to existing account!'})
+                
+                # If nothing goes wrong, set the password.
+                # set_password is Django built-in and uses PBKDF2 algorithm and SHA256 hash
+                u.set_password(password)
+                u.save()
+
+                # Build the token for account confirmation
+                domain = get_current_site(request).domain
+                uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
+                link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
+                activate_url = 'http://' + domain + link
+
+                # Send initial SMS consent Message
+                # send_mail(
+                #     '',
+                #     'You will now receive SMS notifications for your booked appointments',
+                #     'healthapptdemo@gmail.com',
+                #     [u.phone + SMS_CARRIER],
+                # )
+
+                # Send a confirmation email
+                send_mail(
+                    'Confirm your Online Health Account',
+                    'Hi,' + u.first_name + '\n\nPlease use the following link to confirm your email:\n' + activate_url,
+                    'healthapptdemo@gmail.com',
+                    [u.email],
+                )
+                return redirect('activateprompt')
+            else:
+                message = "Registration unsuccessful. Please make sure you have filled all fields in correctly."
+                return render(request, "register.html", {'form': form, 'message': message})
+        
+        # If the request is GET, just return an empty form to the template
+        else:
+            form = SignUpForm()
+        return render(request, 'register.html', {'form': form})
+    return redirect('index')
 
 # View for editing profiles
 def editprofile(request):

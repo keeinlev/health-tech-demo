@@ -54,5 +54,5 @@ def callback(request):
         # pprint(events)
     except KeyError as e:
         print(e)
-        return render(request, 'index.html', {'message': 'Oops! We weren\'t able to get access to your account!'})
+        return render(request, 'index.html', {'message': 'Oops! We weren\'t able to access your account!'})
     return redirect('index')

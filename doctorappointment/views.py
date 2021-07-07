@@ -13,8 +13,6 @@ def about(request):
 def login_redir(request):
     if (request.user.is_authenticated):
         remove_token(request)
-        if 'meeting_request' in request.session:
-            return redirect(reverse('meeting_redir', kwargs={ 'pk':request.session['meeting_request'] }))
         if (request.user.type == "DOCTOR"):
             return redirect('doctordashboard')
         else:

@@ -1,23 +1,29 @@
 from django.shortcuts import render, redirect
-from .forms import CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, EditAppointmentForm, CancelConfirmForm
-from accounts.models import User, Doctor, DoctorInfo, Patient, PatientInfo
-from .models import Appointment
-from appointment.models import ApptDetails
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-from .times import IntTimes
-from datetime import date, datetime, timedelta
-from .tasks import send_reminder
 from django.core.mail import send_mail
 from django.urls import reverse
-from pytz import timezone, utc
+from django.db import IntegrityError
+
 from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SMS_CARRIER, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
+
+from .forms import CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, EditAppointmentForm, CancelConfirmForm
+from .models import Appointment
+from .times import IntTimes
+from .tasks import send_reminder, emailWrapper
+
+from accounts.models import User, Doctor, DoctorInfo, Patient, PatientInfo
+
+from appointment.models import ApptDetails
+
+from pytz import timezone, utc
+
 from random import choice
 from string import ascii_letters, digits, punctuation
-from django.db import IntegrityError
+from datetime import date, datetime, timedelta
+
 from graph.graph_helper import create_event
 from graph.auth_helper import get_token
-import asyncio
-from book.tasks import emailWrapper, SMSWrapper
 
 eastern = timezone('America/New_York')
 
@@ -45,6 +51,7 @@ def getDateTime(date, time):
 # Create your views here.
 
 # View for Doctor Dashboard
+@login_required
 def doctordashboard(request):
     u = request.user
     if u.is_authenticated:
@@ -59,6 +66,7 @@ def doctordashboard(request):
     return render(request, 'doctordashboard.html')
 
 # Redirect view right after creating an appointment to prevent unexpected form resubmissions
+@login_required
 def apptcreated(request):
     u=request.user
     if u.is_authenticated:
@@ -72,6 +80,7 @@ def apptcreated(request):
     return render(request, 'doctordashboard.html')
 
 # View for Doctor opening an Appointment time slot
+@login_required
 def booksingle(request):
     u=request.user
     if u.is_authenticated:
@@ -95,6 +104,7 @@ def booksingle(request):
     return render(request, 'doctordashboard.html')
 
 # View for Doctor opening a range of Appointment time slots
+@login_required
 def bookmult(request):
     u=request.user
     if u.is_authenticated:
@@ -136,6 +146,7 @@ def bookmult(request):
     return render(request, 'doctordashboard.html')
 
 # View for closing a range of open Appointment time slots
+@login_required
 def cancelmult(request):
     u=request.user
     if u.is_authenticated:
@@ -169,6 +180,7 @@ def cancelmult(request):
 
 # View for handling AJAX request during Doctor time slot scheduling, will make sure end date selection only includes times after selected start date.
 # See docdash.js line 34
+@login_required
 def updateenddate(request):
     u = request.user
     if (u.is_authenticated):
@@ -196,6 +208,7 @@ def updateenddate(request):
 
 # View for AJAX request fetching details for all Appointments on a selected date, updating Appointment table on dashboard
 # See docdash.js line 126
+@login_required
 def getdates(request):
     u = request.user
     if (u.is_authenticated):
@@ -217,6 +230,7 @@ def getdates(request):
 
 # View for AJAX request fetching details for all Appointments on a selected date and scheduled for a searched Patient, updating Appointment table on dashboard
 # See docdash.js line 88
+@login_required
 def patientsearch(request):
     u = request.user
     if (u.is_authenticated):
@@ -247,6 +261,7 @@ def patientsearch(request):
 
 # View for AJAX request to check if a selected date and time has already been booked or not, used when Doctor opens a single time slot using calendar UI.
 # See docdash.js line 155
+@login_required
 def checkifbooked(request):
     u = request.user
     if (u.is_authenticated):
@@ -273,6 +288,7 @@ def checkifbooked(request):
     return JsonResponse({})
 
 # View for cancelling a single Appointment, booked or unbooked
+@login_required
 def cancelappt(request, pk):
     u = request.user
     if u.is_authenticated:
@@ -330,6 +346,7 @@ def cancelappt(request, pk):
     return render(request, 'doctordashboard.html')
 
 # Redirect view once an Appointment has been cancelled to prevent unwanted form resubmissions
+@login_required
 def apptcanceled(request):
     u=request.user
     if u.is_authenticated:
@@ -347,6 +364,7 @@ def apptcanceled(request):
 
 # View for AJAX request to only show available date ranges for a selected Doctor with open time slots for Patient booking calendar
 # See bookmethods.js line 5
+@login_required
 def update_calendar(request):
     u = request.user
     if (u.is_authenticated):
@@ -371,6 +389,7 @@ def update_calendar(request):
     return JsonResponse({})
 
 # View for Patient-side booking
+@login_required
 def book(request):
     u = request.user
     if (u.is_authenticated):
@@ -436,6 +455,7 @@ def book(request):
     return render(request, 'book.html')
 
 # Redirect view for successfully booking Appointment to prevent unwanted form resubmissions
+@login_required
 def booksuccess(request):
     u=request.user
     if u.is_authenticated:
@@ -448,6 +468,7 @@ def booksuccess(request):
 
 # View for AJAX request to fetch available times on a valid selected date when Patient is booking
 # See bookmethods.js line 55
+@login_required
 def findtimes(request):
     u = request.user
     if (u.is_authenticated):
