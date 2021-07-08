@@ -95,6 +95,12 @@
                     
                 </ul>
             </div>
+            {% if user.type == 'PATIENT' and user.userType.more.pharmacy == None %}
+            <div class='notification' id='pharmacy-notification'>
+                <b>You have not yet selected a pharmacy. <a href="{% url 'findpharmacy' %}">Click here to find one.</a></b>
+                <span class='close'>&times;</span>
+            </div>
+            {% endif %}
         </nav>
         <div class='spacer'></div>
         {% block top %}

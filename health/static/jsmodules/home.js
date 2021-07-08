@@ -6,9 +6,19 @@ window.onload = function() {
 window.onscroll = function() {
     console.log(window.pageYOffset)
     if (window.pageYOffset > 0) {
-        $('#main-nav').addClass('shadow');
+        try {
+            $('.notification').addClass('shadow');
+            $('.notification').attr()
+        } catch (error) {
+            $('#main-nav').addClass('shadow');
+        } 
     } else {
-        $('#main-nav').removeClass('shadow');
+        try {
+            $('.notification').removeClass('shadow');
+            $('.notification').attr()
+        } catch (error) {
+            $('#main-nav').removeClass('shadow');
+        }   
     }
     if (window.pageYOffset > 120) {
         $('.typography2').css({"opacity": "1"});
@@ -23,3 +33,7 @@ window.onscroll = function() {
         } catch (error) {}
     }
 }
+
+$('.close').on("click", function() {
+    document.getElementById('pharmacy-notification').style.display = "none";
+})
