@@ -68,7 +68,7 @@ def fromisoform(d):
 # Example: (datetime.date(2021, 6, 16), 800) -> datetime.datetime(2021, 6, 16, 12, 0, 0)
 def getDateTime(date, time):
     localTimeZone = datetime.now(utc).astimezone().tzinfo
-    timezoneDifference = timedelta(days=-1, seconds=72000) - localTimeZone.utcoffset(datetime.now())
+    timezoneDifference = localTimeZone.utcoffset(datetime.now()) - timedelta(days=-1, seconds=72000)
     print(timezoneDifference)
     non_loc = datetime(date.year, date.month, date.day, time // 100, time % 100).astimezone(eastern) + timezoneDifference
     return non_loc
