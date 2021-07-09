@@ -46,3 +46,7 @@ class Appointment(models.Model):
     def details(self):
         from appointment.models import ApptDetails
         return ApptDetails.objects.get(appt=self)
+
+    @property
+    def localTZ(self):
+        return str(datetime.datetime.now(utc).astimezone().tzinfo)

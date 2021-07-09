@@ -11,7 +11,6 @@
         <div class='heading'>
             <h1>Appointment with Dr. {{ appt.doctor }} on {{ appt.date }}</h1>
             <h3>Patient: {{ appt.patient }}</h4>
-            <a href="{% if user.type == 'DOCTOR' %}{% url 'doctordashboard' %}{% elif user.type == 'PATIENT' %}{% url 'index' %}{% endif %}"><button class='btn-lg btn-block btn-primary'>Back</button></a>
         </div>
         
         {% if user.is_authenticated %}
@@ -38,6 +37,7 @@
                         </div>
                     </div>
                     <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
+                    <a href="{% if user.type == 'DOCTOR' %}{% url 'doctordashboard' %}{% elif user.type == 'PATIENT' %}{% url 'index' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
                 </form>
             {% else %}
                 <div class='section'>
