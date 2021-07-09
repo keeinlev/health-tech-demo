@@ -143,7 +143,7 @@ $('#search-bar').on("keyup", function() {
         });
     } else {
         $('.inforow').remove();
-        $('#default-row').removeClass('display-hidden');
+        fetchAppts();
     }
 });
 
