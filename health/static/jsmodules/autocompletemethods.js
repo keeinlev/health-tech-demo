@@ -1,5 +1,3 @@
-"use strict";
-exports.__esModule = true;
 $(document).on('click', '.autocomplete-item', function () {
     var hiddenInput = $('#id_consultations');
     if (this.className.includes('language-item')) {
@@ -97,7 +95,6 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
 }
-exports["default"] = autocomplete;
 function addToHidden(addInput, to, label) {
     //addInput = document.getElementById('consult-input');
     //to = document.getElementById('id_consultations');

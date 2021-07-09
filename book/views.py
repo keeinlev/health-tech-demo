@@ -27,9 +27,30 @@ from graph.auth_helper import get_token
 
 import xlwt
 
+from pprint import pprint
+
+from asgiref.sync import sync_to_async, async_to_sync
+import asyncio
+
 eastern = timezone('America/New_York')
 
 allChars = ascii_letters + digits + digits
+
+# Asyncio Task for sending email
+async def async_send_mail(subject, body, to):
+    emailWrapper(subject, body, to=[to])
+
+# Asynchronously sends multiple cancellation emails
+async def send_cancellations(appts, reason):
+    loop = asyncio.get_event_loop()
+    tasks = [async_send_mail(
+        'Your Appointment has been Cancelled',
+        'Hi,' + appt.patient.first_name + '\n\nWe are sorry to inform you that your appointment with Dr. ' + str(appt.doctor) + ' on ' + appt.dateTime + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
+        to=appt.patient.email)
+        for appt in appts]
+    print(tasks)
+    for t in tasks:
+        await t
 
 # Returns a random character to serve as a meeting_id
 def generateMeetingId():
@@ -205,9 +226,31 @@ def bookmult(request):
             pass
     return render(request, 'doctordashboard.html')
 
-# View for closing a range of open Appointment time slots
+# AJAX handler for seeing if a selected range of Appointment time slots to be cancelled needs a reason (is booked and needs to notify Patient)
 @login_required
-def cancelmult(request):
+def showreasontextbox(request):
+    u=request.user
+    if u.is_authenticated:
+        if u.type == 'DOCTOR':
+            startdate = fromisoform(request.GET.get('c_startdate', None))
+            startdate = date(startdate[0], startdate[1], startdate[2])
+            starttime = int(request.GET.get('c_starttime', None))
+            enddate = fromisoform(request.GET.get('c_enddate', None))
+            enddate = date(enddate[0], enddate[1], enddate[2])
+            endtime = int(request.GET.get('c_endtime', None))
+            if startdate and enddate and starttime and endtime:
+                booked = Appointment.objects.filter(doctor=u, datetime__gte=getDateTime(startdate, starttime), datetime__lte=getDateTime(enddate, endtime), time__gte=starttime, time__lte=endtime, booked=True)
+                if booked.exists():
+                    return JsonResponse({'needs_reason':1})
+                else:
+                    return JsonResponse({'needs_reason':0})
+    return JsonResponse({})
+
+# View for closing a range of open Appointment time slots
+@sync_to_async
+@login_required
+@async_to_sync
+async def cancelmult(request):
     u=request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
@@ -216,26 +259,54 @@ def cancelmult(request):
                 if form.is_valid():
 
                     # Uses same method as creation
+
+                    # Might want to reimplement using __lte, __gte query filters instead then just deleting objects in that resulting QS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
                     startdate = fromisoform(request.POST['c_startdate'])
                     startdate = date(startdate[0], startdate[1], startdate[2])
-                    starttime = request.POST['c_starttime']
+                    starttime = int(request.POST['c_starttime'])
                     enddate = fromisoform(request.POST['c_enddate'])
                     enddate = date(enddate[0], enddate[1], enddate[2])
-                    endtime = request.POST['c_endtime']
+                    endtime = int(request.POST['c_endtime'])
                     d = startdate
-                    while(d <= enddate):
-                        timeKeys = IntTimes.getKeys()
-                        for i in range(timeKeys.index(starttime), timeKeys.index(endtime) + 1):
-                            t = timeKeys[i]
-                            appts = Appointment.objects.filter(doctor = u, date = str(d), time = t, booked=False)
-                            if (appts.exists()):
-                                appts.first().delete()
-                        d += timedelta(days=1)
+                    
+                    all_appts = Appointment.objects.filter(doctor=u, datetime__gte=getDateTime(startdate, starttime), datetime__lte=getDateTime(enddate, endtime), time__gte=starttime, time__lte=endtime)
+                    avail = all_appts.filter(booked=False)
+                    booked = all_appts.filter(booked=True)
+                    avail.delete()
+                    if booked.exists():
+                        reason = form.cleaned_data['reason']
+                        try:
+                            loop = asyncio.get_running_loop()
+                        except RuntimeError:  # if cleanup: 'RuntimeError: There is no current event loop..'
+                            loop = None
+
+                        if loop and loop.is_running():
+                            print('Async event loop already running')
+                            print(booked, reason)
+                            tsk = loop.create_task(send_cancellations(booked, reason))
+                            # ^-- https://docs.python.org/3/library/asyncio-task.html#task-object
+                            tsk.add_done_callback(                                          # optional
+                                lambda t: (print(f'Task done'), booked.delete()))
+                        else:
+                            print('Starting new event loop')
+                            asyncio.run(send_cancellations(booked, reason))
+                            booked.delete()
+                        
+                        
+                        
+                    #while(d <= enddate):
+                        # timeKeys are converted to strings in getKeys(), no longer
+                        # timeKeys = IntTimes.getKeys()
+                        # for i in range(timeKeys.index(starttime), timeKeys.index(endtime) + 1):
+                        #     t = timeKeys[i]
+                        #     appts = Appointment.objects.filter(doctor = u, date = str(d), time = t, booked=False)
+                        #     if (appts.exists()):
+                        #         appts.first().delete()
+                        # d += timedelta(days=1)
                     return redirect('apptcanceled')
                 else:
                     return render(request, 'doctordashboard.html', {'message': 'Oops! An error occurred.', 'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': CancelAppointmentRangeForm(), 'single_appt_form': CreateAppointmentForm(initial={'doctor':u.pk}), 'mult_appt_form': CreateAppointmentRangeForm() })
-        else:
-            pass
     return render(request, 'doctordashboard.html')
 
 # View for handling AJAX request during Doctor time slot scheduling, will make sure end date selection only includes times after selected start date.

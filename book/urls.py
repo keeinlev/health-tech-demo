@@ -10,6 +10,7 @@ urlpatterns = [
     path("doctordashboard/booksingle", views.booksingle, name='booksingle'),
     path("doctordashboard/bookmult", views.bookmult, name='bookmult'),
     url(r'^ajax/updateenddate/$', views.updateenddate, name='updateenddate'),
+    url(r'^ajax/showreasontextbox/$', views.showreasontextbox, name='showreasontextbox'),
     url(r'^ajax/update_calendar/$', views.update_calendar, name='update_calendar'),
     url(r'^ajax/getdates/$', views.getdates, name='getdates'),
     url(r'^ajax/patientsearch/$', views.patientsearch, name='patientsearch'),

@@ -89,7 +89,7 @@
                     <br />
                     <div class="section">
                         <h2>Cancel a range of Appointment slots</h2>
-                        <form method="post" class='doctorform' action="{% url 'cancelmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="cancelmultform">
+                        <form method="post" class='doctorform' action="{% url 'cancelmult' %}" update-end-date-url="{% url 'updateenddate' %}" get-reason-url="{% url 'showreasontextbox' %}" id="cancelmultform">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-12 col-md-6">
@@ -109,6 +109,12 @@
                                 <div class="col-12 col-md-6">
                                     <label for="id_c_endtime">End Time</label>
                                     {{ cancel_mult_form.c_endtime }}
+                                </div>
+                            </div>
+                            <div class="row display-hidden" id="reason-input" style="margin-bottom: 2%;">
+                                <div class="col-12">
+                                    <label for="id_reason">Cancel Reason</label>
+                                    {{ cancel_mult_form.reason }}
                                 </div>
                             </div>
                             <input type="submit" onsubmit="return false" id="cancelmultsubmit" class="btn-lg btn-block btn-secondary" value="Save">
