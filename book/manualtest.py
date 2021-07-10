@@ -4,15 +4,16 @@ from datetime import datetime, timedelta
 from pytz import utc
 from book.times import IntTimes
 from book.views import getDateTime
+from appointment.models import ApptDetails
 
 today = datetime.now().astimezone(utc)
-testdate = today + timedelta(days=1)
+testdate = today + timedelta(days=-2)
 d = Doctor.objects.last()
 p = Patient.objects.last()
 
 def createTestAppts():
     for i in range(5):
         t = IntTimes.choices[i][0]
-        Appointment.objects.create(doctor=d, patient=p, consultation='test', date=str(testdate.date()), time=t, datetime=getDateTime(testdate, t), booked=True)
-
+        a = Appointment.objects.create(doctor=d, patient=p, consultation='test', date=str(testdate.date()), time=t, datetime=getDateTime(testdate, t), booked=True)
+        ApptDetails.objects.create(appt=a, date=a.date)
     print(Appointment.objects.all())
