@@ -91,7 +91,9 @@ def register(request):
                     # Through manual checking, phone and email have already been verified
                     # If we get an error here, it's because the email was valid, but already exists
                     u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, dob=dob, type=User.Types.PATIENT, is_active=False)
-                    
+                    if phone == None:
+                        u.sms_notifications = False
+                        u.save()
                     # We verified the length/format of ohip_number already and ohip_expiry was verified by the form
                     # If we get an error here, it's because the ohip number was valid, but already exists
                     # However, we already created u, so we must delete it later (it should be the last user in the model Queryset)
@@ -201,6 +203,8 @@ def editprofile(request):
                 u.sms_notifications = form.cleaned_data['sms_notis']
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
+
+                return redirect('editprofile')
 
             return redirect('index')
         

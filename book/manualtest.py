@@ -3,7 +3,7 @@ from accounts.models import Doctor, Patient
 from datetime import datetime, timedelta
 from pytz import utc
 from book.times import IntTimes
-from book.views import getDateTime
+from doctordashboard.views import getDateTime
 from appointment.models import ApptDetails
 
 today = datetime.now().astimezone(utc)

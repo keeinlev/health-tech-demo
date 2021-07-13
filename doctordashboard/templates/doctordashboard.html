@@ -124,7 +124,7 @@
             </div>
             <br />
             <div class="section">
-                <h2>Your Upcoming Appointments <a href="{% url 'downloadappthistory' %}"> - Download Appointment History (.xls file)</a></h2>
+                <h2>Your Upcoming Appointments - <a href="{% url 'appthistory' %}">Download Appointment History</a></h2>
                 {% if doctor.getSomeAppts %}
                     {% for appt in doctor.getSomeAppts %}
                         <div class="appointment-box appointment-box-md">
@@ -237,6 +237,7 @@
 {% block javascript %}
 <script src="{% static 'jsmodules/calendarmethods.js' %}" type='text/javascript'></script>
 <script src="{% static 'jsmodules/docdash.js' %}" type='text/javascript'></script>
+<script src="{% static 'jsmodules/updateenddate.js' %}" type='text/javascript'></script>
 <script type="text/javascript">
     
 </script>

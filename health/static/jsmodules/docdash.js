@@ -14,22 +14,6 @@ $('#id_c_startdate').on("change", function() {
     var minEndDate = $('#id_c_startdate').val();
     document.getElementById('id_c_enddate').setAttribute('min', minEndDate);
 });
-$('#id_starttime').on("change", function() {
-    if (this.value > $('#id_endtime').val()) {
-        $('#id_endtime').html('');
-        form_url = $('#bookmultform').attr("update-end-date-url");
-        form_data = $('#bookmultform').serialize();
-        update_end_date(form_url, form_data);
-    }
-});
-$('#id_c_starttime').on("change", function() {
-    if (this.value > $('#id_c_endtime').val()) {
-        $('#id_c_endtime').html('');
-        form_url = $('#cancelmultform').attr("update-end-date-url");
-        form_data = $('#cancelmultform').serialize();
-        update_end_date(form_url, form_data);
-    }
-});
 
 $('.cancel-mult-fields').on("change", function() {
     filled = true;
@@ -54,32 +38,11 @@ function cancel_needs_reason(form_url, form_data) {
         success: function(data) {
             if (data['needs_reason']) {
                 console.log('reason')
-                $('#id_reason').val('`');
+                $('#id_reason').val('');
                 $('#reason-input').removeClass('display-hidden');
             } else {
                 $('#id_reason').val('`');
                 $('#reason-input').addClass('display-hidden');
-            }
-        }
-    })
-}
-
-function update_end_date(form_url, form_data) {
-    $.ajax({
-        url: form_url,
-        data: form_data,
-        dataType: 'json',
-        success: function(data) {
-            keys = data['keys'];
-            values = data['values'];
-            str = ''
-            for (i = 0; i < keys.length; i++) {
-                str += `<option value='${keys[i]}'>${values[i]}</option>\n`
-            }
-            if (data['is_cancel']) {
-                $('#id_c_endtime').html(str);
-            } else {
-                $('#id_endtime').html(str);
             }
         }
     })

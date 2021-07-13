@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('doctorappointment.urls')),
     path('book/', include('book.urls')),
+    path('doctordashboard/', include('doctordashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('appt/', include('appointment.urls')),
