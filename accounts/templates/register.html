@@ -79,20 +79,8 @@
                         <h3 style="color:red;" class="fs-subtitle not-unique">{{message}}</h3>
                         {{ form.ohip }}
                         {{ form.ohip.errors }}
-                        <div class='row'>
-                            <div class='col-12 col-md-8'>
-                                {{ form.ohip_version }}
-                                {{ form.ohip_version.errors }}
-                            </div>
-                            <div class='col-1'>
-                                <br>
-                                <b><a href='#' id="ohip-version-help" style='font-size: medium;'>?</a></b>
-                            </div>
-                            <div class='col-12'>
-                                {{ form.ohip_expiry }}
-                                {{ form.ohip_expiry.errors }}
-                            </div>
-                        </div>
+                        {{ form.ohip_expiry }}
+                        {{ form.ohip_expiry.errors }}
                         <input type="button" name="previous" class="previous action-button" value="Previous" />
                         <input type="submit" id='register-submit' class="action-button subBtn" href="{% url 'register' %}" value="Register" disabled />
                     </fieldset>

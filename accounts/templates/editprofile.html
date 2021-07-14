@@ -141,11 +141,11 @@
                     </div>
                 </div>
                 <div class="row" style='margin-top: 30px;'>
-                    <div class="col">
+                    <div class="col-2">
                         <label for="ohipcard">OHIP Number</label>
                     </div>
-                    <div class="col"></div>
-                    <div class="col"></div>
+                    <div class="col-2"></div>
+                    <div class="col-2"></div>
                     <div class="col">
                         <label for="version">OHIP Version Code &nbsp; <b><a href='#' id="ohip-version-help">?</a></b></label>
                     </div>
@@ -154,32 +154,24 @@
                     </div>
                 </div>
                 <div class="row" id="ohipcard">
-                    <div class="col">
-                        <div class="form-group">
-                            {{ form.ohip1 }}
-                            {{ form.ohip1.errors }}
-                        </div>
+                    <div class="col-2">
+                        {{ form.ohip1 }}
+                        {{ form.ohip1.errors }}
                     </div>
-                    <div class="col">
-                        <div class="form-group">
-                            {{ form.ohip2 }}
-                            {{ form.ohip2.errors }}
-                        </div>
+                    <div class="col-2">
+                        {{ form.ohip2 }}
+                        {{ form.ohip2.errors }}
                     </div>
-                    <div class="col">
-                        <div class="form-group">
-                            {{ form.ohip3 }}
-                            {{ form.ohip3.errors }}
-                        </div>
+                    <div class="col-2">
+                        {{ form.ohip3 }}
+                        {{ form.ohip3.errors }}
                     </div>
                     
-                    <div class="col" id="version">
-                        <div class="form-group">
-                            {{ form.ohip_version }}
-                            {{ form.ohip_version.errors }}
-                        </div>
+                    <div class="col-1" id="version">
+                        {{ form.ohip_version }}
+                        {{ form.ohip_version.errors }}
                     </div>
-                    <div class="col">
+                    <div class="col-2">
                         {{ form.ohip_expiry }}
                         {{ form.ohip_expiry.errors }}
                     </div>

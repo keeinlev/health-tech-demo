@@ -40,7 +40,7 @@ def register(request):
                 #   DOB
                 #   Phone                                                   (not null, but length will be verified)
                 #   OHIP number                                             (not null, but length will be verified)
-                #   OHIP version and expiry                                 (not null, but length will be verified)
+                #   OHIP expiry                                             (not null, but length will be verified)
                 # Getting all the data into shape for saving
                 first_name = form.cleaned_data['first_name']
                 last_name = form.cleaned_data['last_name']
@@ -65,17 +65,17 @@ def register(request):
                 coords = f'{coords["lat"]},{coords["lng"]}'
                 print(geocode_res['results'][0]['formatted_address'])
 
-                ohip_number = str(form.cleaned_data['ohip'])
-                ohip_version_code = form.cleaned_data['ohip_version']
+                ohip_number = form.cleaned_data['ohip']
 
-                # Making sure phone and ohip number are both 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
-                if (phone and len(phone) != 10) or len(ohip_number) != 10 or len(ohip_version_code) != 2:
-                    message = "Registration unsuccessful. Please make sure phone and/or OHIP numbers are in the correct format."
+                # Making sure phone number is 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
+                if (phone and len(phone) != 10):
+                    message = "Registration unsuccessful. Please make sure phone number is in the correct format."
                     return render(request, "register.html", {'form': form, 'message': message})
 
-                # OHIP formatting into 'XXXX-XXX-XXX-XX'
-                ohip_number = ohip_number[:4] + '-' + ohip_number[4:7] + '-' + ohip_number[7:]
-                ohip_number = ohip_number + '-' + ohip_version_code
+                # OHIP checking format 'XXXX-XXX-XXX-XX'
+                if (len(ohip_number) != 15 or ohip_number[4] != '-' or ohip_number[8] != '-' or ohip_number[12] != '-'):
+                    message = "Registration unsuccessful. Please make sure phone number is in the correct format."
+                    return render(request, "register.html", {'form': form, 'message': message})
                 ohip_number = ohip_number.upper()
                 ohip_expiry = form.cleaned_data['ohip_expiry']
                 
@@ -210,45 +210,40 @@ def editprofile(request):
         
         # Handle GET request
         else:
+            init = {
+                'first_name': u.first_name,
+                'last_name': u.last_name,
+                'dob': u.dob,
+                'email_notis': u.email_notifications,
+                'sms_notis': u.sms_notifications,
+            }
+            if u.phone != None:
+                init['phone1'] = u.phone[:3]
+                init['phone2'] = u.phone[3:6]
+                init['phone3'] = u.phone[6:]
             if u.type == "DOCTOR":
                 d = Doctor.objects.filter(id=u.id).first()
 
+                init['qualifications'] = d.more.certification
+                init['consultations'] = d.more.consultations
+                init['languages'] = d.more.languages
+
                 # Put all the existing user information as initial values in the form
-                form = DoctorEditForm(initial={
-                    'first_name': d.first_name,
-                    'last_name': d.last_name,
-                    'dob': d.dob,
-                    'phone1': d.phone[:3],
-                    'phone2': d.phone[3:6],
-                    'phone3': d.phone[6:],
-                    'email_notis': d.email_notifications,
-                    'sms_notis': d.sms_notifications,
-                    'qualifications': d.more.certification,
-                    'consultations': d.more.consultations,
-                    'languages': d.more.languages,
-                })
+                form = DoctorEditForm(initial=init)
                 return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', '), 'languages': d.more.languages.split(', '),})
             else:
                 p = Patient.objects.filter(id=u.id).first()
 
+                init['address'] = p.more.address
+                init['postal_code'] = p.more.postal_code
+                init['ohip1'] = p.more.ohip_number[:4]
+                init['ohip2'] = p.more.ohip_number[5:8]
+                init['ohip3'] = p.more.ohip_number[9:12]
+                init['ohip_version'] = p.more.ohip_number[13:]
+                init['ohip_expiry'] = p.more.ohip_expiry
+
                 # Put all the existing user information as initial values in the form
-                form = PatientEditForm(initial={
-                    'first_name': p.first_name,
-                    'last_name': p.last_name,
-                    'dob': p.dob,
-                    'phone1': p.phone[:3],
-                    'phone2': p.phone[3:6],
-                    'phone3': p.phone[6:],
-                    'email_notis': p.email_notifications,
-                    'sms_notis': p.sms_notifications,
-                    'address': p.more.address,
-                    'postal_code': p.more.postal_code,
-                    'ohip1': p.more.ohip_number[:4],
-                    'ohip2': p.more.ohip_number[5:8],
-                    'ohip3': p.more.ohip_number[9:12],
-                    'ohip_version': p.more.ohip_number[13:],
-                    'ohip_expiry': p.more.ohip_expiry,
-                })
+                form = PatientEditForm(initial=init)
                 return render(request, 'editprofile.html', {'form': form, 'patient': p,})
 
     # If user is not signed in, template logic will handle appropriate page display
