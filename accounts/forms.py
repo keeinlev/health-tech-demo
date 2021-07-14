@@ -22,7 +22,6 @@ class UserEditForm(forms.Form):
     first_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "first_name", 'class': "formcontrol", 'placeholder': "First name"}))
     preferred_name = forms.CharField(label=False, max_length=30, required=False, widget=forms.TextInput(attrs={'type': "text", 'id': "preferred_name", 'class': "formcontrol", 'placeholder': "Preferred name"}))
     last_name = forms.CharField(label=False, max_length=30, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "last_name", 'class': "formcontrol", 'placeholder': "Last name"}))
-    dob = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "formcontrol", 'id': "dob", 'max':"9999-12-31"}))
     phone = forms.IntegerField(label=False, required=False, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"if (this.value.length < 10) {return event.charCode >= 48} else {return false}", 'class': "formcontrol", 'id': "phone", 'max': "9999999999", 'placeholder': "Phone Number*", "autocomplete":"new-password"}))
     # phone1 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol phone-inputs", 'id': "phone1", 'maxlength': "3", 'placeholder': "XXX"}))
     # phone2 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol phone-inputs", 'id': "phone2", 'maxlength': "3", 'placeholder': "XXX"}))
@@ -37,6 +36,7 @@ class DoctorEditForm(UserEditForm):
     
 
 class PatientEditForm(UserEditForm):
+    dob = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "formcontrol", 'id': "dob", 'max':"9999-12-31"}))
     address = forms.CharField(label=False, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "address", 'class': "formcontrol", 'placeholder': "Address"}))
     postal_code = forms.CharField(label=False, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "postal_code", 'class': "formcontrol", 'placeholder': "Postal Code"}))
     # ohip1 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol ohip-inputs", 'id': "ohip1", 'maxlength': "4", 'placeholder': "XXXX"}))

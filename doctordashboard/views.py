@@ -172,7 +172,7 @@ def apptHistory(request):
                     
                     for appt in appts:
 
-                        col_lookup = {'Date':str(appt.date), 'Time':dict(IntTimes.choices)[appt.time], 'Consultation':appt.consultation, 'Patient Name':str(appt.patient), 'Patient DOB':str(appt.patient.dob), 'Patient Address':f'{appt.patient.more.address}, {appt.patient.more.postal_code}', 'Patient Email':appt.patient.email, 'Patient Phone #':str(appt.patient.phone), 'Patient OHIP':appt.patient.more.ohip_number, 'Patient OHIP Expiry':str(appt.patient.more.ohip_expiry), 'Patient Pharmacy':appt.patient.more.pharmacy, 'Doctor Notes':ApptDetails.objects.get(appt=appt).notes, 'Prescription':ApptDetails.objects.get(appt=appt).prescription}
+                        col_lookup = {'Date':str(appt.date), 'Time':dict(IntTimes.choices)[appt.time], 'Consultation':appt.consultation, 'Patient Name':str(appt.patient), 'Patient DOB':str(appt.patient.more.dob), 'Patient Address':f'{appt.patient.more.address}, {appt.patient.more.postal_code}', 'Patient Email':appt.patient.email, 'Patient Phone #':str(appt.patient.phone), 'Patient OHIP':appt.patient.more.ohip_number, 'Patient OHIP Expiry':str(appt.patient.more.ohip_expiry), 'Patient Pharmacy':appt.patient.more.pharmacy, 'Doctor Notes':ApptDetails.objects.get(appt=appt).notes, 'Prescription':ApptDetails.objects.get(appt=appt).prescription}
 
                         if fileType == 'csv':
                             row = list(map(lambda x: col_lookup[x], columns))
@@ -190,83 +190,83 @@ def apptHistory(request):
     return render(request, 'downloadhistory.html')
 
 
-@login_required
-def downloadApptHistory(request):
-    u=request.user
-    if u.is_authenticated:
-        if u.type == 'DOCTOR':# and (fileType == 'xls' or fileType == 'csv'):
-            if request.method == 'POST':
-                appts = Appointment.objects.filter(doctor=u, booked=True, datetime__lt=getDateTimeNow())
+# @login_required
+# def downloadApptHistory(request):
+#     u=request.user
+#     if u.is_authenticated:
+#         if u.type == 'DOCTOR':# and (fileType == 'xls' or fileType == 'csv'):
+#             if request.method == 'POST':
+#                 appts = Appointment.objects.filter(doctor=u, booked=True, datetime__lt=getDateTimeNow())
                 
-                fileType=''
+#                 fileType=''
 
-                fileName = str(datetime.now().date()) + ' Appointment History'
+#                 fileName = str(datetime.now().date()) + ' Appointment History'
 
-                #column header names, you can use your own headers here
-                columns = ['Date', 'Time', 'Consultation', 'Patient Name', 'Patient DOB', 'Patient Address', 'Patient Email', 'Patient Phone #', 'Patient OHIP', 'Patient OHIP Expiry', 'Patient Pharmacy', 'Doctor Notes', 'Prescription']
+#                 #column header names, you can use your own headers here
+#                 columns = ['Date', 'Time', 'Consultation', 'Patient Name', 'Patient DOB', 'Patient Address', 'Patient Email', 'Patient Phone #', 'Patient OHIP', 'Patient OHIP Expiry', 'Patient Pharmacy', 'Doctor Notes', 'Prescription']
                 
-                if fileType == 'xls':
-                    # content-type of response
-                    response = HttpResponse(content_type='application/ms-excel')
+#                 if fileType == 'xls':
+#                     # content-type of response
+#                     response = HttpResponse(content_type='application/ms-excel')
 
-                    #decide file name
-                    response['Content-Disposition'] = f'attachment; filename={fileName}.xls'
+#                     #decide file name
+#                     response['Content-Disposition'] = f'attachment; filename={fileName}.xls'
 
-                    #creating workbook
-                    wb = xlwt.Workbook(encoding='utf-8')
+#                     #creating workbook
+#                     wb = xlwt.Workbook(encoding='utf-8')
 
-                    #adding sheet
-                    ws = wb.add_sheet("sheet1")
+#                     #adding sheet
+#                     ws = wb.add_sheet("sheet1")
 
-                    # Sheet header, first row
-                    row_num = 0
+#                     # Sheet header, first row
+#                     row_num = 0
 
-                    font_style = xlwt.XFStyle()
-                    # headers are bold
-                    font_style.font.bold = True
+#                     font_style = xlwt.XFStyle()
+#                     # headers are bold
+#                     font_style.font.bold = True
 
-                    #write column headers in sheet
-                    for col_num in range(len(columns)):
-                        ws.write(row_num, col_num, columns[col_num], font_style)
+#                     #write column headers in sheet
+#                     for col_num in range(len(columns)):
+#                         ws.write(row_num, col_num, columns[col_num], font_style)
 
-                    # Sheet body, remaining rows
-                    font_style = xlwt.XFStyle()
+#                     # Sheet body, remaining rows
+#                     font_style = xlwt.XFStyle()
 
-                    #get your data, from database or from a text file...
-                    for appt in appts:
-                        row_num += 1
-                        print(appt.date)
-                        ws.write(row_num, 0, str(appt.date), font_style)
-                        ws.write(row_num, 1, dict(IntTimes.choices)[appt.time], font_style)
-                        ws.write(row_num, 2, appt.consultation, font_style)
-                        ws.write(row_num, 3, str(appt.patient), font_style)
-                        ws.write(row_num, 4, str(appt.patient.dob), font_style)
-                        ws.write(row_num, 5, f'{appt.patient.more.address}, {appt.patient.more.postal_code}', font_style)
-                        ws.write(row_num, 6, appt.patient.email, font_style)
-                        ws.write(row_num, 7, appt.patient.phone, font_style)
-                        ws.write(row_num, 8, appt.patient.more.ohip_number, font_style)
-                        ws.write(row_num, 9, str(appt.patient.more.ohip_expiry), font_style)
-                        ws.write(row_num, 10, appt.patient.more.pharmacy, font_style)
-                        ws.write(row_num, 11, ApptDetails.objects.get(appt=appt).notes, font_style)
-                        ws.write(row_num, 12, ApptDetails.objects.get(appt=appt).prescription, font_style)
+#                     #get your data, from database or from a text file...
+#                     for appt in appts:
+#                         row_num += 1
+#                         print(appt.date)
+#                         ws.write(row_num, 0, str(appt.date), font_style)
+#                         ws.write(row_num, 1, dict(IntTimes.choices)[appt.time], font_style)
+#                         ws.write(row_num, 2, appt.consultation, font_style)
+#                         ws.write(row_num, 3, str(appt.patient), font_style)
+#                         ws.write(row_num, 4, str(appt.patient.dob), font_style)
+#                         ws.write(row_num, 5, f'{appt.patient.more.address}, {appt.patient.more.postal_code}', font_style)
+#                         ws.write(row_num, 6, appt.patient.email, font_style)
+#                         ws.write(row_num, 7, appt.patient.phone, font_style)
+#                         ws.write(row_num, 8, appt.patient.more.ohip_number, font_style)
+#                         ws.write(row_num, 9, str(appt.patient.more.ohip_expiry), font_style)
+#                         ws.write(row_num, 10, appt.patient.more.pharmacy, font_style)
+#                         ws.write(row_num, 11, ApptDetails.objects.get(appt=appt).notes, font_style)
+#                         ws.write(row_num, 12, ApptDetails.objects.get(appt=appt).prescription, font_style)
 
-                    wb.save(response)
-                    return response
-                elif fileType == 'csv':
-                    response = HttpResponse(
-                        content_type='text/csv',
-                        headers={'Content-Disposition': f'attachment; filename={fileName}.csv'},
-                    )
-                    writer = csv.writer(response)
-                    writer.writerow(columns)
+#                     wb.save(response)
+#                     return response
+#                 elif fileType == 'csv':
+#                     response = HttpResponse(
+#                         content_type='text/csv',
+#                         headers={'Content-Disposition': f'attachment; filename={fileName}.csv'},
+#                     )
+#                     writer = csv.writer(response)
+#                     writer.writerow(columns)
                     
-                    for appt in appts:
-                        row = [str(appt.date), dict(IntTimes.choices)[appt.time], appt.consultation, str(appt.patient), str(appt.patient.dob), f'{appt.patient.more.address}, {appt.patient.more.postal_code}', appt.patient.email, str(appt.patient.phone), appt.patient.more.ohip_number, str(appt.patient.more.ohip_expiry), appt.patient.more.pharmacy, ApptDetails.objects.get(appt=appt).notes, ApptDetails.objects.get(appt=appt).prescription]
-                        writer.writerow(row)
-                        print(row)
-                    return response
+#                     for appt in appts:
+#                         row = [str(appt.date), dict(IntTimes.choices)[appt.time], appt.consultation, str(appt.patient), str(appt.patient.dob), f'{appt.patient.more.address}, {appt.patient.more.postal_code}', appt.patient.email, str(appt.patient.phone), appt.patient.more.ohip_number, str(appt.patient.more.ohip_expiry), appt.patient.more.pharmacy, ApptDetails.objects.get(appt=appt).notes, ApptDetails.objects.get(appt=appt).prescription]
+#                         writer.writerow(row)
+#                         print(row)
+#                     return response
 
-    return redirect('doctordashboard')
+#     return redirect('doctordashboard')
 
 
 # Redirect view right after creating an appointment to prevent unexpected form resubmissions

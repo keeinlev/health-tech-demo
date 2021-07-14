@@ -13,12 +13,12 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 class UserAdmin(BaseUserAdmin):
 
     # Change what fields are displayed when viewing existing Users
-    list_display = ('email', 'first_name', 'last_name', 'dob', 'type', 'is_active', 'is_superuser', 'id')
+    list_display = ('email', 'first_name', 'last_name', 'type', 'is_active', 'is_superuser', 'id')
 
     # Change what fields are accepted in User editing
     fieldsets = (
         (None, {'fields': ('email', 'password', 'type', 'is_active')}),
-        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone', 'dob',)}),
+        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone',)}),
     )
 
     # Change what fields are accepted in User creation
@@ -27,7 +27,7 @@ class UserAdmin(BaseUserAdmin):
             'classes': ('wide',),
             'fields': ('type', 'email', 'password1', 'password2')}
         ),
-        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone', 'dob',)})
+        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone',)})
     )
     
     # What field to search by

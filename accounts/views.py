@@ -90,14 +90,14 @@ def register(request):
                     # Through the form, first_name, last_name and dob have already been verified
                     # Through manual checking, phone and email have already been verified
                     # If we get an error here, it's because the email was valid, but already exists
-                    u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, dob=dob, type=User.Types.PATIENT, is_active=False)
+                    u = User.objects.create(first_name=first_name, last_name=last_name, preferred_name=preferred_name, phone=phone, email=email, type=User.Types.PATIENT, is_active=False)
                     if phone == None:
                         u.sms_notifications = False
                         u.save()
                     # We verified the length/format of ohip_number already and ohip_expiry was verified by the form
                     # If we get an error here, it's because the ohip number was valid, but already exists
                     # However, we already created u, so we must delete it later (it should be the last user in the model Queryset)
-                    PatientInfo.objects.create(user=u, address=address, postal_code=postal_code, address_coords=coords, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
+                    PatientInfo.objects.create(user=u, dob=dob, address=address, postal_code=postal_code, address_coords=coords, ohip_number=ohip_number, ohip_expiry=ohip_expiry)
 
                 except IntegrityError as e:
                     # IntegrityError catches non-unique entries for fields that must be unique
@@ -176,6 +176,7 @@ def editprofile(request):
                     try:
                         # Updates the PatientInfo object associated to u, but have to catch possible non-unique OHIP number
                         pi = PatientInfo.objects.filter(user = u).first()
+
                         # Getting Address lat/long
                         address = form.cleaned_data['address']
                         postal_code = form.cleaned_data['postal_code']
@@ -198,6 +199,7 @@ def editprofile(request):
                         ohip_expiry = form.cleaned_data['ohip_expiry']
                         pi.ohip_number = ohip_number
                         pi.ohip_expiry = form.cleaned_data['ohip_expiry']
+                        pi.dob = form.cleaned_data['dob']
                         pi.save()
                     except IntegrityError as e:
                         return render(request, "editprofile.html", {'form': form, 'message': 'OHIP number already registered to existing account!'})
@@ -217,7 +219,6 @@ def editprofile(request):
 
                 u.first_name = form.cleaned_data['first_name']
                 u.last_name = form.cleaned_data['last_name']
-                u.dob = form.cleaned_data['dob']
                 u.phone = phone
                 u.sms_notifications = form.cleaned_data['sms_notis']
                 u.email_notifications = form.cleaned_data['email_notis']
@@ -232,7 +233,6 @@ def editprofile(request):
             init = {
                 'first_name': u.first_name,
                 'last_name': u.last_name,
-                'dob': u.dob,
                 'email_notis': u.email_notifications,
                 'sms_notis': u.sms_notifications,
             }
@@ -255,6 +255,7 @@ def editprofile(request):
                 init['postal_code'] = p.more.postal_code
                 init['ohip'] = p.more.ohip_number
                 init['ohip_expiry'] = p.more.ohip_expiry
+                init['dob']= p.more.dob
 
                 # Put all the existing user information as initial values in the form
                 form = PatientEditForm(initial=init)

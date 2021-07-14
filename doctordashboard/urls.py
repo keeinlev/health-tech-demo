@@ -14,5 +14,4 @@ urlpatterns = [
     url(r'^ajax/checkifbooked/$', views.checkifbooked, name='checkifbooked'),
     path('cancelmult', views.cancelmult, name='cancelmult'),
     path('apptHistory', views.apptHistory, name='appthistory'),
-    path('downloadappthistory', views.downloadApptHistory, name='downloadappthistory'),
 ]

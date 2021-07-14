@@ -22,15 +22,15 @@ class BookTest(StaticLiveServerTestCase):
         super().setUpClass()
         cls.selenium = webdriver.Chrome('C:\\bin\\chromedriver.exe')
         cls.selenium.implicitly_wait(5)
-        new = User.objects.create(type='PATIENT', email='test@gmail.com', first_name='test', last_name='user', dob='2000-02-02', phone='0129438492')
-        new2 = User.objects.create(type='DOCTOR', email='test2@gmail.com', first_name='test', last_name='doctor', dob='2000-02-02', phone='0129438493')
+        new = User.objects.create(type='PATIENT', email='test@gmail.com', first_name='test', last_name='user', phone='0129438492')
+        new2 = User.objects.create(type='DOCTOR', email='test2@gmail.com', first_name='test', last_name='doctor', phone='0129438493')
         new.set_password('asdfghjkl')
         new.save()
         new2.set_password('asdfghjkl')
         new2.save()
         cls.test_user = new
         cls.test_doctor = new2
-        PatientInfo.objects.create(user=cls.test_user, ohip_number='9999-999-999-ZZ', ohip_expiry='2022-02-02')
+        PatientInfo.objects.create(user=cls.test_user, ohip_number='9999-999-999-ZZ', dob='2000-02-02', ohip_expiry='2022-02-02')
         DoctorInfo.objects.create(user=cls.test_doctor, consultations='Fever, Cold, Aches', certification='Family M.D.', languages='English, French, Chinese')
         d = datetime.now() + timedelta(days=2)
         cls.test_appt = Appointment.objects.create(doctor=cls.test_doctor, date=str(d.date()), time=800, datetime=datetime(d.year, d.month, d.day, 8, 0).astimezone(eastern))
@@ -71,15 +71,15 @@ class AppointmentTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        new = User.objects.create(type='PATIENT', email='test3@gmail.com', first_name='test', last_name='user', dob='2000-02-02', phone='0129438492')
-        new2 = User.objects.create(type='DOCTOR', email='test4@gmail.com', first_name='test', last_name='doctor', dob='2000-02-02', phone='0129438493')
+        new = User.objects.create(type='PATIENT', email='test3@gmail.com', first_name='test', last_name='user', phone='0129438492')
+        new2 = User.objects.create(type='DOCTOR', email='test4@gmail.com', first_name='test', last_name='doctor', phone='0129438493')
         new.set_password('asdfghjkl')
         new.save()
         new2.set_password('asdfghjkl')
         new2.save()
         cls.test_user = new
         cls.test_doctor = new2
-        PatientInfo.objects.create(user=cls.test_user, ohip_number='9999-999-999-XX', ohip_expiry='2022-02-02')
+        PatientInfo.objects.create(user=cls.test_user, ohip_number='9999-999-999-XX', dob='2000-02-02', ohip_expiry='2022-02-02')
         DoctorInfo.objects.create(user=cls.test_doctor, consultations='Fever, Cold, Aches', certification='Family M.D.', languages='English, French, Chinese')
 
     def testAppointmentBasic(self):

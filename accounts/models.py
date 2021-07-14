@@ -55,7 +55,6 @@ class User(AbstractUser):
     preferred_name = models.CharField(_("User Preferred Name"), max_length=50, blank=True, null=True, default=None)
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
-    dob = models.DateField(default=timezone.now)
     ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
     email_notifications = models.BooleanField(_("Email Notifications"), default=True)
     sms_notifications = models.BooleanField(_("SMS Notifications"), default=True)
@@ -115,6 +114,7 @@ class Patient(User):
 # Details for Patient object, linked one-to-one
 class PatientInfo(models.Model):
     user = models.OneToOneField(Patient, on_delete=models.CASCADE, unique=True)
+    dob = models.DateField(default=timezone.now)
     ohip_number = models.CharField(_("OHIP Number"), max_length=15, unique=True, validators=[RegexValidator(regex='^.{15}$', message="Must be in format XXXX-XXX-XXX-XX", code='nomatch')])
     #ohip_version_code = models.CharField(_("OHIP Version Code"), max_length=2, validators=[RegexValidator(regex='^{2}$', message="Length must be 2", code='nomatch')])
     ohip_expiry = models.DateField(_("OHIP Expiry Date"), default=timezone.now)
@@ -155,4 +155,4 @@ def createdoctor():
     d.set_password(password)
     d.save()
     DoctorInfo.objects.create(user=d, certification=certification, consultations=consultations, languages=languages)
-    print("Doctor created! Please add a meeting URL in the Edit Profile page once logged in.")
+    print("Doctor created!")

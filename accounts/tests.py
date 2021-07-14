@@ -108,7 +108,7 @@ class UserTest(StaticLiveServerTestCase):
         assert test_user.email == 'test@gmail.com'
         assert test_user.phone == '1234567891'
         assert test_user.is_active == False
-        assert test_user.dob == date(2000, 2, 2)
+        assert test_user.userType.more.dob == date(2000, 2, 2)
         assert test_user.userType.more.ohip_number == '1234-123-123-GF'
         assert test_user.userType.more.ohip_expiry == date(2022, 2, 2)
         print(f'{"Successful Registration":.<30}OK')
@@ -141,10 +141,10 @@ class UserTest(StaticLiveServerTestCase):
             self.missingFieldHelper(regData.copy(), k)
 
     def untestUserFunctions(self):
-        new = User.objects.create(type='PATIENT', email='test@gmail.com', first_name='test', last_name='user', dob='2000-02-02', phone='1239393921')
+        new = User.objects.create(type='PATIENT', email='test@gmail.com', first_name='test', last_name='user', phone='1239393921')
         new.set_password('asdfghjkl')
         new.save()
-        PatientInfo.objects.create(user=new, ohip_number="4321-123-123-HJ", ohip_expiry="2022-02-02")
+        PatientInfo.objects.create(user=new, ohip_number="4321-123-123-HJ", ohip_expiry="2022-02-02", dob='2000-02-02')
         selenium = self.selenium
         selenium.get('%s%s' % (self.live_server_url, '/accounts/login'))
         time.sleep(2)

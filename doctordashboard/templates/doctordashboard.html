@@ -26,7 +26,7 @@
                             <div class="ui calendar" id="bookcalendar"></div>
                             <small id="already-booked"></small><br />
                             {{ single_appt_form }}
-                            <b class='cancel-text' onclick='clearCalendar()'>Clear Calendar</b>
+                            <b class='cancel-text' onclick='clearCalendar()'>Clear Selection</b>
                             <input type="submit" id="booksubmit" onsubmit="return false" class="btn-lg btn-block btn-secondary display-hidden time-input" value="Save">
                         </form>
                         <div class='appt-search row'>
@@ -196,7 +196,7 @@
                                             Patient DOB:
                                         </div>
                                         <div class='col-6 patient-info patient-info-md'>
-                                            {{ appt.patient.dob }}
+                                            {{ appt.patient.more.dob }}
                                         </div>
                                     </div>
                                     <div class='row'>
