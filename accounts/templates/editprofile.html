@@ -80,9 +80,13 @@
                     Current Consultations:
                     {{ form.consultations }}
                     <div id='current-consults' class='autocomplete-cont'>
-                        {% for c in consultations %}
-                        <div class='autocomplete-item consult-item'>&times;&nbsp;&nbsp;{{ c }}</div>
-                        {% endfor %}
+                        {% if consultations %}
+                            {% for c in consultations %}
+                            <div class='autocomplete-item consult-item'>&times;&nbsp;&nbsp;{{ c }}</div>
+                            {% endfor %}
+                        {% else %}
+                            None
+                        {% endif %}
                     </div>
                     <div class="autocomplete">
                         <input id="consult-input" class="form-control" type="text" placeholder="Add Consultations">
@@ -93,9 +97,13 @@
                     Current Languages:
                     {{ form.languages }}
                     <div id='current-languages' class='autocomplete-cont'>
-                        {% for l in languages %}
-                        <div class='autocomplete-item language-item'>&times;&nbsp;&nbsp;{{ l }}</div>
-                        {% endfor %}
+                        {% if languages %}
+                            {% for l in languages %}
+                            <div class='autocomplete-item language-item'>&times;&nbsp;&nbsp;{{ l }}</div>
+                            {% endfor %}
+                        {% else %}
+                            None
+                        {% endif %}
                     </div>
                     <div class="autocomplete">
                         <input id="language-input" class="form-control" type="text" placeholder="Add Languages">

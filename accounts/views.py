@@ -242,12 +242,14 @@ def editprofile(request):
                 d = Doctor.objects.filter(id=u.id).first()
 
                 init['qualifications'] = d.more.certification
-                init['consultations'] = d.more.consultations
-                init['languages'] = d.more.languages
-
+                if d.more.consultations:
+                    init['consultations'] = d.more.consultations
+                if d.more.languages:
+                    init['languages'] = d.more.languages
+                print(init)
                 # Put all the existing user information as initial values in the form
                 form = DoctorEditForm(initial=init)
-                return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', '), 'languages': d.more.languages.split(', '),})
+                return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', ') if d.more.consultations else None, 'languages': d.more.languages.split(', ') if d.more.languages else None,})
             else:
                 p = Patient.objects.filter(id=u.id).first()
 

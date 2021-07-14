@@ -30,11 +30,21 @@ function autocomplete(inp, arr) {
         for (var i = 0; i < arr.length; i++) {
             if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
                 b = document.createElement("DIV");
+                
                 b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
                 b.innerHTML += arr[i].substr(val.length);
-                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                if (inp.id == 'consult-input') {
+                    b.setAttribute('class', 'autocomplete-dropdown-item consult-dropdown-item')
+                    b.innerHTML += "<input type='hidden' class='consult' value='" + arr[i] + "'>";
+                }
+                else if (inp.id == 'language-input') {
+                    b.setAttribute('class', 'autocomplete-dropdown-item language-dropdown-item')
+                    b.innerHTML += "<input type='hidden' class='language' value='" + arr[i] + "'>";
+                }
                 b.addEventListener("click", function (e) {
                     inp.value = this.getElementsByTagName("input")[0].value;
+                    addToHiddenWrapper(inp);
+                    inp.value = '';
                     closeAllLists();
                 });
                 a.appendChild(b);
@@ -58,12 +68,9 @@ function autocomplete(inp, arr) {
                 if (currentFocus > -1) {
                     if (y)
                         y[currentFocus].click();
-                }
-                if (this.id == 'consult-input') {
-                    addToHidden(this, document.getElementById('id_consultations'), 'current-consults');
-                }
-                else if (this.id == 'language-input') {
-                    addToHidden(this, document.getElementById('id_languages'), 'current-languages');
+                } else {
+                    // if input is not in the autocomplete list
+                    addToHiddenWrapper(inp);
                 }
             }
         }
@@ -98,6 +105,7 @@ function autocomplete(inp, arr) {
 function addToHidden(addInput, to, label) {
     //addInput = document.getElementById('consult-input');
     //to = document.getElementById('id_consultations');
+    display = document.getElementById(label);
     if (!to.value.includes(addInput.value)) {
         if (to.value == '') {
             to.value = addInput.value;
@@ -105,7 +113,18 @@ function addToHidden(addInput, to, label) {
         else {
             to.value += ', ' + addInput.value;
         }
-        document.getElementById(label).innerHTML += "\n<div class='autocomplete-item" + ((label == 'current-languages') ? " language-item" : " consult-item") + "'>" + "&times;&nbsp;&nbsp;" + addInput.value + "</div>";
+        if (display.innerHTML.includes('None')){
+            display.innerHTML = '';
+        }
+        display.innerHTML += "\n<div class='autocomplete-item" + ((label == 'current-languages') ? " language-item" : " consult-item") + "'>" + "&times;&nbsp;&nbsp;" + addInput.value + "</div>";
     }
     addInput.value = '';
+}
+function addToHiddenWrapper(x) {
+    if (x.id == 'consult-input') {
+        addToHidden(x, document.getElementById('id_consultations'), 'current-consults');
+    }
+    else if (x.id == 'language-input') {
+        addToHidden(x, document.getElementById('id_languages'), 'current-languages');
+    }
 }
