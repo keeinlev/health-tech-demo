@@ -74,7 +74,7 @@ def register(request):
 
                 # OHIP checking format 'XXXX-XXX-XXX-XX'
                 if (len(ohip_number) != 15 or ohip_number[4] != '-' or ohip_number[8] != '-' or ohip_number[12] != '-'):
-                    message = "Registration unsuccessful. Please make sure phone number is in the correct format."
+                    message = "Registration unsuccessful. Please make sure OHIP number is in the correct format."
                     return render(request, "register.html", {'form': form, 'message': message})
                 ohip_number = ohip_number.upper()
                 ohip_expiry = form.cleaned_data['ohip_expiry']
@@ -182,24 +182,43 @@ def editprofile(request):
                         if address != pi.address or postal_code != pi.postal_code:
                             geocode_res = geocode(address, postal_code)
                             if (geocode_res['status'] != 'OK'):
-                                message = "Registration unsuccessful. Address and/or Postal Code not found."
+                                message = "Profile Edit unsuccessful. Address and/or Postal Code not found."
                                 return render(request, "editprofile.html", {'form': form, 'message': message})
                             coords = geocode_res["results"][0]["geometry"]["location"]
                             coords = f'{coords["lat"]},{coords["lng"]}'
                             pi.address = address
                             pi.postal_code = postal_code
                             pi.address_coords = coords
-                        pi.ohip_number = str(form.cleaned_data['ohip1']) + '-' + str(form.cleaned_data['ohip2']) + '-' + str(form.cleaned_data['ohip3']) + '-' + form.cleaned_data['ohip_version'].upper()
+                        
+                        # OHIP checking format 'XXXX-XXX-XXX-XX'
+                        ohip_number = form.cleaned_data['ohip'].upper()
+                        if (len(ohip_number) != 15 or ohip_number[4] != '-' or ohip_number[8] != '-' or ohip_number[12] != '-'):
+                            message = "Profile Edit unsuccessful. Please make sure OHIP number is in the correct format."
+                            return render(request, "editprofile.html", {'form': form, 'message': message})
+                        ohip_expiry = form.cleaned_data['ohip_expiry']
+                        pi.ohip_number = ohip_number
                         pi.ohip_expiry = form.cleaned_data['ohip_expiry']
                         pi.save()
                     except IntegrityError as e:
                         return render(request, "editprofile.html", {'form': form, 'message': 'OHIP number already registered to existing account!'})
                 
                 # These fields are shared by both Patients and Doctors, so can just save to the general user
+
+                # Making sure phone number is 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
+                phone = form.cleaned_data['phone']
+                if phone:
+                    phone = str(phone)
+                else:
+                    phone = None
+                if (phone and len(phone) != 10):
+                    message = "Profile Edit unsuccessful. Please make sure phone number is in the correct format."
+                    return render(request, "editprofile.html", {'form': form, 'message': message})
+
+
                 u.first_name = form.cleaned_data['first_name']
                 u.last_name = form.cleaned_data['last_name']
                 u.dob = form.cleaned_data['dob']
-                u.phone = str(form.cleaned_data['phone1']) + str(form.cleaned_data['phone2']) + str(form.cleaned_data['phone3'])
+                u.phone = phone
                 u.sms_notifications = form.cleaned_data['sms_notis']
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
@@ -218,9 +237,7 @@ def editprofile(request):
                 'sms_notis': u.sms_notifications,
             }
             if u.phone != None:
-                init['phone1'] = u.phone[:3]
-                init['phone2'] = u.phone[3:6]
-                init['phone3'] = u.phone[6:]
+                init['phone'] = u.phone
             if u.type == "DOCTOR":
                 d = Doctor.objects.filter(id=u.id).first()
 
@@ -236,10 +253,7 @@ def editprofile(request):
 
                 init['address'] = p.more.address
                 init['postal_code'] = p.more.postal_code
-                init['ohip1'] = p.more.ohip_number[:4]
-                init['ohip2'] = p.more.ohip_number[5:8]
-                init['ohip3'] = p.more.ohip_number[9:12]
-                init['ohip_version'] = p.more.ohip_number[13:]
+                init['ohip'] = p.more.ohip_number
                 init['ohip_expiry'] = p.more.ohip_expiry
 
                 # Put all the existing user information as initial values in the form
