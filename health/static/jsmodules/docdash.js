@@ -72,6 +72,8 @@ function updateApptTable(details) {
         str += '\n    <td class="infocell">' + details[i]['booked'] + '</td>';
         str += '\n    <td class="infocell">' + details[i]['patient'] + '</td>';
         str += '\n    <td class="infocell"><a href="' + details[i]['detailsurl'] + '">Details</a></td>';
+        str += '\n    <td class="infocell"><a href="' + details[i]['meeturl'] + '">Meet</a></td>';
+        str += '\n    <td class="infocell"><a href="' + details[i]['cancelurl'] + '">Cancel</a></td>';
         str += '\n</tr>\n';
     }
     if (str) {
@@ -134,7 +136,7 @@ function clearCalendar() {
     $('#booksubmit').addClass("display-hidden");
 }
 
-$('#id_time').change(function() {
+$('#id_time').on("change", function() {
     $('#already-booked').html('');
     checkDate();
 })

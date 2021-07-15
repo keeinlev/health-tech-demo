@@ -68,7 +68,18 @@ input {
     table-layout:fixed;
 }
 .appttablehead {
-    width: 100%;
+    width: auto;
+    overflow-x:scroll;
+}
+.infotable-cont {
+    margin-right: auto;
+    margin-left: auto;
+    overflow-x:scroll;
+    overflow-y:hidden;
+    height:201px;
+    width:430px;
+    border-style: solid;
+    border-width: 1.1px;
 }
 .infotable {
     empty-cells: show;
@@ -76,10 +87,10 @@ input {
     border-collapse: collapse;
     border-spacing: 0;
     width: 430px;
-    border: 1px solid rgb(156, 156, 156);
     margin-left: auto;
     margin-right: auto;
     overflow-y: scroll;
+    overflow-x:scroll;
     height: 200px;
     max-height: 200px;
 }

@@ -43,7 +43,7 @@
                                 <input type="text" id="search-bar" class='form-control' placeholder="Search by Patient (first, last, preferred name)">
                             </div>
                         </div>
-                        <div style="overflow-x:auto; height:201px;">
+                        <div class='infotable-cont'>
                             <table class='infotable' id='appointment-table'>
                                 <thead class='appttablehead'>
                                     <tr>
@@ -52,10 +52,14 @@
                                         <th class='infohead'>Availability</th>
                                         <th class='infohead'>Patient</th>
                                         <th class='infohead'>Details</th>
+                                        <th class='infohead'>Meet</th>
+                                        <th class='infohead'>Cancel</th>
                                     </tr>
                                 </thead>
                                 <tbody class='appttablebody'>
-                                    <tr id='default-row'>
+                                    <tr id='default-row' class='appttablerow'>
+                                        <td class='infocell'></td>
+                                        <td class='infocell'></td>
                                         <td class='infocell'></td>
                                         <td class='infocell'></td>
                                         <td class='infocell'></td>

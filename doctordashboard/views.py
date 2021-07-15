@@ -476,6 +476,8 @@ def getdates(request):
                     'booked': "<b style='color:" + ("red'>Booked" if a.booked else "green'>Available") + "</b>",
                     'patient': f'{a.patient.first_name} {a.patient.last_name}' if a.patient else "None",
                     'detailsurl': reverse('details', kwargs={'pk': a.pk}),
+                    'meeturl': reverse('meeting_redir', kwargs={'pk': a.pk}),
+                    'cancelurl': reverse('cancelappt', kwargs={'pk': a.pk}),
                 })
             data = {'apptdata': appts}
             return JsonResponse(data)
