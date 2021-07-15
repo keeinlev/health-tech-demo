@@ -175,3 +175,22 @@ function checkDate() {
         $('#already-booked').html("Please select a date from the calendar.");
     }
 }
+
+var prevGroup = 'all';
+$('#upcoming-filter').on('change', function() {
+	var group = this.value;
+    var prevJQ = $(`.appointment-box[appt-group=${prevGroup}]`);
+    if (prevJQ.length) {
+        prevJQ.addClass('display-hidden');
+    } else {
+        $(`#${prevGroup}-empty`).addClass('display-hidden');
+    }
+    
+    var newgroup = $(`.appointment-box[appt-group=${group}]`);
+    if (newgroup.length) {
+        newgroup.removeClass('display-hidden');
+    } else {
+        $(`#${group}-empty`).removeClass('display-hidden');
+    }
+    prevGroup = group;
+})

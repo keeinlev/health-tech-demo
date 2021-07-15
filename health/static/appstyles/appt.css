@@ -39,3 +39,14 @@
         line-height: 40px;
     }
 }
+.appt-range {
+    margin-bottom: 2%;
+    border-style: solid;
+    border-color: rgb(179, 179, 179);
+    border-width: 0.8px;
+    padding-top: 10px;
+    border-radius: 5px;
+}
+.doctor-submit {
+    margin-top:20px;
+}

@@ -132,6 +132,18 @@ class Doctor(User):
     
     class Meta:
         proxy = True
+    
+    @property
+    def getSomeBookedAppts(self):
+        return self.getAppts.filter(booked=True)[:10]
+
+    @property
+    def getSomeOpenAppts(self):
+        return self.getAppts.filter(booked=False)[:10]
+
+    @property
+    def upcomingGroups(self):
+        return [{'name':'all', 'appts':self.getSomeAppts}, {'name':'open', 'appts':self.getSomeOpenAppts}, {'name':'booked', 'appts':self.getSomeBookedAppts}]
 
 # Details for Doctor object, linked one-to-one
 class DoctorInfo(models.Model):
