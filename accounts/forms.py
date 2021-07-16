@@ -26,8 +26,8 @@ class UserEditForm(forms.Form):
     # phone1 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol phone-inputs", 'id': "phone1", 'maxlength': "3", 'placeholder': "XXX"}))
     # phone2 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol phone-inputs", 'id': "phone2", 'maxlength': "3", 'placeholder': "XXX"}))
     # phone3 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol phone-inputs", 'id': "phone3", 'maxlength': "4", 'placeholder': "XXXX"}))
-    email_notis = forms.BooleanField(label=False, required=False, widget=forms.CheckboxInput(attrs={'data-toggle':'toggle', 'data-on': 'On', 'data-off': 'Off', 'data-onstyle':'success', 'data-offstyle':'secondary'}))
-    sms_notis = forms.BooleanField(label=False, required=False, widget=forms.CheckboxInput(attrs={'data-toggle':'toggle', 'data-on': 'On', 'data-off': 'Off', 'data-onstyle':'success', 'data-offstyle':'secondary'}))
+    email_notis = forms.BooleanField(label=False, required=False, widget=forms.CheckboxInput(attrs={'data-toggle':'toggle', 'data-on': 'On', 'data-off': 'Off', 'data-onstyle':'success', 'data-offstyle':'secondary', 'class':'email-notis'}))
+    sms_notis = forms.BooleanField(label=False, required=False, widget=forms.CheckboxInput(attrs={'data-toggle':'toggle', 'data-on': 'On', 'data-off': 'Off', 'data-onstyle':'success', 'data-offstyle':'secondary', 'class':'sms-notis'}))
 
 class DoctorEditForm(UserEditForm):
     qualifications = forms.CharField(label=False, required=True, widget=forms.Textarea(attrs={'class':'formcontrol'}))

@@ -220,6 +220,7 @@ def editprofile(request):
                 u.first_name = form.cleaned_data['first_name']
                 u.last_name = form.cleaned_data['last_name']
                 u.phone = phone
+                print(form.cleaned_data['email_notis'],form.cleaned_data['sms_notis'])
                 u.sms_notifications = form.cleaned_data['sms_notis']
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
