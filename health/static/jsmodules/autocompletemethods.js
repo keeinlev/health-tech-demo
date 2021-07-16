@@ -66,8 +66,9 @@ function autocomplete(inp, arr) {
             else if (e.key == "Enter") {
                 e.preventDefault();
                 if (currentFocus > -1) {
-                    if (y)
+                    if (y){
                         y[currentFocus].click();
+                    }
                 } else {
                     // if input is not in the autocomplete list
                     addToHiddenWrapper(inp);

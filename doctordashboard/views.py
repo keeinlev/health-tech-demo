@@ -467,8 +467,11 @@ def getdates(request):
     if (u.is_authenticated):
         if u.type == "DOCTOR":
             date = request.GET.get('date', None)
+            selected_appts = Appointment.objects.filter(doctor=u, datetime__gte=datetime.now().astimezone(utc))
+            if date:
+                selected_appts = u.getAppts.filter(doctor=u, date=date)
             appts = []
-            for a in u.getAppts.filter(date=date):
+            for a in selected_appts:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
                 appts.append({
                     'date': str(a.date),
@@ -479,7 +482,12 @@ def getdates(request):
                     'meeturl': reverse('meeting_redir', kwargs={'pk': a.pk}),
                     'cancelurl': reverse('cancelappt', kwargs={'pk': a.pk}),
                 })
-            data = {'apptdata': appts}
+            data = {
+                'apptdata': appts,
+                'all-count': len(selected_appts),
+                'open-count': len(selected_appts.filter(booked=False)),
+                'booked-count': len(selected_appts.filter(booked=True)),
+            }
             return JsonResponse(data)
     return JsonResponse({})
 

@@ -4,6 +4,7 @@ var todayISO = today.toISOString().split('T')[0];
 window.onload = function() {
     document.getElementById('id_startdate').setAttribute('min', todayISO);
     document.getElementById('id_c_startdate').setAttribute('min', todayISO);
+    fetchAppts()
 }
 
 $('#id_startdate').on("change", function() {
@@ -114,10 +115,13 @@ $('#search-bar').on("keyup", function() {
 
 function fetchAppts() {
     rawdate = $('#bookcalendar').calendar('get date');
-    day = rawdate.getDate();
-    month = rawdate.getMonth() + 1;
-    year = rawdate.getFullYear();
-    date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    var day, month, year, date;
+    if (rawdate) {
+        day = rawdate.getDate();
+        month = rawdate.getMonth() + 1;
+        year = rawdate.getFullYear();
+        date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    }
     $('#default-row').addClass('display-hidden');
     $('.inforow').remove();
     $('input[name="date"]').val(date);
@@ -126,7 +130,13 @@ function fetchAppts() {
         data: $('#bookform').serialize(),
         dataType: 'json',
         success: function (data) {
-            updateApptTable(data['apptdata'])
+            updateApptTable(data['apptdata']);
+            current = $('#appt-summary-all')[0].innerHTML;
+            $('#appt-summary-all')[0].innerHTML = current.slice(0, current.indexOf('</b>') + 5) + data['all-count'].toString();
+            current = $('#appt-summary-open')[0].innerHTML;
+            $('#appt-summary-open')[0].innerHTML = current.slice(0, current.indexOf('</b>') + 5) + data['open-count'].toString();
+            current = $('#appt-summary-booked')[0].innerHTML;
+            $('#appt-summary-booked')[0].innerHTML = current.slice(0, current.indexOf('</b>') + 5) + data['booked-count'].toString();
         }
     });
 }
@@ -134,6 +144,7 @@ function fetchAppts() {
 function clearCalendar() {
     $("#bookcalendar").calendar("clear");
     $('#booksubmit').addClass("display-hidden");
+    fetchAppts();
 }
 
 $('#id_time').on("change", function() {

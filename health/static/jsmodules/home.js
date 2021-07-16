@@ -4,7 +4,6 @@ window.onload = function() {
     $('.action-button')[0].style.opacity = 1;
 }
 window.onscroll = function() {
-    console.log(window.pageYOffset)
     if (window.pageYOffset > 0) {
         try {
             $('.notification').addClass('shadow');

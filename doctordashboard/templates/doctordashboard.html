@@ -25,14 +25,17 @@
                             <input type='hidden' id='patient-search' name='patient-search'>
                             <div class="ui calendar" id="bookcalendar"></div>
                             <small id="already-booked"></small><br />
-                            <b class='cancel-text' onclick='clearCalendar()'>Clear Selection</b>
+                            
                             {{ single_appt_form.doctor }}
                             {{ single_appt_form.date }}
                             <div class='row' style='margin-bottom: 20px; margin-top: 20px;'>
                                 <div class='col-4'>
+                                    <b class='cancel-text' onclick='clearCalendar()'>Clear Selection</b>
+                                </div>
+                                <div class='col-4'>
                                     {{ single_appt_form.time }}
                                 </div>
-                                <div class='8'>
+                                <div class='col-4'>
                                     <input type="submit" id="booksubmit" onsubmit="return false" class=" btn btn-secondary display-hidden" value="Save">
                                 </div>
                             </div>
@@ -43,32 +46,48 @@
                                 <input type="text" id="search-bar" class='form-control' placeholder="Search by Patient (first, last, preferred name)">
                             </div>
                         </div>
-                        <div class='infotable-cont'>
-                            <table class='infotable' id='appointment-table'>
-                                <thead class='appttablehead'>
-                                    <tr>
-                                        <th class='infohead'>Date</th>
-                                        <th class='infohead'>Time</th>
-                                        <th class='infohead'>Availability</th>
-                                        <th class='infohead'>Patient</th>
-                                        <th class='infohead'>Details</th>
-                                        <th class='infohead'>Meet</th>
-                                        <th class='infohead'>Cancel</th>
-                                    </tr>
-                                </thead>
-                                <tbody class='appttablebody'>
-                                    <tr id='default-row' class='appttablerow'>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                        <td class='infocell'></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                          </div>
+                        <br>
+                        <div class='row' style='margin-left:20px; margin-bottom:20px;'>
+                            <div class='col-4' id='appt-summary-all'>
+                                <b>All:</b> {{ user.userType.apptGroupLengths.all }}
+                            </div>
+                            <div class='col-4' id='appt-summary-open'>
+                                <b style='color:green'>Open:</b> {{ user.userType.apptGroupLengths.open }}
+                            </div>
+                            <div class='col-4' id='appt-summary-booked'>
+                                <b style='color:red'>Booked:</b> {{ user.userType.apptGroupLengths.booked }}
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-12'>
+                                <div class='infotable-cont'>
+                                    <table class='infotable' id='appointment-table'>
+                                        <thead class='appttablehead'>
+                                            <tr>
+                                                <th class='infohead'>Date</th>
+                                                <th class='infohead'>Time</th>
+                                                <th class='infohead'>Availability</th>
+                                                <th class='infohead'>Patient</th>
+                                                <th class='infohead'>Details</th>
+                                                <th class='infohead'>Meet</th>
+                                                <th class='infohead'>Cancel</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class='appttablebody'>
+                                            <tr id='default-row' class='appttablerow'>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                                <td class='infocell'></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class='col-12 col-md-6'>

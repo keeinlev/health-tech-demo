@@ -1,5 +1,4 @@
 window.onscroll = function() {
-    console.log(window.pageYOffset)
     if (window.pageYOffset > 0) {
         try {
             $('.notification').addClass('shadow');

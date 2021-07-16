@@ -145,6 +145,14 @@ class Doctor(User):
     def upcomingGroups(self):
         return [{'name':'all', 'appts':self.getSomeAppts}, {'name':'open', 'appts':self.getSomeOpenAppts}, {'name':'booked', 'appts':self.getSomeBookedAppts}]
 
+    @property
+    def apptGroupLengths(self):
+        return {
+            'all': len(self.getAppts),
+            'open': len(self.getAppts.filter(booked=False)),
+            'booked': len(self.getAppts.filter(booked=True)),
+        }
+
 # Details for Doctor object, linked one-to-one
 class DoctorInfo(models.Model):
     user = models.OneToOneField(Doctor, on_delete=models.CASCADE, unique=True)
