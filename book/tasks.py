@@ -63,12 +63,12 @@ def send_reminder(appt_id, purpose):
             messageVar2 = f'\nJoin: {redirect_url}'
 
             # Appointment type is video if True, phone if False
-            if not appt.type:
+            if not appt.type and appt.patient.phone != None:
                 messageVar1 = f'\nThe doctor will call this number: +1{patient_phone}'
                 messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
             
             # Sending of messages
-            if patient.sms_notifications:
+            if patient.sms_notifications and appt.patient.phone != None:
                 # message1 = client.messages.create(
                 #     body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
                 #     from_=SIGNALWIRE_NUMBER,
@@ -79,7 +79,7 @@ def send_reminder(appt_id, purpose):
                     messageVar1,
                     patient_phone
                 )
-            if doctor.sms_notifications:
+            if doctor.sms_notifications and appt.doctor.phone != None:
                 # message2 = client.messages.create(
                 #     body=f'Hello {doctor.first_name}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
                 #     from_=SIGNALWIRE_NUMBER,

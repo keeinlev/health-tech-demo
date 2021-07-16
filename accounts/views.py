@@ -23,6 +23,14 @@ from health.settings import SMS_CARRIER, GOOGLE_MAPS_API_KEY
 
 from pprint import pprint
 
+def cleanNumberField(s):
+    new = ''
+    for c in s:
+        try:
+            new += str(int(c))
+        except ValueError as e:
+            pass
+    return new
 
 # Create your views here.
 
@@ -50,7 +58,7 @@ def register(request):
                 password = form.cleaned_data['password1']
                 phone = form.cleaned_data['phone']
                 if phone:
-                    phone = str(phone)
+                    phone = cleanNumberField(str(phone))
                 else:
                     phone = None
 
@@ -209,7 +217,7 @@ def editprofile(request):
                 # Making sure phone number is 'XXXXXXXXXX', number-only entry is handled on frontend in register.js
                 phone = form.cleaned_data['phone']
                 if phone:
-                    phone = str(phone)
+                    phone = cleanNumberField(str(phone))
                 else:
                     phone = None
                 if (phone and len(phone) != 10):
@@ -237,7 +245,7 @@ def editprofile(request):
                 'sms_notis': u.sms_notifications,
             }
             if u.phone != None:
-                init['phone'] = u.phone
+                init['phone'] = u.formattedPhone
             if u.type == "DOCTOR":
                 d = Doctor.objects.filter(id=u.id).first()
 
