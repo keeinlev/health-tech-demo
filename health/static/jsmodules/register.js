@@ -101,7 +101,3 @@ $('.formcontrol').on("keyup", function(e) {
 $('#phone').on("focus", function() {
     $('#phone-help').removeClass('display-hidden');
 })
-
-$('#phone').on("blur", function() {
-    $('#phone-help').addClass('display-hidden');
-})

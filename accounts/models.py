@@ -163,6 +163,7 @@ class DoctorInfo(models.Model):
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
     consultations = models.TextField(_("Doctor's Applicable Consultations"))
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
+    location = models.CharField(_("Office Location"), null=True, blank=True, max_length=100, default=None)
 
 # Function that can be run in Python shell to create a Doctor object and its corresponding DoctorInfo (temporary)
 def createdoctor():

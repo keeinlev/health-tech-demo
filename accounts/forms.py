@@ -34,6 +34,7 @@ class DoctorEditForm(UserEditForm):
     qualifications = forms.CharField(label=False, required=True, widget=forms.Textarea(attrs={'class':'formcontrol'}))
     consultations = forms.CharField(label=False, required=False, widget=forms.HiddenInput())
     languages = forms.CharField(label=False, required=False, widget=forms.HiddenInput())
+    location = forms.CharField(label=False, required=False, widget=forms.TextInput(attrs={'type': "text", 'placeholder':'Location', 'class':'formcontrol'}))
     
 
 class PatientEditForm(UserEditForm):

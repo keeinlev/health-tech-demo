@@ -179,6 +179,7 @@ def editprofile(request):
                     di.certification = form.cleaned_data['qualifications']
                     di.consultations = form.cleaned_data['consultations']
                     di.languages = form.cleaned_data['languages']
+                    di.location = form.cleaned_data['location']
                     di.save()
                 else:
                     try:
@@ -254,6 +255,8 @@ def editprofile(request):
                     init['consultations'] = d.more.consultations
                 if d.more.languages:
                     init['languages'] = d.more.languages
+                if d.more.location:
+                    init['location'] = d.more.location
                 print(init)
                 # Put all the existing user information as initial values in the form
                 form = DoctorEditForm(initial=init)
