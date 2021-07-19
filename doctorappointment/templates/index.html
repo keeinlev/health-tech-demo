@@ -92,10 +92,12 @@
     {% endif %}
 </div>
 {% endblock %}
+<!--
 {% block body %}
     <div class="alert{% if not message %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
+    
     <div class="heading">
         {% if user.is_authenticated %}
             <div class='row justify-content-center' style='width:100%'>
@@ -116,7 +118,7 @@
                                                 Appointment on {{ appt.dateTime }} with Dr. {{ appt.doctor }}<br>
                                                 <a href="{{ appt.meeting_link }}" target="_blank">Meeting link</a>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <!--<div class='row'>
                                             <div class='col-6 appointment-status appointment-status-md'>
                                                 <b class="cancel-text" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').removeClass('hidden')">Cancel</b>&nbsp;&nbsp;
@@ -124,6 +126,7 @@
                                                 <b class="cancel-text hidden" id="confirm-no{{appt.id}}" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').addClass('hidden')">No</b>
                                             </div>
                                         </div>-->
+                                        <!--
                                         <div class='row'>
                                             <div class='col-12' style='margin-top:20px'><a href="{% url 'details' appt.pk %}">Details</a></div>
                                         </div>
@@ -142,7 +145,7 @@
             </div>
         {% endif %}
     </div>
-{% endblock %}
+{% endblock %}-->
 {% block bottom %}
 <div class='homepage-4'></div>
 {% endblock %}

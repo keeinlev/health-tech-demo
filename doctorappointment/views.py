@@ -13,10 +13,12 @@ def about(request):
 def login_redir(request):
     if (request.user.is_authenticated):
         remove_token(request)
-        if (request.user.type == "DOCTOR"):
+        if request.user.type == "DOCTOR":
             return redirect('doctordashboard')
+        elif request.user.type == 'PATIENT':
+            return redirect('patientdashboard')
         else:
-            return redirect('index')
+            return redirect('admin:index')
 
 def handler404(request, exception):
     response = render(request, 'alert.html', {'message': 'Oops! An error occured (Error code 404)', 'valid': False})

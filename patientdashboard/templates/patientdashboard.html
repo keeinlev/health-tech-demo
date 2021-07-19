@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block styles %}
+<link href="{% static 'appstyles/appt.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+{% block body %}
+    <div class="alert{% if message %}{% else %} hidden{% endif %}">
+        <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
+    </div>
+    <div class='row justify-content-center' style='width:100%'>
+        {% if user.type == 'PATIENT' %}
+            <a href="{% url 'book' %}"><input type="button" class="action-button" value='Book Now'></input></a>
+        </div>
+        <div class="section" style='margin-top: 7%;'>
+            <h2>Your Upcoming Appointments</h2>
+            {% if user.getSomeAppts %}
+                {% for appt in user.getSomeAppts %}
+                    <div class="appointment-box appointment-box-md">
+                        <div class='row' style='padding:10px 15px 10px 15px'>
+                            <div class='col-12 appointment-details appointment-details-md'>
+                                <div class='row'>
+                                    <div class='col-12 appointment-status appointment-status-md'>
+                                        Appointment on {{ appt.dateTime }} with Dr. {{ appt.doctor }}<br>
+                                        <a href="{{ appt.meeting_link }}" target="_blank">Meeting link</a>
+                                    </div>
+                                </div>
+                                <!--<div class='row'>
+                                    <div class='col-6 appointment-status appointment-status-md'>
+                                        <b class="cancel-text" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').removeClass('hidden')">Cancel</b>&nbsp;&nbsp;
+                                        <b class="cancel-text"><a id="confirm-yes{{appt.id}}" class="hidden" href="{% url 'cancelappt' appt.pk %}">Yes</a></b>&nbsp;&nbsp;
+                                        <b class="cancel-text hidden" id="confirm-no{{appt.id}}" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').addClass('hidden')">No</b>
+                                    </div>
+                                </div>-->
+                                
+                                <div class='row'>
+                                    <div class='col-12' style='margin-top:20px'><a href="{% url 'details' appt.pk %}">Details</a></div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col-12' style='margin-top:20px'><a href="{% url 'cancelappt' appt.pk %}">Cancel</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h4>You have no Appointments saved.</h4>
+            {% endif %}
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+
+{% endblock %}
+
+

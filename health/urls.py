@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('appt/', include('appointment.urls')),
     path('graph/', include('graph.urls')),
+    path('patientdashboard/', include('patientdashboard.urls')),
     
 ]
 handler404 = 'doctorappointment.views.handler404'

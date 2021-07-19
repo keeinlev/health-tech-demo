@@ -40,47 +40,40 @@
                             <li class="nav-item" style="margin-right: 40px;">
                                 <h4 style="margin-top:7px;">Hello, {{ user }}</h5>
                             </li>
-                            {% if user.is_authenticated and user.type == 'PATIENT' %}
+                            {% if user.type == 'PATIENT' %}
                                 {% if not user.ms_authenticated %}
                                     <li class="nav-item" style="margin-right: 40px;">
                                         <a href="{% url 'graphsignin' %}"><button class='btn btn-primary'>MS Sign in</button></a>
                                     </li>
-                                        
                                 {% endif %}
-                            {% endif %}
-                        {% endif %}
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Home</a>
-                    </li>
-                    
-                    {% if user.type != "DOCTOR" %}
-                        {% if user.is_authenticated %}
-                            {% if user.is_superuser %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'patientdashboard' %}">My Dashboard</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url 'book' %}">Book</a>
+                                    </li>
+                            {% elif user.type == "DOCTOR" %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'book' %}">Book</a>
+                                    <a class="nav-link" href="{% url 'doctordashboard' %}">My Dashboard</a>
                                 </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                            </li>
                         {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'about' %}">About</a>
                     </li>
                     {% if user.is_authenticated %}
-                        {% if user.type == "DOCTOR" %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'doctordashboard' %}">My Dashboard</a>
-                            </li>
-                        {% endif %}
-                        {% if not user.is_superuser %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'editprofile' %}">Edit Profile</a>
-                            </li>
-                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout_redir' %}">Logout</a>
                         </li>
