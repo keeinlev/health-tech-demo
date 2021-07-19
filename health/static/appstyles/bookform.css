@@ -41,7 +41,7 @@ fieldset:first-of-type {
 	width: 80%;
 	display: none;
 }
-/*inputs*/
+/*inputs
 #bookform input, #bookform textarea {
 	padding: 15px;
 	border: 1px solid #ccc;
@@ -52,7 +52,7 @@ fieldset:first-of-type {
 	font-family: montserrat;
 	color: #2C3E50;
 	font-size: 13px;
-}
+}*/
 /*buttons*/
 #bookform .action-button {
 	width: 100px;

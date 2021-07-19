@@ -90,3 +90,19 @@ $('#bookcalendar')
         getApptTimes($('#bookcalendar').calendar('get date'));
     }
 });
+
+$("label").on('input', function() {
+    var userHasPhone = true;
+    if (this.getAttribute('for') == 'id_appt_type_0') {
+        if ($('#bookform').attr('user-phone') == 0) {
+            userHasPhone = false;
+        }
+    }
+    if (userHasPhone) {
+        $('#first-next-button').prop('disabled', '');
+        $('.phone-error').addClass('display-hidden');
+    } else {
+        $('#first-next-button').prop('disabled', 'disabled');
+        $('.phone-error').removeClass('display-hidden');
+    }
+})
