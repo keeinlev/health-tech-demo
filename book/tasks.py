@@ -56,63 +56,64 @@ def send_reminder(appt_id, purpose):
             else:
                 kwords = ['Reminder', 'a reminder for']
             
-            # Piecing together the short redirect URL using the primary key
-            redirect_url = 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':appt.pk})
+            if purpose == 'confirm' or not appt.reminder_sent:
+                # Piecing together the short redirect URL using the primary key
+                redirect_url = 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':appt.pk})
 
-            messageVar1 = f'\nJoin: {redirect_url}'
-            messageVar2 = f'\nJoin: {redirect_url}'
+                messageVar1 = f'\nJoin: {redirect_url}'
+                messageVar2 = f'\nJoin: {redirect_url}'
 
-            # Appointment type is video if True, phone if False
-            if not appt.type and appt.patient.phone != None:
-                messageVar1 = f'\nThe doctor will call this number: +1{patient_phone}'
-                messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
-            
-            # Sending of messages
-            if patient.sms_notifications and appt.patient.phone != None:
-                # message1 = client.messages.create(
-                #     body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
-                #     from_=SIGNALWIRE_NUMBER,
-                #     to='+1' + patient_phone,
-                # )
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar1,
-                    patient_phone
-                )
-            if doctor.sms_notifications and appt.doctor.phone != None:
-                # message2 = client.messages.create(
-                #     body=f'Hello {doctor.first_name}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
-                #     from_=SIGNALWIRE_NUMBER,
-                #     to='+1' + doctor_phone,
-                # )
-                SMSWrapper(
-                    f'Appointment {kwords[0]}',
-                    messageVar2,
-                    doctor_phone
-                )
-            
-            # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
-            #   so no need to send them from here
-            if not appt.ms_event_created:
-                # Reassignment of messageVars for Email
-                messageVar1 = f'Use the following link to join:\n{appt.meeting_link}'
-                messageVar2 = f'Use the following link to join:\n{appt.meeting_link}'
-
-                if not appt.type:
-                    messageVar1 = f'The doctor will call you at the phone number you have provided: +1{patient_phone}'
-                    messageVar2 = f'Please call the Patient at +1{patient_phone}'
-
-                # Sending of Emails
-                if patient.email_notifications:
-                    emailWrapper(
-                        f'{kwords[0]} for Appointment with Dr. {doctor}',
-                        f'Hello, {patient}. This is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
-                        [patient_email],
+                # Appointment type is video if True, phone if False
+                if not appt.type and appt.patient.phone != None:
+                    messageVar1 = f'\nThe doctor will call this number: +1{patient_phone}'
+                    messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
+                
+                # Sending of messages
+                if patient.sms_notifications and appt.patient.phone != None:
+                    # message1 = client.messages.create(
+                    #     body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
+                    #     from_=SIGNALWIRE_NUMBER,
+                    #     to='+1' + patient_phone,
+                    # )
+                    SMSWrapper(
+                        f'Appointment {kwords[0]}',
+                        messageVar1,
+                        patient_phone
                     )
-                if doctor.email_notifications:
-                    emailWrapper(
-                        f'{kwords[0]} for Appointment with {patient}',
-                        f'Hello, Dr. {doctor}. This is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
-                        [doctor_email],
+                if doctor.sms_notifications and appt.doctor.phone != None:
+                    # message2 = client.messages.create(
+                    #     body=f'Hello {doctor.first_name}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
+                    #     from_=SIGNALWIRE_NUMBER,
+                    #     to='+1' + doctor_phone,
+                    # )
+                    SMSWrapper(
+                        f'Appointment {kwords[0]}',
+                        messageVar2,
+                        doctor_phone
                     )
+                
+                # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
+                #   so no need to send them from here
+                if not appt.ms_event_created:
+                    # Reassignment of messageVars for Email
+                    messageVar1 = f'Use the following link to join:\n{appt.meeting_link}'
+                    messageVar2 = f'Use the following link to join:\n{appt.meeting_link}'
+
+                    if not appt.type:
+                        messageVar1 = f'The doctor will call you at the phone number you have provided: +1{patient_phone}'
+                        messageVar2 = f'Please call the Patient at +1{patient_phone}'
+
+                    # Sending of Emails
+                    if patient.email_notifications:
+                        emailWrapper(
+                            f'{kwords[0]} for Appointment with Dr. {doctor}',
+                            f'Hello, {patient}. This is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
+                            [patient_email],
+                        )
+                    if doctor.email_notifications:
+                        emailWrapper(
+                            f'{kwords[0]} for Appointment with {patient}',
+                            f'Hello, Dr. {doctor}. This is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
+                            [doctor_email],
+                        )
                 
