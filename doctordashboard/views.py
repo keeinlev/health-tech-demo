@@ -45,11 +45,20 @@ async def async_send_mail(subject, body, to):
 # Asynchronously sends multiple cancellation emails
 async def send_cancellations(appts, reason):
     loop = asyncio.get_event_loop()
-    tasks = [async_send_mail(
-        'Your Appointment has been Cancelled',
-        'Hi,' + appt.patient.first_name + '\n\nWe are sorry to inform you that your appointment with Dr. ' + str(appt.doctor) + ' on ' + appt.dateTime + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
-        to=appt.patient.email)
-        for appt in appts]
+    tasks = []
+    for appt in appts:
+        if appt.patient.sms_notifications and appt.patient.phone:
+            tasks.append(async_send_mail(
+                '',
+                'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + '.\nPlease rebook for another time.',
+                appt.patient.phone + SMS_CARRIER)
+            )
+        if appt.patient.email_notifications:
+            tasks.append(async_send_mail(
+                'Your Appointment has been Cancelled',
+                'Hi, ' + appt.patient.first_name + '\n\nWe regret to inform you that your appointment with Dr. ' + str(appt.doctor) + ' on ' + appt.dateTime + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
+                to=appt.patient.email)
+            )
     print(tasks)
     for t in tasks:
         await t

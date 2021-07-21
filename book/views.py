@@ -56,12 +56,13 @@ def cancelappt(request, pk):
                     r = form.cleaned_data['reason']
                     
                     # Sends other party an SMS and Email message to notify them of cancellation
-                    send_mail(
-                        ''
-                        'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime() + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
-                        'healthapptdemo@gmail.com',
-                        [target.phone + SMS_CARRIER],
-                    )
+                    if target.sms_notifications and target.phone:
+                        send_mail(
+                            ''
+                            'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
+                            'healthapptdemo@gmail.com',
+                            [target.phone + SMS_CARRIER],
+                        )
                     # smsmessage = swclient.messages.create(
                     #     body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
                     #     from_=SIGNALWIRE_NUMBER,
@@ -69,7 +70,7 @@ def cancelappt(request, pk):
                     # )
                     send_mail(
                         'Your Appointment has been Cancelled',
-                        'Hi,' + target.first_name + '\n\nWe are sorry to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                        'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
                         'healthapptdemo@gmail.com',
                         [target.email],
                     )
