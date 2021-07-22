@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,9 +28,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('appt/', include('appointment.urls')),
     path('graph/', include('graph.urls')),
-    path('patientdashboard/', include('patientdashboard.urls')),
-    
-]
+    path('patientdashboard/', include('patientdashboard.urls')), 
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 handler404 = 'doctorappointment.views.handler404'
 handler500 = 'doctorappointment.views.handler500'
 

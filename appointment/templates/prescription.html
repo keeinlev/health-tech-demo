@@ -2,6 +2,11 @@
 
 {% block title %}Appointment Prescription{% endblock %}
 
+{% block styles %}
+{% load static %}
+<link href="{% static 'appstyles/spoiler.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block body %}
     {% if message %}
         <div class="alert{% if message %}{% else %} display-hidden{% endif %}">
@@ -14,61 +19,84 @@
         </div>
         
         {% if user.is_authenticated %}
-            {% if user.type == 'DOCTOR' %}
-                <form method='post' autocomplete="off" class='siteform'>
-                    {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    <div class='row'>
-                        <div class='col'>
-                            {{ form.prescription.label }}
+            <div style='padding-bottom: 200px;'>
+                {% if user == appt.doctor or user == appt.patient %}
+                    {% if user.type == 'DOCTOR' %}
+                        <form method='post' autocomplete="off" class='siteform'>
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            <div class='row'>
+                                <div class='col'>
+                                    {{ form.prescription.label }}
+                                </div>
+                                <div class='col'>
+                                    {{ form.notes.label }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col'>
+                                    {{ form.prescription.errors }}
+                                    {{ form.prescription }}
+                                </div>
+                                <div class='col'>
+                                    {{ form.notes.errors }}
+                                    {{ form.notes }}
+                                </div>
+                            </div>
+                            <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
+                            <a href="{% if user.type == 'DOCTOR' %}{% url 'doctordashboard' %}{% elif user.type == 'PATIENT' %}{% url 'index' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
+                        </form>
+                    {% else %}
+                        <div class='section'>
+                            <div style='margin:50px;'>
+                                <label for='presc'>Prescription:</label>
+                                <div class='row' style='margin-bottom: 20px;'>
+                                    <div class='col'>
+                                        <div id='presc'>
+                                            {% if details.prescription %}
+                                                {{ details.prescription }}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for='apptnotes'>Appointment Notes:</label>
+                                <div class='row' style='margin-bottom: 20px;'>
+                                    <div class='col'>
+                                        <div id='apptnotes'>
+                                            {% if details.notes %}
+                                                {{ details.notes }}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <form method="post" action="{% url 'details' appt.pk %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    Upload Images <input type='file' accept='image/*' name='images' id='images-input' multiple />
+                                    <input type="submit" />
+                                </form>
+                            </div>
                         </div>
-                        <div class='col'>
-                            {{ form.notes.label }}
-                        </div>
-                    </div>
-                    <div class='row'>
-                        <div class='col'>
-                            {{ form.prescription.errors }}
-                            {{ form.prescription }}
-                        </div>
-                        <div class='col'>
-                            {{ form.notes.errors }}
-                            {{ form.notes }}
-                        </div>
-                    </div>
-                    <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
-                    <a href="{% if user.type == 'DOCTOR' %}{% url 'doctordashboard' %}{% elif user.type == 'PATIENT' %}{% url 'index' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
-                </form>
-            {% else %}
-                <div class='section'>
-                    <div style='margin:50px;'>
-                        <label for='presc'>Prescription:</label>
-                        <div class='row' style='margin-bottom: 20px;'>
-                            <div class='col'>
-                                <div id='presc'>
-                                    {% if details.prescription %}
-                                        {{ details.prescription }}
-                                    {% else %}
-                                        None
-                                    {% endif %}
+                    {% endif %}
+                    {% if appt.getImages %}
+                        <div class='section'>
+                            <div style='margin:50px;'>
+                                <input class="spoilerbutton" type="button" value="Show Images" onclick="this.value=this.value=='Show Images'?'Hide Images':'Show Images';">
+                                <div class="spoiler">
+                                    <div>
+                                        {% for imageModel in appt.getImages %}
+                                            <img src="{{ imageModel.image.url }}" title="{{ imageModel.upload_date }}" class="appt-images" /><br>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <label for='apptnotes'>Appointment Notes:</label>
-                        <div class='row' style='margin-bottom: 20px;'>
-                            <div class='col'>
-                                <div id='apptnotes'>
-                                    {% if details.notes %}
-                                        {{ details.notes }}
-                                    {% else %}
-                                        None
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
         {% endif %}
     {% endif %}
 {% endblock %}

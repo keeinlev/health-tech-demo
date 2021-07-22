@@ -50,3 +50,8 @@ class Appointment(models.Model):
     @property
     def localTZ(self):
         return str(datetime.datetime.now(utc).astimezone().tzinfo)
+
+    @property
+    def getImages(self):
+        from appointment.models import ApptImage
+        return ApptImage.objects.filter(appt=self)

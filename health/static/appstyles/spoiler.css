@@ -1,0 +1,22 @@
+.spoilerbutton {
+    display: block;
+    margin: 5px 0;
+}
+
+.spoiler {
+    overflow: hidden;
+}
+
+.spoiler>div {
+    margin: 5px;
+    overflow: hidden;
+    transition: all 1s ease;
+}
+
+.spoilerbutton[value="Show Images"]+.spoiler>div {
+    max-height: 0;
+}
+
+.spoilerbutton[value="Hide Images"]+.spoiler>div {
+    max-height: auto; /*use a big value here*/
+}

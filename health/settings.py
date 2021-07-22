@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'storages',
     'graph',
     'patientdashboard',
+    'customstorage',
 ]
 
 MIDDLEWARE = [
@@ -144,6 +145,8 @@ STATICFILES_FINDERS = [
 ]
 
 STATIC_LOCATION = 'static'
+
+MEDIA_LOCATION = 'media'
 
 LOGIN_REDIRECT_URL = 'login_redir'
 

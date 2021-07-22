@@ -1,5 +1,5 @@
 from django import forms
-from .models import ApptDetails
+from .models import ApptDetails, ApptImage
 
 class ApptDetailsForm(forms.ModelForm):
     prescription = forms.CharField(required=False, widget=forms.Textarea(attrs={'class': 'form-control pass-inputs', 'placeholder':"Patient Prescription"}))

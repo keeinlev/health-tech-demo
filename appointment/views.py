@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
 from health.settings import MS_TEAMS_MEETING_URL_1, MS_TEAMS_MEETING_URL_2, MS_TEAMS_MEETING_ID_LENGTH
 
-from .models import ApptDetails
+from .models import ApptDetails, ApptImage
 from .forms import ApptDetailsForm
 
 from book.models import Appointment
@@ -47,8 +47,15 @@ def details(request, pk):
                         })
                         return render(request, 'prescription.html', {'appt': appt, 'form': form})
                 else:
-                    # Patients can only view the details
-                    return render(request, 'prescription.html', {'appt': appt, 'details': p})
+                    if request.method == 'POST':
+                        data = request.POST
+                        images = request.FILES.getlist('images')
+
+                        for image in images:
+                            ApptImage.objects.create(appt=appt, image=image)
+                        return redirect(reverse('details', kwargs={'pk':appt.pk}))
+                    else:
+                        return render(request, 'prescription.html', {'appt': appt, 'details': p})
             else:
                 # If user is not the Patient or Doctor
                 return render(request, 'prescription.html', {'message': 'You do not have access to this page.'})
