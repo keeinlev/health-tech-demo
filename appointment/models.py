@@ -21,3 +21,10 @@ class ApptImage(models.Model):
     upload_date = models.DateField(default=todayDate)
     appt = models.ForeignKey(Appointment(), related_name="%(class)s_appt", on_delete=models.CASCADE, null=True, default=None)
     image = models.ImageField(upload_to=get_upload_path)
+    
+    @property
+    def get_blob_url(self):
+        from django.conf import settings
+        url = self.image.url
+        url = url[url.index(settings.AZURE_CONTAINER) + len(settings.AZURE_CONTAINER) + 1:]
+        return url[:url.index('.png') + len('.png')] 

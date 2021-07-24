@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
 from health.settings import MS_TEAMS_MEETING_URL_1, MS_TEAMS_MEETING_URL_2, MS_TEAMS_MEETING_ID_LENGTH
+from django.conf import settings
 
 from .models import ApptDetails, ApptImage
 from .forms import ApptDetailsForm
@@ -63,6 +64,23 @@ def details(request, pk):
             # If the Appointment does not exist
             return render(request, 'prescription.html', {'message': 'No Appointment found!'})
     return render(request, 'prescription.html')
+
+@login_required
+def deleteimage(request, pk):
+    queried = ApptImage.objects.get(pk=pk)
+    appt = queried.appt
+    if request.user == appt.doctor or request.user == appt.patient:
+        if queried:
+            if not settings.DEBUG:
+                blob_name = queried.get_blob_url
+                print(blob_name)
+                blob_service = settings.BLOB_SERVICE
+                blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
+
+            queried.delete()
+            return redirect(reverse('details', kwargs={'pk':appt.pk}))
+
+    return redirect('index')
 
 # View that redirects user to the MS Teams meeting link
 # I created this as an alternative to using the entire meeting link, which can be quite lengthy

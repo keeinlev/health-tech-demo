@@ -5,7 +5,15 @@ from graph.auth_helper import remove_token
 # Create your views here.
 
 def index(request):
-    return render(request, 'index.html')
+    if request.user.is_authenticated:
+        if request.user.type == 'PATIENT':
+            return redirect('patientdashboard')
+        elif request.user.type == 'DOCTOR':
+            return redirect('doctordashboard')
+        else:
+            return redirect('index')
+    else:
+        return render(request, 'index.html')
 
 def about(request):
     return render(request, 'about.html')

@@ -1,4 +1,5 @@
 from .settings import *
+from azure.storage.blob import BlockBlobService
 
 DEBUG = False
 
@@ -25,6 +26,8 @@ MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/'
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{AZURE_STATIC_CONTAINER}/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+BLOB_SERVICE = BlockBlobService(account_name=AZURE_ACCOUNT_NAME, account_key=AZURE_ACCOUNT_KEY)
 
 DATABASES = {
     'default': {

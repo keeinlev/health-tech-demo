@@ -179,9 +179,7 @@ GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 
 DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
 
-os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-
-if (DJANGO_DEVELOPMENT == 'True'):
+if DJANGO_DEVELOPMENT == 'True':
     from .development import *
 else:
     from .production import *
