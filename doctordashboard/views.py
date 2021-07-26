@@ -59,7 +59,7 @@ async def send_cancellations(appts, reason):
                 'Hi, ' + appt.patient.first_name + '\n\nWe regret to inform you that your appointment with Dr. ' + str(appt.doctor) + ' on ' + appt.dateTime + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
                 to=appt.patient.email)
             )
-    print(tasks)
+    #print(tasks)
     for t in tasks:
         await t
 
@@ -300,7 +300,7 @@ def booksingle(request):
         if u.type == "DOCTOR":
             if (request.method == "POST"):
                 form = CreateAppointmentForm(request.POST)
-                print(request.POST)
+                #print(request.POST)
                 if form.is_valid():
 
                     # Uses model form to create object
@@ -411,7 +411,7 @@ async def cancelmult(request):
 
                         if loop and loop.is_running():
                             print('Async event loop already running')
-                            print(booked, reason)
+                            #print(booked, reason)
                             tsk = loop.create_task(send_cancellations(booked, reason))
                             # ^-- https://docs.python.org/3/library/asyncio-task.html#task-object
                             tsk.add_done_callback(                                          # optional

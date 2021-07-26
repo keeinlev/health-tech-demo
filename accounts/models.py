@@ -55,6 +55,7 @@ class User(AbstractUser):
     preferred_name = models.CharField(_("User Preferred Name"), max_length=50, blank=True, null=True, default=None)
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
+    target_new_email = models.EmailField(_("Possible New Email"), max_length=50, unique=True, blank=True, null=True, default=None)
     ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
     email_notifications = models.BooleanField(_("Email Notifications"), default=True)
     sms_notifications = models.BooleanField(_("SMS Notifications"), default=True)

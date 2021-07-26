@@ -10,6 +10,14 @@ urlpatterns = [
     path('need_activate', views.activateprompt, name='activateprompt'), # redirects to an alert asking for confirmation, views line 184
     
     path('activate/<uidb64>/<token>', views.activate, name='activate'), # account activation after registration, views line 188
+
+    path('changeemail/<uidb64>/<token>/<newemail>', views.changeemail, name='changeemail'),
+
+    path('changeemail/cancel', views.emailchangecancel, name='emailchangecancel'),
+
+    path('changeemail/success', views.emailchangesuccess, name='emailchangesuccess'),
+
+    path('changeemail/fail', views.emailchangefail, name='emailchangefail'),
     
     path('confirmation/success', views.confirmsuccess, name='confirmsuccess'), # these two redirect to ensure the request data from activation
                                                                                # stays in the past and can't be reloaded, i.e. one time use, views line 201 and 205
@@ -21,5 +29,5 @@ urlpatterns = [
 
     path('findpharmacy', views.findpharmacy, name='findpharmacy'),
 
-    url(r'^ajax/focuspharmacy/$', views.focuspharmacy, name='focuspharmacy')
+    url(r'^ajax/focuspharmacy/$', views.focuspharmacy, name='focuspharmacy'),
 ]

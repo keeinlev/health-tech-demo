@@ -73,7 +73,7 @@ def deleteimage(request, pk):
         if queried:
             if not settings.DEBUG:
                 blob_name = queried.get_blob_url
-                print(blob_name)
+                #print(blob_name)
                 blob_service = settings.BLOB_SERVICE
                 blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
 

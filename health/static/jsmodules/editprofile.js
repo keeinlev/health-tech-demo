@@ -9,3 +9,11 @@ $('#id_sms_notis, #id_email_notis').on('change', function() {
         
     }
 })
+
+$('#email').on('input', function() {
+    if ($('#email').val() != $('#id_init_email').val()) {
+        $('#change-email-alert').removeClass('display-hidden');
+    } else {
+        $('#change-email-alert').addClass('display-hidden');
+    }
+})

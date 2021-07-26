@@ -71,7 +71,7 @@ def register(request):
                     return render(request, "register.html", {'form': form, 'message': message})
                 coords = geocode_res["results"][0]["geometry"]["location"]
                 coords = f'{coords["lat"]},{coords["lng"]}'
-                print(geocode_res['results'][0]['formatted_address'])
+                #print(geocode_res['results'][0]['formatted_address'])
 
                 ohip_number = form.cleaned_data['ohip']
 
@@ -162,6 +162,7 @@ def register(request):
     return redirect('index')
 
 # View for editing profiles
+@login_required
 def editprofile(request):
     u = request.user
     if u.is_authenticated:
@@ -233,6 +234,27 @@ def editprofile(request):
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
 
+                newemail = form.cleaned_data['email']
+
+                if newemail != u.email:
+                    
+                    # Build the token for email change
+                    domain = get_current_site(request).domain
+                    uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
+                    encoded_email = urlsafe_base64_encode(force_bytes(newemail))
+                    link = reverse('changeemail', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u), 'newemail':encoded_email,})
+                    activate_url = 'http://' + domain + link
+
+                    u.target_new_email = newemail
+                    u.save()
+
+                    send_mail(
+                        "Confirm Your MeHealth Account Changes",
+                        f'Hi {u.first_name}, \nWe received a request to link this email to your MeHealth account. To confirm this action, please follow the link below. If this was not you, please ignore this email.\n\n{activate_url}\n\nSincerely,\nThe MeHealth Team',
+                        "healthapptdemo@gmail.com",
+                        [newemail],
+                    )
+
                 return redirect('editprofile')
 
             return redirect('index')
@@ -242,6 +264,8 @@ def editprofile(request):
             init = {
                 'first_name': u.first_name,
                 'last_name': u.last_name,
+                'email': u.email,
+                'init_email': u.email,
                 'email_notis': u.email_notifications,
                 'sms_notis': u.sms_notifications,
             }
@@ -257,7 +281,7 @@ def editprofile(request):
                     init['languages'] = d.more.languages
                 if d.more.location:
                     init['location'] = d.more.location
-                print(init)
+                #print(init)
                 # Put all the existing user information as initial values in the form
                 form = DoctorEditForm(initial=init)
                 return render(request, 'editprofile.html', {'form': form, 'doctor': d, 'consultations': d.more.consultations.split(', ') if d.more.consultations else None, 'languages': d.more.languages.split(', ') if d.more.languages else None,})
@@ -276,6 +300,41 @@ def editprofile(request):
 
     # If user is not signed in, template logic will handle appropriate page display
     return render(request, 'editprofile.html')
+
+# View for performing email change after link is sent to user email inbox
+def changeemail(request, uidb64, token, newemail):
+    try:
+        # Query User using decoded UID
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    newemail = force_text(urlsafe_base64_decode(newemail))
+
+    # This will fail if the user has already used the link to changed their email, the token is invalid, the UID is invalid, or the user has requested to change to another email
+    if user is not None and default_token_generator.check_token(user, token) and user.target_new_email == newemail:
+        user.email = newemail
+        user.target_new_email = None
+        user.save()
+        return redirect('emailchangesuccess')
+    else:
+        return redirect('emailchangefail')
+
+@login_required
+def emailchangecancel(request):
+    u = request.user
+    u.target_new_email = None
+    u.save()
+    return redirect('editprofile')
+
+def emailchangesuccess(request):
+    message = "You have successfully changed your email."
+    return render(request, 'alert.html', { 'message': message, 'valid': True })
+
+def emailchangefail(request):
+    message = "Your email change request is either invalid or has expired."
+    return render(request, 'alert.html', { 'message': message, 'valid': False })
 
 # View handling AJAX request for checking email and OHIP uniqueness during registration, see register.js line 46
 def validate_email_and_ohip(request):
@@ -342,13 +401,14 @@ def confirmsuccess(request):
 def confirmfail(request):
     return render(request, 'alert.html', { 'message': 'Email activation invalid.', 'valid': False })
 
+@login_required
 def findpharmacy(request):
     u = request.user
     if u.is_authenticated and u.type == 'PATIENT':
         if request.method == 'GET':
             pinfo = u.userType.more
             nearby = get_nearby(pinfo.address_coords, 'pharmacy')
-            print(nearby['status'])
+            #print(nearby['status'])
             if nearby['status'] != 'OK':
                 print(nearby['error_message'])
                 pprint(nearby['results'])
@@ -364,8 +424,8 @@ def findpharmacy(request):
                         ignored = True
                 if not ignored:
                     data.append({'name': place['name'], 'address': place['vicinity'], 'place_id':place['place_id']})
-            print(pinfo.postal_code)
-            print(pinfo.address_coords)  
+            #print(pinfo.postal_code)
+            #print(pinfo.address_coords)  
             #return render(request, 'findpharmacy.html', { 'querytext':f'place?key={GOOGLE_MAPS_API_KEY}&q=place_id:ChIJJezxiLRCK4gRaYFq3-uLzcI' })
             return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'places':data })
             #return render(request, 'findpharmacy.html', { 'querytext':f'view?key={GOOGLE_MAPS_API_KEY}&center=43.56465615772579,-79.67794135999671&zoom=9' })
@@ -385,6 +445,7 @@ def findpharmacy(request):
                 return redirect('findpharmacy')
             return redirect('index')
     return redirect('index')
+
 def focuspharmacy(request):
     pid = request.GET.get('pharmacy-id', None)
     return JsonResponse({})
