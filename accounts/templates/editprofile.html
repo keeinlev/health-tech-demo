@@ -58,12 +58,12 @@
                         </div>
                     </div>
                     <div class='col-12'>
-                        {% if user.target_new_email %}<p style='color:green'>Note: You have requested to change your account email to: <b>{{ user.target_new_email }}</b><br>Please confirm this change or cancel it by clicking <b><a href="{% url 'emailchangecancel' %}">Here</a></b></p>{% endif %}
-                        <small style='color:red' id='change-email-alert' class='display-hidden'>Changes to your account email will only be made once you have confirmed the change from the new requested email.</small>    
+                        {% if user.target_new_email %}<p class='green-text'>Note: You have requested to change your account email to: <b>{{ user.target_new_email }}</b><br>Please confirm this change or cancel it by clicking <b><a href="{% url 'emailchangecancel' %}">Here</a></b></p>{% endif %}
+                        <small id='change-email-alert' class='display-hidden red-text'>Changes to your account email will only be made once you have confirmed the change from the new requested email.</small>    
                     </div>
                 </div>
                 <div class="form-group" style="margin: 30px auto 50px auto;">
-                    <p>One of these options must be selected.</p>
+                    <p>One of these options must be selected.</p><p id='phone-valid-alert'><b>Note: </b>You need to input a valid phone number to turn SMS Notifications on.</p>
                     <div style='margin-right:50px; display: inline;'>
                         <label for="email_notis">Email Notifications</label>
                         {{ form.email_notis }}

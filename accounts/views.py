@@ -133,7 +133,7 @@ def register(request):
                 domain = get_current_site(request).domain
                 uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
                 link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
-                activate_url = 'http://' + domain + link
+                activate_url = 'https://' + domain + link
 
                 # Send initial SMS consent Message
                 # send_mail(
@@ -230,7 +230,10 @@ def editprofile(request):
                 u.first_name = form.cleaned_data['first_name']
                 u.last_name = form.cleaned_data['last_name']
                 u.phone = phone
-                u.sms_notifications = form.cleaned_data['sms_notis']
+                if phone != None:
+                    u.sms_notifications = form.cleaned_data['sms_notis']
+                else:
+                    u.sms_notifications = False
                 u.email_notifications = form.cleaned_data['email_notis']
                 u.save()
 
@@ -243,11 +246,16 @@ def editprofile(request):
                     uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
                     encoded_email = urlsafe_base64_encode(force_bytes(newemail))
                     link = reverse('changeemail', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u), 'newemail':encoded_email,})
-                    activate_url = 'http://' + domain + link
+                    activate_url = 'https://' + domain + link
+
+
+                    ###### MAKE SURE THAT THIS IS UNIQUE TOO
+                    if User.objects.filter(email=newemail).exists():
+                        message = 'Profile Edit unsuccessful. That email is already taken!.'
+                        return render(request, "editprofile.html", {'form': form, 'message': message})
 
                     u.target_new_email = newemail
                     u.save()
-
                     send_mail(
                         "Confirm Your MeHealth Account Changes",
                         f'Hi {u.first_name}, \nWe received a request to link this email to your MeHealth account. To confirm this action, please follow the link below. If this was not you, please ignore this email.\n\n{activate_url}\n\nSincerely,\nThe MeHealth Team',

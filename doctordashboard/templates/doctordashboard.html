@@ -52,10 +52,10 @@
                                 <b>All:</b> {{ user.userType.apptGroupLengths.all }}
                             </div>
                             <div class='col-4' id='appt-summary-open'>
-                                <b style='color:green'>Open:</b> {{ user.userType.apptGroupLengths.open }}
+                                <b class='green-text'>Open:</b> {{ user.userType.apptGroupLengths.open }}
                             </div>
                             <div class='col-4' id='appt-summary-booked'>
-                                <b style='color:red'>Booked:</b> {{ user.userType.apptGroupLengths.booked }}
+                                <b class='red-text'>Booked:</b> {{ user.userType.apptGroupLengths.booked }}
                             </div>
                         </div>
                         <div class='row'>
@@ -182,7 +182,7 @@
                                         </div>
                                         <div class='row'>
                                             <div class='col-6 appointment-status appointment-status-md'>
-                                                Status: {% if appt.booked %} <b style='color:red;'>Booked</b><br>{% else %} <b style='color:green;'>Available</b> {% endif %}
+                                                Status: {% if appt.booked %} <b class='red-text'>Booked</b><br>{% else %} <b class='green-text'>Available</b> {% endif %}
                                             </div>
                                             <div class='col-6 appointment-status appointment-status-md'>
                                                 <b class="cancel-text" onclick="$('#confirm-yes{{appt.id}}, #confirm-no{{appt.id}}').removeClass('hidden')">Cancel</b>&nbsp;&nbsp;

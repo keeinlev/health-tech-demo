@@ -35,7 +35,7 @@
                         {% endfor %}
                         {{ form.appt_type.errors }}
                         <div class='phone-error display-hidden'>
-                            <small style='color: red;'>You do not have a phone number set. <a href="{% url 'editprofile' %}">Add one here.</a></small>
+                            <small class='red-text'>You do not have a phone number set. <a href="{% url 'editprofile' %}">Add one here.</a></small>
                         </div>
                     </div>
                     <input type="button" name="next" id='first-next-button' class="next action-button" value="Next" disabled />
