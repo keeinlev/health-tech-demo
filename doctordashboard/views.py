@@ -33,7 +33,6 @@ from pprint import pprint
 
 from asgiref.sync import sync_to_async, async_to_sync
 import asyncio
-import aiohttp
 import concurrent
 
 eastern = timezone('America/New_York')
