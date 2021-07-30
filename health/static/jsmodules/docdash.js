@@ -17,6 +17,7 @@ $('#id_c_startdate').on("change", function() {
 });
 
 $('.cancel-mult-fields').on("change", function() {
+    // if (this.id != 'id_c_starttime') {
     filled = true;
     for (var elem=0; elem < $('.cancel-mult-fields').length; elem++) {
         if (!$('.cancel-mult-fields')[elem].value) {
@@ -29,6 +30,7 @@ $('.cancel-mult-fields').on("change", function() {
         form_data = $('#cancelmultform').serialize();
         cancel_needs_reason(form_url, form_data);
     }
+    // }
 })
 
 function cancel_needs_reason(form_url, form_data) {
@@ -38,7 +40,6 @@ function cancel_needs_reason(form_url, form_data) {
         dataType: 'json',
         success: function(data) {
             if (data['needs_reason']) {
-                console.log('reason')
                 $('#id_reason').val('');
                 $('#reason-input').removeClass('display-hidden');
             } else {
