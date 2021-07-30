@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as client, CURRENT_DOMAIN, SMS_CARRIER
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient, CURRENT_DOMAIN, SMS_CARRIER
 from django.urls import reverse
 import asyncio
 from asgiref.sync import sync_to_async
@@ -21,7 +21,7 @@ def emailWrapper(subject, body, to=[]):
     send_mail(
         subject,
         body,
-        'healthtechdemo@gmail.com',
+        'healthapptdemo@gmail.com',
         to,
     )
 ############################################################################## IT LOOKS LIKE FIDO MIGHT WORK FOR EVERY CARRIER!!!!!!!!!!!!!!
@@ -60,37 +60,37 @@ def send_reminder(appt_id, purpose):
                 # Piecing together the short redirect URL using the primary key
                 redirect_url = 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':appt.pk})
 
-                messageVar1 = f'\nJoin: {redirect_url} at {appt.shortDateTime}'
-                messageVar2 = f'\nJoin: {redirect_url} at {appt.shortDateTime}'
+                messageVar1 = f'\nJoin: {redirect_url}'
+                messageVar2 = f'\nJoin: {redirect_url}'
 
                 # Appointment type is video if True, phone if False
                 if not appt.type and appt.patient.phone != None:
-                    messageVar1 = f'\nThe doctor will call this number: +1{patient_phone} at {appt.shortDateTime}'
-                    messageVar2 = f'\nPlease call the Patient at +1{patient_phone} at {appt.shortDateTime}'
+                    messageVar1 = f'\nThe doctor will call this number: +1{patient_phone}'
+                    messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
                 
                 # Sending of messages
                 if patient.sms_notifications and appt.patient.phone != None:
-                    # message1 = client.messages.create(
-                    #     body=f'Hello {patient.first_name}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
-                    #     from_=SIGNALWIRE_NUMBER,
-                    #     to='+1' + patient_phone,
-                    # )
-                    SMSWrapper(
-                        f'Appointment {kwords[0]}',
-                        messageVar1,
-                        patient_phone
+                    message1 = swclient.messages.create(
+                        body=f'Hello {patient.firstOrPreferredName}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
+                        from_=SIGNALWIRE_NUMBER,
+                        to='+1' + patient_phone,
                     )
+                    # SMSWrapper(
+                    #     f'Appointment {kwords[0]}',
+                    #     messageVar1,
+                    #     patient_phone
+                    # )
                 if doctor.sms_notifications and appt.doctor.phone != None:
-                    # message2 = client.messages.create(
-                    #     body=f'Hello {doctor.first_name}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
-                    #     from_=SIGNALWIRE_NUMBER,
-                    #     to='+1' + doctor_phone,
-                    # )
-                    SMSWrapper(
-                        f'Appointment {kwords[0]}',
-                        messageVar2,
-                        doctor_phone
+                    message2 = swclient.messages.create(
+                        body=f'Hello {doctor.firstOrPreferredName}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
+                        from_=SIGNALWIRE_NUMBER,
+                        to='+1' + doctor_phone,
                     )
+                    # SMSWrapper(
+                    #     f'Appointment {kwords[0]}',
+                    #     messageVar2,
+                    #     doctor_phone
+                    # )
                 
                 # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
                 #   so no need to send them from here
@@ -107,13 +107,13 @@ def send_reminder(appt_id, purpose):
                     if patient.email_notifications:
                         emailWrapper(
                             f'{kwords[0]} for Appointment with Dr. {doctor}',
-                            f'Hello, {patient}. This is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
+                            f'Hello, {patient.firstOrPreferredName}. \n\nThis is {kwords[1]} your appointment with Dr. {doctor} on {appt.dateTime}\n\n{messageVar1}',
                             [patient_email],
                         )
                     if doctor.email_notifications:
                         emailWrapper(
                             f'{kwords[0]} for Appointment with {patient}',
-                            f'Hello, Dr. {doctor}. This is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
+                            f'Hello, Dr. {doctor.fullName}. \n\nThis is {kwords[1]} your appointment with Patient {patient} on {appt.dateTime}\n\n{messageVar2}',
                             [doctor_email],
                         )
                 

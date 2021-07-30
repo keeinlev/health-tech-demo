@@ -9,7 +9,7 @@ from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_ME
 
 from book.models import Appointment
 from book.times import IntTimes
-from book.tasks import send_reminder, emailWrapper
+from book.tasks import send_reminder
 
 from .forms import CreateAppointmentForm, CreateAppointmentRangeForm, CancelAppointmentRangeForm, ApptHistoryDownloadForm
 
@@ -33,35 +33,75 @@ from pprint import pprint
 
 from asgiref.sync import sync_to_async, async_to_sync
 import asyncio
+import aiohttp
+import concurrent
 
 eastern = timezone('America/New_York')
 
 allChars = ascii_letters + digits + digits
 
+def extractApptData(appts):
+    data = []
+    for a in appts:
+        data.append({
+            'patient_sms_notis': a.patient.sms_notifications,
+            'patient_email_notis': a.patient.email_notifications,
+            'patient_phone': a.patient.phone,
+            'patient_name': a.patient.firstOrPreferredName,
+            'patient_email': a.patient.email,
+            'doctor': str(a.doctor),
+            'dt': a.dateTime,
+            'shortdt': a.shortDateTime,
+        })
+    return data
+
+def emailWrapper(subject, body, to=[]):
+    send_mail(
+        subject,
+        body,
+        'healthapptdemo@gmail.com',
+        to,
+    )
+
 # Asyncio Task for sending email
 async def async_send_mail(subject, body, to):
-    emailWrapper(subject, body, to=[to])
+    await sync_to_async(emailWrapper)(subject, body, to=[to])
+
+def swWrapper(message, to):
+    message1 = swclient.messages.create(
+        body=message,
+        from_=SIGNALWIRE_NUMBER,
+        to='+1' + to,
+    )
+
+async def async_sw_send_sms(message, to):
+    await sync_to_async(swWrapper)(message, to)
 
 # Asynchronously sends multiple cancellation emails
 async def send_cancellations(appts, reason):
     loop = asyncio.get_event_loop()
     tasks = []
     for appt in appts:
-        if appt.patient.sms_notifications and appt.patient.phone:
-            tasks.append(async_send_mail(
-                '',
-                'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + '.\nPlease rebook for another time.',
-                appt.patient.phone + SMS_CARRIER)
+        if appt['patient_sms_notis'] and appt['patient_phone']:
+            tasks.append(async_sw_send_sms(
+                f'Hello {appt["patient_name"]},\nYour Appointment with Dr. {appt["doctor"]} on {appt["shortdt"]} has been cancelled. We are sorry for the inconvenience.',
+                appt["patient_phone"])
             )
-        if appt.patient.email_notifications:
-            tasks.append(async_send_mail(
-                'Your Appointment has been Cancelled',
-                'Hi, ' + appt.patient.first_name + '\n\nWe regret to inform you that your appointment with Dr. ' + str(appt.doctor) + ' on ' + appt.dateTime + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
-                to=appt.patient.email)
-            )
-    #print(tasks)
+        if appt['patient_email_notis']:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+                await loop.run_in_executor(
+                    executor,
+                    emailWrapper,
+                    'Your Appointment has been Cancelled',
+                    'Hi, ' + appt["patient_name"] + '\n\nWe regret to inform you that your appointment with Dr. ' + appt["doctor"] + ' on ' + appt["dt"] + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
+                    [appt['patient_email']]
+                )
+            
     for t in tasks:
-        await t
+        print(t)
+    L = asyncio.gather(*tasks)
+    await L
+    
 
 # Returns a random character to serve as a meeting_id
 def generateMeetingId():
@@ -198,86 +238,6 @@ def apptHistory(request):
         return render(request, 'downloadhistory.html', {'form': form})
     return render(request, 'downloadhistory.html')
 
-
-# @login_required
-# def downloadApptHistory(request):
-#     u=request.user
-#     if u.is_authenticated:
-#         if u.type == 'DOCTOR':# and (fileType == 'xls' or fileType == 'csv'):
-#             if request.method == 'POST':
-#                 appts = Appointment.objects.filter(doctor=u, booked=True, datetime__lt=getDateTimeNow())
-                
-#                 fileType=''
-
-#                 fileName = str(datetime.now().date()) + ' Appointment History'
-
-#                 #column header names, you can use your own headers here
-#                 columns = ['Date', 'Time', 'Consultation', 'Patient Name', 'Patient DOB', 'Patient Address', 'Patient Email', 'Patient Phone #', 'Patient OHIP', 'Patient OHIP Expiry', 'Patient Pharmacy', 'Doctor Notes', 'Prescription']
-                
-#                 if fileType == 'xls':
-#                     # content-type of response
-#                     response = HttpResponse(content_type='application/ms-excel')
-
-#                     #decide file name
-#                     response['Content-Disposition'] = f'attachment; filename={fileName}.xls'
-
-#                     #creating workbook
-#                     wb = xlwt.Workbook(encoding='utf-8')
-
-#                     #adding sheet
-#                     ws = wb.add_sheet("sheet1")
-
-#                     # Sheet header, first row
-#                     row_num = 0
-
-#                     font_style = xlwt.XFStyle()
-#                     # headers are bold
-#                     font_style.font.bold = True
-
-#                     #write column headers in sheet
-#                     for col_num in range(len(columns)):
-#                         ws.write(row_num, col_num, columns[col_num], font_style)
-
-#                     # Sheet body, remaining rows
-#                     font_style = xlwt.XFStyle()
-
-#                     #get your data, from database or from a text file...
-#                     for appt in appts:
-#                         row_num += 1
-#                         print(appt.date)
-#                         ws.write(row_num, 0, str(appt.date), font_style)
-#                         ws.write(row_num, 1, dict(IntTimes.choices)[appt.time], font_style)
-#                         ws.write(row_num, 2, appt.consultation, font_style)
-#                         ws.write(row_num, 3, str(appt.patient), font_style)
-#                         ws.write(row_num, 4, str(appt.patient.dob), font_style)
-#                         ws.write(row_num, 5, f'{appt.patient.more.address}, {appt.patient.more.postal_code}', font_style)
-#                         ws.write(row_num, 6, appt.patient.email, font_style)
-#                         ws.write(row_num, 7, appt.patient.phone, font_style)
-#                         ws.write(row_num, 8, appt.patient.more.ohip_number, font_style)
-#                         ws.write(row_num, 9, str(appt.patient.more.ohip_expiry), font_style)
-#                         ws.write(row_num, 10, appt.patient.more.pharmacy, font_style)
-#                         ws.write(row_num, 11, ApptDetails.objects.get(appt=appt).notes, font_style)
-#                         ws.write(row_num, 12, ApptDetails.objects.get(appt=appt).prescription, font_style)
-
-#                     wb.save(response)
-#                     return response
-#                 elif fileType == 'csv':
-#                     response = HttpResponse(
-#                         content_type='text/csv',
-#                         headers={'Content-Disposition': f'attachment; filename={fileName}.csv'},
-#                     )
-#                     writer = csv.writer(response)
-#                     writer.writerow(columns)
-                    
-#                     for appt in appts:
-#                         row = [str(appt.date), dict(IntTimes.choices)[appt.time], appt.consultation, str(appt.patient), str(appt.patient.dob), f'{appt.patient.more.address}, {appt.patient.more.postal_code}', appt.patient.email, str(appt.patient.phone), appt.patient.more.ohip_number, str(appt.patient.more.ohip_expiry), appt.patient.more.pharmacy, ApptDetails.objects.get(appt=appt).notes, ApptDetails.objects.get(appt=appt).prescription]
-#                         writer.writerow(row)
-#                         print(row)
-#                     return response
-
-#     return redirect('doctordashboard')
-
-
 # Redirect view right after creating an appointment to prevent unexpected form resubmissions
 @login_required
 def apptcreated(request):
@@ -368,6 +328,8 @@ def showreasontextbox(request):
             enddate = fromisoform(request.GET.get('c_enddate', None))
             enddate = date(enddate[0], enddate[1], enddate[2])
             endtime = int(request.GET.get('c_endtime', None))
+            if starttime > endtime:
+                endtime = starttime
             if startdate and enddate and starttime and endtime:
                 booked = Appointment.objects.filter(doctor=u, datetime__gte=getDateTime(startdate, starttime), datetime__lte=getDateTime(enddate, endtime), time__gte=starttime, time__lte=endtime, booked=True)
                 if booked.exists():
@@ -377,10 +339,10 @@ def showreasontextbox(request):
     return JsonResponse({})
 
 # View for closing a range of open Appointment time slots
-@sync_to_async
+#@sync_to_async
 @login_required
-@async_to_sync
-async def cancelmult(request):
+#@async_to_sync
+def cancelmult(request):
     u=request.user
     if u.is_authenticated:
         if u.type == "DOCTOR":
@@ -389,8 +351,6 @@ async def cancelmult(request):
                 if form.is_valid():
 
                     # Uses same method as creation
-
-                    # Might want to reimplement using __lte, __gte query filters instead then just deleting objects in that resulting QS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                     startdate = form.cleaned_data['c_startdate']
                     starttime = int(form.cleaned_data['c_starttime'])
@@ -401,25 +361,25 @@ async def cancelmult(request):
                     all_appts = Appointment.objects.filter(doctor=u, datetime__gte=getDateTime(startdate, starttime), datetime__lte=getDateTime(enddate, endtime), time__gte=starttime, time__lte=endtime)
                     avail = all_appts.filter(booked=False)
                     booked = all_appts.filter(booked=True)
+                    print(booked)
                     avail.delete()
                     if booked.exists():
+                        bookedappts = extractApptData(booked)
                         reason = form.cleaned_data['reason']
                         try:
                             loop = asyncio.get_running_loop()
                         except RuntimeError:  # if cleanup: 'RuntimeError: There is no current event loop..'
                             loop = None
-
                         if loop and loop.is_running():
                             print('Async event loop already running')
-                            #print(booked, reason)
-                            tsk = loop.create_task(send_cancellations(booked, reason))
+                            tsk = asyncio.create_task(send_cancellations(bookedappts, reason))
+                            loop.run_until_complete(tsk)
                             # ^-- https://docs.python.org/3/library/asyncio-task.html#task-object
-                            tsk.add_done_callback(                                          # optional
-                                lambda t: (print(f'Task done'), booked.delete()))
                         else:
                             print('Starting new event loop')
-                            asyncio.run(send_cancellations(booked, reason))
-                            booked.delete()
+                            asyncio.run(send_cancellations(bookedappts, reason))
+                        
+                        booked.delete()
                         
                         
                         

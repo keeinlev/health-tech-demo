@@ -57,17 +57,17 @@ def cancelappt(request, pk):
                     
                     # Sends other party an SMS and Email message to notify them of cancellation
                     if target.sms_notifications and target.phone:
-                        send_mail(
-                            ''
-                            'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
-                            'healthapptdemo@gmail.com',
-                            [target.phone + SMS_CARRIER],
+                        # send_mail(
+                        #     ''
+                        #     'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
+                        #     'healthapptdemo@gmail.com',
+                        #     [target.phone + SMS_CARRIER],
+                        # )
+                        smsmessage = swclient.messages.create(
+                            body='Hi, ' + target.firstOrPreferredName + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
+                            from_=SIGNALWIRE_NUMBER,
+                            to='+1' + target.phone,
                         )
-                    # smsmessage = swclient.messages.create(
-                    #     body='Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
-                    #     from_=SIGNALWIRE_NUMBER,
-                    #     to='+1' + target.phone,
-                    # )
                     send_mail(
                         'Your Appointment has been Cancelled',
                         'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
@@ -107,7 +107,7 @@ def apptcanceled(request):
                 message = "Appointment(s) cancelled."
                 return render(request, 'doctordashboard.html', {'doctor': Doctor.objects.get(pk=u.pk), 'cancel_mult_form': cancel_mult_form, 'single_appt_form': single_appt_form, 'mult_appt_form': mult_appt_form, 'message':message})
         else:
-            return render(request, 'index.html', {'message': 'Appointment Cancelled'})
+            return render(request, 'patientdashboard.html', {'message': 'Appointment Cancelled'})
     
     return render(request, 'doctordashboard.html')
 
