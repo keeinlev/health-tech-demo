@@ -95,16 +95,15 @@ input {
     table-layout:fixed;
 }
 .appttablehead {
-    width: auto;
+    width: 100%;
     overflow-x:scroll;
 }
 .infotable-cont {
     margin-right: auto;
     margin-left: auto;
-    overflow-x:scroll;
     overflow-y:hidden;
     height:201px;
-    width:430px;
+    width:100%;
     border-style: solid;
     border-width: 1.1px;
 }
@@ -113,7 +112,7 @@ input {
     display: table;
     border-collapse: collapse;
     border-spacing: 0;
-    width: 430px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     overflow-y: scroll;
