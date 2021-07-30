@@ -97,6 +97,14 @@ class User(AbstractUser):
     def formattedPhone(self):
         return '(' + self.phone[:3] + ') ' + self.phone[3:6] + '-' + self.phone[6:10]
 
+    @property
+    def firstOrPreferredName(self):
+        return self.first_name if (self.preferred_name == None or self.preferred_name == '') else self.preferred_name
+    
+    @property
+    def fullName(self):
+        return f'{self.firstOrPreferredName} {self.last_name}'
+
 # Allows for querying within the Patient object
 class PatientManager(CustomUserManager):
     def get_queryset(self, *args, **kwargs):
