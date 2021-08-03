@@ -13,10 +13,10 @@
     transition: all 1s ease;
 }
 
-.spoilerbutton[value="Show Images"]+.spoiler>div {
+.spoilerbutton[value="Show Files"]+.spoiler>div {
     max-height: 0;
 }
 
-.spoilerbutton[value="Hide Images"]+.spoiler>div {
+.spoilerbutton[value="Hide Files"]+.spoiler>div {
     max-height: auto; /*use a big value here*/
 }

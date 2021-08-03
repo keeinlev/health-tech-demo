@@ -52,6 +52,14 @@ class Appointment(models.Model):
         return str(datetime.datetime.now(utc).astimezone().tzinfo)
 
     @property
-    def getImages(self):
-        from appointment.models import ApptImage
-        return ApptImage.objects.filter(appt=self)
+    def getAllFiles(self):
+        from appointment.models import ApptFile
+        return ApptFile.objects.filter(appt=self)
+
+    @property
+    def getMedia(self):
+        return self.getAllFiles.filter(file_type__in=['.png', '.jpg', '.gif', '.mp4', '.mov', '.wmv', '.avi'])
+    
+    @property
+    def getNonMedia(self):
+        return self.getAllFiles.excludes(file_type__in=['.png', '.jpg', '.gif', '.mp4', '.mov', '.wmv', '.avi'])

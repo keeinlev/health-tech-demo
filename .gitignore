@@ -1,6 +1,7 @@
 # created by virtualenv automatically
 
 health/.env
+health/media
 oauth_settings.yml
 db.sqlite3
 __pycache__

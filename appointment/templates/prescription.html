@@ -44,60 +44,73 @@
                                 </div>
                             </div>
                             <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
-                            <a href="{% if user.type == 'DOCTOR' %}{% url 'doctordashboard' %}{% elif user.type == 'PATIENT' %}{% url 'index' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
+                            <a href="{% url 'doctordashboard' %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
                         </form>
                     {% else %}
                         <div class='section'>
-                            <div style='margin:50px;'>
-                                <label for='presc'>Prescription:</label>
-                                <div class='row' style='margin-bottom: 20px;'>
-                                    <div class='col'>
-                                        <div id='presc'>
-                                            {% if details.prescription %}
-                                                {{ details.prescription }}
-                                            {% else %}
-                                                None
-                                            {% endif %}
+                            <form method="post" action="{% url 'details' appt.pk %}" enctype="multipart/form-data">
+                                <div style='margin:50px;'>
+                                    <label for='presc'>Prescription:</label>
+                                    <div class='row' style='margin-bottom: 20px;'>
+                                        <div class='col'>
+                                            <div id='presc'>
+                                                {% if details.prescription %}
+                                                    {{ details.prescription }}
+                                                {% else %}
+                                                    None
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <label for='apptnotes'>Appointment Notes:</label>
-                                <div class='row' style='margin-bottom: 20px;'>
-                                    <div class='col'>
-                                        <div id='apptnotes'>
-                                            {% if details.notes %}
-                                                {{ details.notes }}
-                                            {% else %}
-                                                None
-                                            {% endif %}
+                                    <label for='apptnotes'>Appointment Notes:</label>
+                                    <div class='row' style='margin-bottom: 20px;'>
+                                        <div class='col'>
+                                            <div id='apptnotes'>
+                                                {% if details.notes %}
+                                                    {{ details.notes }}
+                                                {% else %}
+                                                    None
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <form method="post" action="{% url 'details' appt.pk %}" enctype="multipart/form-data">
                                     {% csrf_token %}
-                                    Upload Images <input type='file' accept='image/*' name='images' id='images-input' multiple />
-                                    <input type="submit" />
-                                </form>
-                            </div>
+                                    Upload Files <input type='file' accept='.png,.jpg,.gif,.mp4,.mov,.avi,.wmv,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' name='files' id='images-input' multiple />
+                                </div>
+                                <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
+                                <a href="{% url 'patientdashboard' %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
+                            </form>
                         </div>
                     {% endif %}
-                    {% if appt.getImages %}
+                    {% if appt.getAllFiles %}
                         <div class='section'>
                             <div style='margin:50px;'>
-                                <input class="spoilerbutton" type="button" value="Show Images" onclick="this.value=this.value=='Show Images'?'Hide Images':'Show Images';">
+                                <input class="spoilerbutton" type="button" value="Show Files" onclick="this.value=this.value=='Show Files'?'Hide Files':'Show Files';">
                                 <div class="spoiler">
                                     <div>
-                                        {% for imageModel in appt.getImages %}
+                                        {% for fileModel in appt.getAllFiles %}
                                         <div class='row'>
-                                            <div class='col-7'>
-                                                <img src="{{ imageModel.image.url }}" title="{{ imageModel.upload_date }}" class="appt-images" />
+                                            <div class='col'>
+                                                {% if fileModel.isMedia %}
+                                                    <img src="{{ fileModel.uploaded_file.url }}" title="{{ fileModel.upload_date }}" class="appt-images" width="600px" height="400px" />
+                                                {% else %}
+                                                    <div><a href="{% if fileModel.file_type == '.pdf' %}{{ fileModel.uploaded_file.url }}{% else %}{% url 'downloadfile' fileModel.pk %}{% endif %}" target="_blank">{{ fileModel.friendly_name }}</a></div>
+                                                {% endif %}
                                             </div>
-                                            <div class='col-5'>
-                                                <b class="cancel-text" onclick="$('#confirm-yes{{ imageModel.pk }}, #confirm-no{{ imageModel.pk }}').removeClass('hidden')">Delete</b>&nbsp;&nbsp;
-                                                <b class="cancel-text"><a id="confirm-yes{{ imageModel.pk }}" class="hidden" href="{% url 'deleteimage' imageModel.pk %}">Yes</a></b>&nbsp;&nbsp;
-                                                <b class="cancel-text hidden" id="confirm-no{{ imageModel.pk }}" onclick="$('#confirm-yes{{ imageModel.pk }}, #confirm-no{{ imageModel.pk }}').addClass('hidden')">No</b>
+                                            <div class='col'>
+                                                {% if fileModel.isMedia %}
+                                                    <div>
+                                                        <b class="cancel-text"><a id="downloadfile-{{ fileModel.pk }}" href="{% url 'downloadfile' fileModel.pk %}">Download</a></b>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <b class="cancel-text" onclick="$('#confirm-yes{{ fileModel.pk }}, #confirm-no{{ fileModel.pk }}').removeClass('hidden')">Delete</b>&nbsp;&nbsp;
+                                                    <b class="cancel-text"><a id="confirm-yes{{ fileModel.pk }}" class="hidden" href="{% url 'deletefile' fileModel.pk %}">Yes</a></b>&nbsp;&nbsp;
+                                                    <b class="cancel-text hidden" id="confirm-no{{ fileModel.pk }}" onclick="$('#confirm-yes{{ fileModel.pk }}, #confirm-no{{ fileModel.pk }}').addClass('hidden')">No</b>
+                                                </div>
                                             </div>
                                         </div>
+                                        <hr />
                                             
                                         {% endfor %}
                                     </div>

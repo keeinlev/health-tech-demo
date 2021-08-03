@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 from health.settings import MS_TEAMS_MEETING_URL_1, MS_TEAMS_MEETING_URL_2, MS_TEAMS_MEETING_ID_LENGTH
 from django.conf import settings
 
-from .models import ApptDetails, ApptImage
+from .models import ApptDetails, ApptFile
 from .forms import ApptDetailsForm
 
 from book.models import Appointment
@@ -50,10 +51,11 @@ def details(request, pk):
                 else:
                     if request.method == 'POST':
                         data = request.POST
-                        images = request.FILES.getlist('images')
+                        files = request.FILES.getlist('files')
 
-                        for image in images:
-                            ApptImage.objects.create(appt=appt, image=image)
+                        for f in files:
+                            n = f.name
+                            ApptFile.objects.create(appt=appt, uploaded_file=f, friendly_name=n, file_type=n[n.index('.'):], content_type=f.content_type)
                         return redirect(reverse('details', kwargs={'pk':appt.pk}))
                     else:
                         return render(request, 'prescription.html', {'appt': appt, 'details': p})
@@ -66,19 +68,21 @@ def details(request, pk):
     return render(request, 'prescription.html')
 
 @login_required
-def deleteimage(request, pk):
-    queried = ApptImage.objects.get(pk=pk)
-    appt = queried.appt
-    if request.user == appt.doctor or request.user == appt.patient:
-        if queried:
-            if not settings.DEBUG:
-                blob_name = queried.get_blob_url
-                #print(blob_name)
-                blob_service = settings.BLOB_SERVICE
-                blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
+def deletefile(request, pk):
+    queried = ApptFile.objects.filter(pk=pk)
+    if queried.exists():
+        queried = queried.first()
+        appt = queried.appt
+        if request.user == appt.doctor or request.user == appt.patient:
+            if queried:
+                if not settings.DEBUG:
+                    blob_name = queried.get_blob_url
+                    #print(blob_name)
+                    blob_service = settings.BLOB_SERVICE
+                    blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
 
-            queried.delete()
-            return redirect(reverse('details', kwargs={'pk':appt.pk}))
+                queried.delete()
+                return redirect(reverse('details', kwargs={'pk':appt.pk}))
 
     return redirect('index')
 
@@ -106,3 +110,19 @@ def meeting_redir(request, pk):
         request.session['meeting_request'] = pk
         return redirect('login')
     return redirect('index')
+
+@login_required
+def downloadfile(request, pk):
+    u = request.user
+    f = ApptFile.objects.filter(pk=pk)
+    if f.exists():
+        f = f.first()
+        appt = f.appt
+        if u == appt.patient or u == appt.doctor:
+            filename = f.friendly_name
+            response = HttpResponse(f.uploaded_file, content_type=f'{f.content_type}')
+            response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            return response
+        return redirect('index')
+    else:
+        return render(request, 'alert.html', { 'message': 'That file does not exist!', 'valid': False })
