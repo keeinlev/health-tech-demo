@@ -7,4 +7,5 @@ urlpatterns = [
     path('meetrdir/<int:pk>', views.meeting_redir, name='meeting_redir'),
     path('deletefile/<int:pk>', views.deletefile, name='deletefile'),
     path('downloadfile/<int:pk>', views.downloadfile, name='downloadfile'),
+    path('allappts', views.allappts, name='allappts'),
 ]

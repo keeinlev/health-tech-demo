@@ -79,6 +79,15 @@ class User(AbstractUser):
         elif (self.type == 'PATIENT'):
             return Patient.objects.get(pk=self.pk)
 
+    # Returns the Queryset of all Appointment objects related to the User including past Appointments
+    @property
+    def getAllAppts(self):
+        from book.models import Appointment
+        if (self.type == 'PATIENT'):
+            return Appointment.objects.filter(patient=self).order_by('date', 'time')
+        elif (self.type == 'DOCTOR'):
+            return Appointment.objects.filter(doctor=self).order_by('date', 'time')
+
     # Returns the Queryset of all Appointment objects that are scheduled to the User
     @property
     def getAppts(self):

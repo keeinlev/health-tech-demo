@@ -13,3 +13,19 @@ def remindAllUpcoming():
         send_reminder(appt.id, 'remind')
         appt.reminder_sent = True
         appt.save()
+
+# Helper to delete any Appointments that were opened but not booked that have passed
+def deleteUnbooked():
+    now = datetime.now().astimezone(utc)
+    Appointment.objects.filter(datetime__lte=now, booked=False).delete()
+
+# Helper to update past booked Appointments so that meeting link is no longer accessible
+def updatePastMeetingLinks():
+    now = datetime.now().astimezone(utc)
+    Appointment.objects.filter(datetime__lte=now, booked=True).update(meeting_id='')
+
+# Main background scheduled job function
+def updateApptStatus():
+    remindAllUpcoming()
+    deleteUnbooked()
+    updatePastMeetingLinks()

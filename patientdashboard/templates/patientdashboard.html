@@ -18,7 +18,7 @@
             <a href="{% url 'book' %}"><input type="button" class="action-button" value='Book Now'></input></a>
         </div>
         <div class="section" style='margin-top: 7%;'>
-            <h2>Your Upcoming Appointments</h2>
+            <h2>Your Upcoming Appointments - <a href="{% url 'allappts' %}">View All Your Appointments</a></h2>
             {% if user.getSomeAppts %}
                 {% for appt in user.getSomeAppts %}
                     <div class="appointment-box appointment-box-md">

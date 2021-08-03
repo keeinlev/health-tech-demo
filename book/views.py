@@ -43,53 +43,56 @@ def cancelappt(request, pk):
         a = Appointment.objects.filter(pk=pk)
         if a.exists():
             a = a.first()
-            if request.method == "POST":
-                
-                # A confirm cancel form will only show up in the GET request if the Appointment is booked
-                form = CancelConfirmForm(request.POST)
-                if form.is_valid():
-                    target = a.doctor
-                    other = f'Patient {a.patient}'
-                    if u.type == "DOCTOR":
-                        target = a.patient
-                        other = f'Dr. {a.doctor}'
-                    r = form.cleaned_data['reason']
+            if not a.apptHasPassed:
+                if request.method == "POST":
                     
-                    # Sends other party an SMS and Email message to notify them of cancellation
-                    if target.sms_notifications and target.phone:
-                        # send_mail(
-                        #     ''
-                        #     'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
-                        #     'healthapptdemo@gmail.com',
-                        #     [target.phone + SMS_CARRIER],
-                        # )
-                        smsmessage = swclient.messages.create(
-                            body='Hi, ' + target.firstOrPreferredName + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
-                            from_=SIGNALWIRE_NUMBER,
-                            to='+1' + target.phone,
+                    # A confirm cancel form will only show up in the GET request if the Appointment is booked
+                    form = CancelConfirmForm(request.POST)
+                    if form.is_valid():
+                        target = a.doctor
+                        other = f'Patient {a.patient}'
+                        if u.type == "DOCTOR":
+                            target = a.patient
+                            other = f'Dr. {a.doctor}'
+                        r = form.cleaned_data['reason']
+                        
+                        # Sends other party an SMS and Email message to notify them of cancellation
+                        if target.sms_notifications and target.phone:
+                            # send_mail(
+                            #     ''
+                            #     'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
+                            #     'healthapptdemo@gmail.com',
+                            #     [target.phone + SMS_CARRIER],
+                            # )
+                            smsmessage = swclient.messages.create(
+                                body='Hi, ' + target.firstOrPreferredName + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
+                                from_=SIGNALWIRE_NUMBER,
+                                to='+1' + target.phone,
+                            )
+                        send_mail(
+                            'Your Appointment has been Cancelled',
+                            'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                            'healthapptdemo@gmail.com',
+                            [target.email],
                         )
-                    send_mail(
-                        'Your Appointment has been Cancelled',
-                        'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
-                        'healthapptdemo@gmail.com',
-                        [target.email],
-                    )
-                    a.delete()
-                    return redirect('apptcanceled')
-            else:
-                if a.booked:
-                    # Only creates a confirmation form if Appointment is booked
-                    form = CancelConfirmForm(initial={
-                        'doctor': a.doctor,
-                        'patient': a.patient,
-                        'date': a.date,
-                        'time': a.time,
-                    })
-                    return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime })
+                        a.delete()
+                        return redirect('apptcanceled')
                 else:
-                    # If not booked, just delete the Appointment
-                    a.delete()
-                    return redirect('apptcanceled')
+                    if a.booked:
+                        # Only creates a confirmation form if Appointment is booked
+                        form = CancelConfirmForm(initial={
+                            'doctor': a.doctor,
+                            'patient': a.patient,
+                            'date': a.date,
+                            'time': a.time,
+                        })
+                        return render(request, 'confirmcancel.html', { 'appt': a , 'form': form, 'dt': a.dateTime })
+                    else:
+                        # If not booked, just delete the Appointment
+                        a.delete()
+                        return redirect('apptcanceled')
+            else:
+                return render(request, 'alert.html', {'message': 'Appointment has already passed!'})
         else:
             return render(request, 'alert.html', {'message': 'Appointment does not exist!'})
     return render(request, 'doctordashboard.html')

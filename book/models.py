@@ -34,13 +34,20 @@ class Appointment(models.Model):
     @property
     def shortDateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%a %b %d %I:%M%p')
+
+    # Returns an Appointment's time only in the format of "<Hour 1-12>:<Minute><AM/PM>"
+    @property
+    def apptTime(self):
+        return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%I:%M%p')
     
     # Using the Appointment unique meeting_id, returns the full MS Teams meeting link
     # Prevents the need to redundantly store the same long URL segments in our database, just the unique values
     @property
     def meeting_link(self):
         from health.settings import MS_TEAMS_MEETING_URL_1 as meet_link1, MS_TEAMS_MEETING_URL_2 as meet_link2
-        return meet_link1 + self.meeting_id + meet_link2
+        if self.apptHasPassed:
+            return meet_link1 + self.meeting_id + meet_link2
+        return '/'
 
     @property
     def details(self):
@@ -63,3 +70,7 @@ class Appointment(models.Model):
     @property
     def getNonMedia(self):
         return self.getAllFiles.excludes(file_type__in=['.png', '.jpg', '.gif', '.mp4', '.mov', '.wmv', '.avi'])
+
+    @property
+    def apptHasPassed(self):
+        return self.datetime < datetime.datetime.now().astimezone(utc)

@@ -95,9 +95,6 @@ async def send_cancellations(appts, reason):
                     'Hi, ' + appt["patient_name"] + '\n\nWe regret to inform you that your appointment with Dr. ' + appt["doctor"] + ' on ' + appt["dt"] + ' has been cancelled for reason:\n' + reason + '\nPlease rebook an appointment for another time.\n\nWe are sorry for the inconvenience.',
                     [appt['patient_email']]
                 )
-            
-    for t in tasks:
-        print(t)
     L = asyncio.gather(*tasks)
     await L
     

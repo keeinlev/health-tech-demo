@@ -126,3 +126,7 @@ def downloadfile(request, pk):
         return redirect('index')
     else:
         return render(request, 'alert.html', { 'message': 'That file does not exist!', 'valid': False })
+
+@login_required
+def allappts(request):
+    return render(request, 'allappts.html')
