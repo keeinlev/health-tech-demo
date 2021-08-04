@@ -58,7 +58,7 @@ jobs:
 
     # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
     - name: Collect static files
-      run: python manage.py collectstatic
+      run: python manage.py collectstatic --noinput
 
     - name: Upload artifact for deployment jobs
       uses: actions/upload-artifact@v2
