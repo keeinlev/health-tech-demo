@@ -10,6 +10,12 @@ from .forms import ApptDetailsForm
 
 from book.models import Appointment
 
+from azure.common import AzureMissingResourceHttpError
+
+import environ
+
+env = environ.Env()
+
 # Create your views here.
 @login_required
 def details(request, pk):
@@ -55,6 +61,7 @@ def details(request, pk):
 
                         for f in files:
                             n = f.name
+                            print(f.content_type, len(f.content_type))
                             ApptFile.objects.create(appt=appt, uploaded_file=f, friendly_name=n, file_type=n[n.index('.'):], content_type=f.content_type)
                         return redirect(reverse('details', kwargs={'pk':appt.pk}))
                     else:
@@ -68,23 +75,39 @@ def details(request, pk):
     return render(request, 'prescription.html')
 
 @login_required
-def deletefile(request, pk):
-    queried = ApptFile.objects.filter(pk=pk)
-    if queried.exists():
-        queried = queried.first()
-        appt = queried.appt
-        if request.user == appt.doctor or request.user == appt.patient:
-            if queried:
-                if not settings.DEBUG:
+def deletefile(request, apptpk, filepk):
+    appt = Appointment.objects.filter(pk=apptpk)
+    u = request.user
+    context = {}
+    if appt.exists():
+        appt = appt.first()
+        p = appt.details
+        context['appt'] = appt
+        context['details'] = p
+        context['form'] = ApptDetailsForm(initial={'prescription': p.prescription,'notes': p.notes,}) if u.type=='DOCTOR' else None 
+        queried = ApptFile.objects.filter(pk=filepk)
+        if u == appt.doctor or u == appt.patient:
+            if queried.exists():
+                queried = queried.first()
+                if settings.DEFAULT_FILE_STORAGE == 'storages.backends.azure_storage.AzureStorage':
                     blob_name = queried.get_blob_url
-                    #print(blob_name)
                     blob_service = settings.BLOB_SERVICE
-                    blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
-
+                    try:
+                        blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
+                    except AzureMissingResourceHttpError as e:
+                        print('This blob does not exist or has already been deleted. Error: ' + str(e)[str(e).index('<Message>') + len('<Message>'):str(e).index('</Message>')])
+                        queried.delete()
+                        return render(request, 'prescription.html', context)
                 queried.delete()
-                return redirect(reverse('details', kwargs={'pk':appt.pk}))
+                context['message'] = 'File deleted successfully!'
+                return render(request, 'prescription.html', context)
+            else:
+                context['message'] = 'That file does not exist!'
+                return render(request, 'prescription.html', context)
+        else:
+            return render(request, 'alert.html', { 'message': 'You do not have access to this page!' })
 
-    return redirect('index')
+    return render(request, 'alert.html', { 'message': 'That Appointment does not exist!' })
 
 # View that redirects user to the MS Teams meeting link
 # I created this as an alternative to using the entire meeting link, which can be quite lengthy
@@ -106,9 +129,6 @@ def meeting_redir(request, pk):
             if len(appt.meeting_id) == MS_TEAMS_MEETING_ID_LENGTH and u == appt.patient or u == appt.doctor:
                 url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
                 return redirect(url)
-    else:
-        request.session['meeting_request'] = pk
-        return redirect('login')
     return redirect('index')
 
 @login_required
