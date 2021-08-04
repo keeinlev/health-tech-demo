@@ -181,7 +181,16 @@ GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 
 DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
 
+DJANGO_UAT = env('DJANGO_UAT')
+
 if DJANGO_DEVELOPMENT == 'True':
     from .development import *
+    from .development_db_settings import *
+    if DJANGO_UAT == 'True':
+        from .production_storage_settings import *
+    else:
+        from .development_storage_settings import *
 else:
     from .production import *
+    from .production_db_settings import *
+    from .production_storage_settings import *
