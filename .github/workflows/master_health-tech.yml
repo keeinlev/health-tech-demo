@@ -15,6 +15,31 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      AZURE_ACCOUNT_NAME: ${{ secrets.AZURE_ACCOUNT_NAME }}
+      AZURE_ACCOUNT_KEY: ${{ secrets.AZURE_ACCOUNT_KEY }}
+      AZURE_STATIC_CONTAINER: ${{ secrets.AZURE_STATIC_CONTAINER }}
+      AZURE_MEDIA_CONTAINER: ${{ secrets.AZURE_MEDIA_CONTAINER }}
+      DJANGO_DEVELOPMENT: ${{ secrets.DJANGO_DEVELOPMENT }}
+      DJANGO_UAT: ${{ secrets.DJANGO_UAT }}
+      RDS_ENDPOINT: ${{ secrets.RDS_ENDPOINT }}
+      RDS_NAME: ${{ secrets.RDS_NAME }}
+      RDS_USER: ${{ secrets.RDS_USER }}
+      RDS_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+      RDS_PORT: ${{ secrets.RDS_PORT }}
+      MS_TEAMS_TEMP_LINK_1: ${{ secrets.MS_TEAMS_TEMP_LINK_1 }}
+      MS_TEAMS_TEMP_LINK_2: ${{ secrets.MS_TEAMS_TEMP_LINK_2 }}
+      MS_TEAMS_MEETING_ID_LENGTH: ${{ secrets.MS_TEAMS_MEETING_ID_LENGTH }}
+      MS_GRAPH_CLIENT_ID: ${{ secrets.MS_GRAPH_CLIENT_ID }}
+      MS_GRAPH_CLIENT_SECRET: ${{ secrets.MS_GRAPH_CLIENT_SECRET }}
+      MS_GRAPH_REDIRECT_URI: ${{ secrets.MS_GRAPH_REDIRECT_URI }}
+      SIGNALWIRE_PROJECT: ${{ secrets.SIGNALWIRE_PROJECT }}
+      SIGNALWIRE_TOKEN: ${{ secrets.SIGNALWIRE_TOKEN }}
+      SIGNALWIRE_SPACE_URL: ${{ secrets.SIGNALWIRE_SPACE_URL }}
+      SIGNALWIRE_PHONE_NUMBER: ${{ secrets.SIGNALWIRE_PHONE_NUMBER }}
+      SMS_CARRIER_DOMAIN: ${{ secrets.SMS_CARRIER_DOMAIN }}
+      GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
     steps:
     - uses: actions/checkout@v2
 
