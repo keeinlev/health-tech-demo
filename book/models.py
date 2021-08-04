@@ -45,7 +45,7 @@ class Appointment(models.Model):
     @property
     def meeting_link(self):
         from health.settings import MS_TEAMS_MEETING_URL_1 as meet_link1, MS_TEAMS_MEETING_URL_2 as meet_link2
-        if self.apptHasPassed:
+        if not self.apptHasPassed:
             return meet_link1 + self.meeting_id + meet_link2
         return '/'
 
