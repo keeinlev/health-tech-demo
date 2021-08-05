@@ -6,12 +6,7 @@ from graph.auth_helper import remove_token
 
 def index(request):
     if request.user.is_authenticated:
-        if request.user.type == 'PATIENT':
-            return redirect('patientdashboard')
-        elif request.user.type == 'DOCTOR':
-            return redirect('doctordashboard')
-        else:
-            return redirect('index')
+        return redirect('login_redir')
     else:
         return render(request, 'index.html')
 

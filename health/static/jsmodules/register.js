@@ -64,15 +64,15 @@ var unique_fields = function (form) {
 emailmatch = false;
 passmatch = false;
 
-$('.formcontrol').on("keyup", function(e) {
+$('.formcontrol, .next').on("input click", function(e) {
 
     
     var filled = true;
 
-    if ($(this).attr('class').includes('email-inputs') || $(this).attr('id').includes('ohip')) {
+    if (!$(this).attr('class').includes('next') && ($(this).attr('class').includes('email-inputs') || $(this).attr('id').includes('ohip'))) {
         if ($(this).attr('class').includes('email-inputs')) {
             emailmatch = match_email();
-            if (emailmatch) {
+            if (this.value.includes('@')) {
                 unique_fields($(this).closest("form"));
             }
         } else if ($('#ohip').val().length == 15) {
@@ -81,6 +81,10 @@ $('.formcontrol').on("keyup", function(e) {
         
     } else if ($(this).attr('class').includes('pass-inputs')) {
         passmatch = match_pass();
+    } else {
+        emailmatch=match_email();
+        unique_fields($(this).closest('form'));
+        passmatch=match_pass()
     }
 
     for (elem=0; elem < formelements.length; ++elem) {
@@ -89,7 +93,6 @@ $('.formcontrol').on("keyup", function(e) {
             break;
         }
     }
-    console.log(filled, emailmatch, passmatch)
     if (filled && emailmatch && passmatch) {
         subbtn.disabled = false;
     } else {

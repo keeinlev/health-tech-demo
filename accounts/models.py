@@ -142,7 +142,7 @@ class PatientInfo(models.Model):
     ohip_expiry = models.DateField(_("OHIP Expiry Date"), default=timezone.now)
     address = models.CharField(_("User Address"), null=True, blank=True, max_length=100, default=None)
     postal_code = models.CharField(_("User Postal Code"), null=True, blank=True, max_length=7, default=None)
-    address_coords = models.CharField(_("User Address (lat,long)"), null=True, blank=True, max_length=50, default=None)
+    address_coords = models.CharField(_("User Address Coords"), null=True, blank=True, max_length=50, default=None)
     pharmacy = models.CharField(_("User Preferred Pharmacy"), max_length=250, null=True, blank=True, default=None)
 
 
@@ -179,9 +179,11 @@ class Doctor(User):
 class DoctorInfo(models.Model):
     user = models.OneToOneField(Doctor, on_delete=models.CASCADE, unique=True)
     certification = models.CharField(_("Doctor Qualifications"), max_length=50, default="None")
-    consultations = models.TextField(_("Doctor's Applicable Consultations"))
+    consultations = models.TextField(_("Doctor's Applicable Consultations"), default="None")
     languages = models.CharField(_("Doctor's Known Languages"), max_length=100, default="None")
     location = models.CharField(_("Office Location"), null=True, blank=True, max_length=100, default=None)
+    office_coords = models.CharField(_("Doctor Office Coords"), null=True, blank=True, max_length=50, default=None)
+    email_conf = models.BooleanField(_("Email Confirmed?"), default=False)
 
 # Function that can be run in Python shell to create a Doctor object and its corresponding DoctorInfo (temporary)
 def createdoctor():

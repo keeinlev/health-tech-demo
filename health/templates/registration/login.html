@@ -25,6 +25,7 @@
                         </div>
                         <div class="form-group">
                             <input class="form-control" id="{{ form.password.id_for_label }}" maxlength="30" name="{{ form.password.html_name }}" placeholder="Password" type="password" /> 
+                            <small><a href="{% url 'password_reset' %}">Forgot your password?</a></small>
                             {% for e in form.password.errors %}
                                 <small style="color: red;">{{e}}</small>
                             {% endfor %}
@@ -32,13 +33,13 @@
                         {% for e in form.non_field_errors %}
                             <small style="color: red;">{{e}}</small>
                         {% endfor %}
-                        <div style="text-align: center; padding-top: 10px;">
+                        <div style="text-align: center">
                             <input type="submit" id="login-submit" value="Login" class="btn-lg btn-block action-button", disabled>
                         </div>
                         <br>
                         <div style="text-align: center;">
                             <small>Don't have an account yet? <a href="{% url 'register' %}">Sign up now!</a></small>
-                            <br><small><a href="{% url 'password_reset' %}">Forgot your password?</a></small>
+                            <small>Practitioner? Apply for your account <a href="{% url 'registerdoctor' %}">here</a>.</small>
                         </div>
                         
                     </form>

@@ -5,6 +5,8 @@ from django.conf.urls import url
 urlpatterns = [
     path("register", views.register, name="register"),
 
+    path('registerdoctor', views.registerdoctor, name='registerdoctor'),
+
     url(r'^ajax/validate_email_and_ohip/$', views.validate_email_and_ohip, name='validate_email_and_ohip'),  # called during registration to ensure the email/ohip is not taken yet, views line 153
     
     path('need_activate', views.activateprompt, name='activateprompt'), # redirects to an alert asking for confirmation, views line 184
