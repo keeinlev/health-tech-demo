@@ -1,5 +1,5 @@
-$('.doctor-label').on("change", function() {
-    let form = $(this).closest("form");
+$(document.body).on("change", ".doctor-label", function() {
+    let form = $("#bookform");
     $('#id_time').html('');
     
     $.ajax({
@@ -110,21 +110,67 @@ $("label").on('input', function() {
 })
 
 $('#doctor-filter-textbox').on('input', function(e) {
+    $('#loadModal').css('display', 'block');
+    let parent = <Node>$('.doctor-content')[0];
     $.ajax({
         dataType: 'json',
         data: {
-            'search':(<HTMLInputElement>this).value
+            'search':(<HTMLInputElement>this).value,
+            'selected': $('#id_doctor').val(),
         },
         url: this.getAttribute('doctor-filter-url'),
         success: function(data) {
-            let s = '';
+            //let s = '';
+            $('.doctor-content').html('');
+            let selectedStillShown = false;
             for (let i=0; i < data['doctordata'].length; i++) {
+
                 let doctor = data['doctordata'][i];
                 let doctorFullName = (doctor['preferred_name'] ? doctor['preferred_name'] : doctor['first_name']) + ' ' + doctor['last_name'];
-                s += `<label class=\"doctor-label\">\n<input type=\"radio\" value=\"${doctor['pk']}\" name=\"doctor-id\" class=\"doctor-radio\">\n<div class=\"doctor-container\">\n<h4>${doctorFullName}</h4><br>\n<p><b>Qualifications:</b><br>\n${doctor['qualifications']}<br>\n<b>Consultations:</b><br>\n${doctor['consultations']}<br>\n<b>Languages:</b><br>\n${doctor['languages']}</p><br>\n</div>\n</label>\n`
+
+                let doctorLabel = document.createElement('label');
+                doctorLabel.setAttribute("class", "doctor-label");
+
+                let doctorRadio = document.createElement('input');
+                doctorRadio.setAttribute("type", "radio");
+                doctorRadio.setAttribute("value", doctor['pk']);
+                doctorRadio.setAttribute("name", "doctor-id");
+                doctorRadio.setAttribute("class", "doctor-radio");
+
+                let doctorContainer = document.createElement("div");
+                doctorContainer.setAttribute("class", "doctor-container");
+
+                let doctorName = document.createElement("h4");
+                doctorName.innerText = doctorFullName;
+
+                let doctorDescription = document.createElement("p");
+                doctorDescription.innerHTML = `<b>Qualifications:</b><br>\n${doctor['qualifications']}<br>\n<b>Consultations:</b><br>\n${doctor['consultations']}<br>\n<b>Languages:</b><br>\n${doctor['languages']}`
+
+                doctorContainer.appendChild(doctorName);
+                doctorContainer.appendChild(document.createElement('br'));
+                doctorContainer.appendChild(doctorDescription);
+                doctorContainer.appendChild(document.createElement('br'));
+
+                doctorLabel.appendChild(doctorRadio);
+                doctorLabel.appendChild(doctorContainer);
+
+                parent.appendChild(doctorLabel);
+
+                if (doctor['pk'] == data['selected']) {
+                    doctorLabel.click();
+                    selectedStillShown = true;
+                }
+
+                //s += `<label class=\"doctor-label\">\n<input type=\"radio\" value=\"${doctor['pk']}\" name=\"doctor-id\" class=\"doctor-radio\">\n<div class=\"doctor-container\">\n<h4>${doctorFullName}</h4><br>\n<p><b>Qualifications:</b><br>\n${doctor['qualifications']}<br>\n<b>Consultations:</b><br>\n${doctor['consultations']}<br>\n<b>Languages:</b><br>\n${doctor['languages']}</p><br>\n</div>\n</label>\n`
             }
-            console.log(s);
-            $('.doctor-content').html(s);
+            if (!selectedStillShown) {
+                $('#id_doctor').val(null);
+                $('#calendar-cont').addClass('hidden');
+                $('#booksubmit').addClass('display-hidden');
+            }
+            //console.log(s);
+            //$('.doctor-content').html(s);
+            $('#loadModal').css('display', 'none');
         }
     })
 })

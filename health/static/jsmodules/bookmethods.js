@@ -1,5 +1,5 @@
-$('.doctor-label').on("change", function () {
-    var form = $(this).closest("form");
+$(document.body).on("change", ".doctor-label", function () {
+    var form = $("#bookform");
     $('#id_time').html('');
     $.ajax({
         url: form.attr("update-calendar-url"),
@@ -107,21 +107,56 @@ $("label").on('input', function () {
     }
 });
 $('#doctor-filter-textbox').on('input', function (e) {
+    $('#loadModal').css('display', 'block');
+    var parent = $('.doctor-content')[0];
     $.ajax({
         dataType: 'json',
         data: {
-            'search': this.value
+            'search': this.value,
+            'selected': $('#id_doctor').val()
         },
         url: this.getAttribute('doctor-filter-url'),
         success: function (data) {
-            var s = '';
+            //let s = '';
+            $('.doctor-content').html('');
+            var selectedStillShown = false;
             for (var i = 0; i < data['doctordata'].length; i++) {
                 var doctor = data['doctordata'][i];
                 var doctorFullName = (doctor['preferred_name'] ? doctor['preferred_name'] : doctor['first_name']) + ' ' + doctor['last_name'];
-                s += "<label class=\"doctor-label\">\n<input type=\"radio\" value=\"" + doctor['pk'] + "\" name=\"doctor-id\" class=\"doctor-radio\">\n<div class=\"doctor-container\">\n<h4>" + doctorFullName + "</h4><br>\n<p><b>Qualifications:</b><br>\n" + doctor['qualifications'] + "<br>\n<b>Consultations:</b><br>\n" + doctor['consultations'] + "<br>\n<b>Languages:</b><br>\n" + doctor['languages'] + "</p><br>\n</div>\n</label>\n";
+                var doctorLabel = document.createElement('label');
+                doctorLabel.setAttribute("class", "doctor-label");
+                var doctorRadio = document.createElement('input');
+                doctorRadio.setAttribute("type", "radio");
+                doctorRadio.setAttribute("value", doctor['pk']);
+                doctorRadio.setAttribute("name", "doctor-id");
+                doctorRadio.setAttribute("class", "doctor-radio");
+                var doctorContainer = document.createElement("div");
+                doctorContainer.setAttribute("class", "doctor-container");
+                var doctorName = document.createElement("h4");
+                doctorName.innerText = doctorFullName;
+                var doctorDescription = document.createElement("p");
+                doctorDescription.innerHTML = "<b>Qualifications:</b><br>\n" + doctor['qualifications'] + "<br>\n<b>Consultations:</b><br>\n" + doctor['consultations'] + "<br>\n<b>Languages:</b><br>\n" + doctor['languages'];
+                doctorContainer.appendChild(doctorName);
+                doctorContainer.appendChild(document.createElement('br'));
+                doctorContainer.appendChild(doctorDescription);
+                doctorContainer.appendChild(document.createElement('br'));
+                doctorLabel.appendChild(doctorRadio);
+                doctorLabel.appendChild(doctorContainer);
+                parent.appendChild(doctorLabel);
+                if (doctor['pk'] == data['selected']) {
+                    doctorLabel.click();
+                    selectedStillShown = true;
+                }
+                //s += `<label class=\"doctor-label\">\n<input type=\"radio\" value=\"${doctor['pk']}\" name=\"doctor-id\" class=\"doctor-radio\">\n<div class=\"doctor-container\">\n<h4>${doctorFullName}</h4><br>\n<p><b>Qualifications:</b><br>\n${doctor['qualifications']}<br>\n<b>Consultations:</b><br>\n${doctor['consultations']}<br>\n<b>Languages:</b><br>\n${doctor['languages']}</p><br>\n</div>\n</label>\n`
             }
-            console.log(s);
-            $('.doctor-content').html(s);
+            if (!selectedStillShown) {
+                $('#id_doctor').val(null);
+                $('#calendar-cont').addClass('hidden');
+                $('#booksubmit').addClass('display-hidden');
+            }
+            //console.log(s);
+            //$('.doctor-content').html(s);
+            $('#loadModal').css('display', 'none');
         }
     });
 });

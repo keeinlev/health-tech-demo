@@ -43,8 +43,8 @@
                 <fieldset>
                     {{ form.doctor }}
                     {{ form.date }}
-                    <div class='row'>
-                        <div class='col-12 col-md-6 doctor-scroll-col'>
+                    <div class='row' style='background-color: whitesmoke;'>
+                        <div class='col-12 col-md-4 doctor-scroll-col' style='padding-left: 0px;'>
                             <div class="doctor-radio-container scrollbar-rare-wind" id='doctor-outside-container'>
                                 <h2 style="text-align: center; margin-top: 4%;">Select a Doctor</h2>
                                 <input type="text" id="doctor-filter-textbox" class="form-control" doctor-filter-url="{% url 'doctorfilter' %}" placeholder="Search" />
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class='col-12 col-md-6'>
+                        <div class='col-12 col-md-8'>
                             <h2 id='apptsempty' style="margin-top:4%; text-align: center;"></h2>
                             
                             <div class="hidden" id="calendar-cont">

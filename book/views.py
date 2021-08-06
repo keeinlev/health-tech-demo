@@ -250,21 +250,26 @@ def findtimes(request):
 
 @login_required
 def doctorfilter(request):
-    search = request.GET.get('search')
-    filteredDoctors = Doctor.objects.filter(first_name__contains=search) | Doctor.objects.filter(last_name__contains=search) | Doctor.objects.filter(preferred_name__contains=search)
-    filteredInfos = DoctorInfo.objects.filter(certification__contains=search) | DoctorInfo.objects.filter(consultations__contains=search) | DoctorInfo.objects.filter(languages__contains=search)
-    for info in filteredInfos:
-        filteredDoctors = filteredDoctors | Doctor.objects.filter(pk=info.user.pk)
-    data = []
-    for doctor in filteredDoctors:
-        data.append({
-            'pk': doctor.pk,
-            'first_name': doctor.first_name,
-            'preferred_name': doctor.preferred_name,
-            'last_name': doctor.last_name,
-            'qualifications': doctor.more.certification,
-            'consultations': doctor.more.consultations,
-            'languages': doctor.more.languages,
+    if request.user.is_authenticated:
+        search = request.GET.get('search')
+        filteredDoctors = Doctor.objects.filter(first_name__contains=search) | Doctor.objects.filter(last_name__contains=search) | Doctor.objects.filter(preferred_name__contains=search)
+        filteredInfos = DoctorInfo.objects.filter(certification__contains=search) | DoctorInfo.objects.filter(consultations__contains=search) | DoctorInfo.objects.filter(languages__contains=search)
+        for info in filteredInfos:
+            filteredDoctors = filteredDoctors | Doctor.objects.filter(pk=info.user.pk)
+        data = []
+        for doctor in filteredDoctors:
+            data.append({
+                'pk': doctor.pk,
+                'first_name': doctor.first_name,
+                'preferred_name': doctor.preferred_name,
+                'last_name': doctor.last_name,
+                'qualifications': doctor.more.certification,
+                'consultations': doctor.more.consultations,
+                'languages': doctor.more.languages,
+            })
+        print(data)
+        return JsonResponse({
+            'doctordata':data,
+            'selected': request.GET.get('selected'),
         })
-    print(data)
-    return JsonResponse({'doctordata':data})
+    return JsonResponse({})
