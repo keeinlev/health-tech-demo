@@ -20,14 +20,14 @@ $(document.body).on("change", ".doctor-label", function() {
             } else {
                 $('#apptsempty').html('')
                 $('#calendar-cont').removeClass('hidden');
+                //@ts-ignore
                 $('#bookcalendar').calendar('refresh');
+                //@ts-ignore
                 $('#bookcalendar').calendar('set minDate', datesList[0]);
+                //@ts-ignore
                 $('#bookcalendar').calendar('refresh');
+                //@ts-ignore
                 $('#bookcalendar').calendar('set maxDate', datesList[datesList.length - 1]);
-                //$('#bookcalendar').calendar('set minDate', datesList[0]);
-                //$('#bookcalendar').calendar('refresh');
-                //$('#bookcalendar').calendar('set date', datesList[0]);
-                //$('#bookcalendar').calendar('refresh');
             }
             
             let str = '';
@@ -43,6 +43,7 @@ $(document.body).on("change", ".doctor-label", function() {
 })
 
 function getApptTimes(date: Date | string) {
+    //@ts-ignore
     let rawdate = $('#bookcalendar').calendar('get date');
     try {
         let day: number = rawdate.getDate();
@@ -83,12 +84,16 @@ function getApptTimes(date: Date | string) {
 
 var today = new Date();
 $('#bookcalendar')
+    //@ts-ignore
     .calendar({
         type:'date',
         inline: true,
         onChange: function() {
+            //@ts-ignore
             $('#bookcalendar').calendar('refresh');
+            //@ts-ignore
             console.log($('#bookcalendar').calendar('get date'));
+            //@ts-ignore
             getApptTimes($('#bookcalendar').calendar('get date'));
         }
     });
