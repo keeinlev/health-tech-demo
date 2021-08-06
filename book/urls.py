@@ -7,6 +7,7 @@ urlpatterns = [
     path('booksuccess', views.booksuccess, name='booksuccess'),
     url(r'^ajax/update_calendar/$', views.update_calendar, name='update_calendar'),
     url(r'^ajax/findtimes/$', views.findtimes, name='findtimes'),
+    url(r'^ajax/doctorfilter/$', views.doctorfilter, name='doctorfilter'),
     path('cancelappointment/<int:pk>', views.cancelappt, name='cancelappt'),
     path('cancelappointment/success', views.apptcanceled, name='apptcanceled'),
 ]

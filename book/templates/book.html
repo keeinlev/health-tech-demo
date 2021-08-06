@@ -44,9 +44,10 @@
                     {{ form.doctor }}
                     {{ form.date }}
                     <div class='row'>
-                        <div class='col-12 col-md-6'>
+                        <div class='col-12 col-md-6 doctor-scroll-col'>
                             <div class="doctor-radio-container scrollbar-rare-wind" id='doctor-outside-container'>
-                                <h2 style="text-align: center; margin-top: 4%;">Select a Doctor</h3>
+                                <h2 style="text-align: center; margin-top: 4%;">Select a Doctor</h2>
+                                <input type="text" id="doctor-filter-textbox" class="form-control" doctor-filter-url="{% url 'doctorfilter' %}" placeholder="Search" />
                                 <div class='doctor-content'>
                                     {% for d in doctors %}
                                         <label class="doctor-label">

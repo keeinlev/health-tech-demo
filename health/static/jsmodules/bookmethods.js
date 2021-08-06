@@ -90,19 +90,38 @@ $('#bookcalendar')
         getApptTimes($('#bookcalendar').calendar('get date'));
     }
 });
-
-$("label").on('input', function() {
+$("label").on('input', function () {
     var userHasPhone = true;
     if (this.getAttribute('for') == 'id_appt_type_0') {
-        if ($('#bookform').attr('user-phone') == 0) {
+        if (parseInt($('#bookform').attr('user-phone')) == 0) {
             userHasPhone = false;
         }
     }
     if (userHasPhone) {
         $('#first-next-button').prop('disabled', '');
         $('.phone-error').addClass('display-hidden');
-    } else {
+    }
+    else {
         $('#first-next-button').prop('disabled', 'disabled');
         $('.phone-error').removeClass('display-hidden');
     }
-})
+});
+$('#doctor-filter-textbox').on('input', function (e) {
+    $.ajax({
+        dataType: 'json',
+        data: {
+            'search': this.value
+        },
+        url: this.getAttribute('doctor-filter-url'),
+        success: function (data) {
+            var s = '';
+            for (var i = 0; i < data['doctordata'].length; i++) {
+                var doctor = data['doctordata'][i];
+                var doctorFullName = (doctor['preferred_name'] ? doctor['preferred_name'] : doctor['first_name']) + ' ' + doctor['last_name'];
+                s += "<label class=\"doctor-label\">\n<input type=\"radio\" value=\"" + doctor['pk'] + "\" name=\"doctor-id\" class=\"doctor-radio\">\n<div class=\"doctor-container\">\n<h4>" + doctorFullName + "</h4><br>\n<p><b>Qualifications:</b><br>\n" + doctor['qualifications'] + "<br>\n<b>Consultations:</b><br>\n" + doctor['consultations'] + "<br>\n<b>Languages:</b><br>\n" + doctor['languages'] + "</p><br>\n</div>\n</label>\n";
+            }
+            console.log(s);
+            $('.doctor-content').html(s);
+        }
+    });
+});

@@ -248,7 +248,9 @@ select {
     background-color: rgb(227, 247, 255);
     width: 80%;
     border-radius: 5px;
+    min-height: 500px;
     max-height: 500px;
+    height: 500px;
 }
 .cancel-cont {
     margin-top: 5px;
