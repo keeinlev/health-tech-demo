@@ -1,3 +1,10 @@
+# This module contains views for:
+# - Accessing the Doctor dashboard page (line 137)
+# - Opening new Appointment slots (lines 246, 260, 284)
+# - Cancelling a range of Appointments (line 348)
+# - Fetching and downloading Appointment History (line 151)
+# - Updating pages after AJAX requests (lines 324, 406, 437, 469, 500)
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -163,7 +170,7 @@ def apptHistory(request):
                         appts = appts.filter(time__gte=starttime, time__lte=endtime)
                     patientSearch = form.cleaned_data['patient_search']
                     if patientSearch:
-                        appts = appts.filter(patient__first_name__contains=patientSearch) | appts.filter(patient__preferred_name__contains=patientSearch) | appts.filter(patient__last_name__contains=patientSearch)
+                        appts = appts.filter(patient__first_name__icontains=patientSearch) | appts.filter(patient__preferred_name__icontains=patientSearch) | appts.filter(patient__last_name__icontains=patientSearch)
                     fileType = form.cleaned_data['fileformat']
 
                     column_keys = form.cleaned_data['fields']
@@ -468,11 +475,11 @@ def patientsearch(request):
 
             # Using searched keyword, get Appointments where Patient first, preferred or last name matches
             # Will query all Appointments if no date is given
-            query = u.getAppts.filter(patient__first_name__contains=searched) | u.getAppts.filter(patient__preferred_name__contains=searched) | u.getAppts.filter(patient__last_name__contains=searched)
+            query = u.getAppts.filter(patient__first_name__icontains=searched) | u.getAppts.filter(patient__preferred_name__icontains=searched) | u.getAppts.filter(patient__last_name__icontains=searched)
             
             # Narrows query to match date
             if date != '0':
-                query = u.getAppts.filter(date=date, patient__first_name__contains=searched) | u.getAppts.filter(date=date, patient__preferred_name__contains=searched) | u.getAppts.filter(date=date, patient__last_name__contains=searched)
+                query = u.getAppts.filter(date=date, patient__first_name__icontains=searched) | u.getAppts.filter(date=date, patient__preferred_name__icontains=searched) | u.getAppts.filter(date=date, patient__last_name__icontains=searched)
             appts = []
             for a in query:
                 dt = a.datetime.astimezone(timezone('America/New_York'))

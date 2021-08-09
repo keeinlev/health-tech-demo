@@ -1,3 +1,5 @@
+// Used in the Edit Profile page for Doctors to input Consultations and Languages
+// Base code taken from https://www.w3schools.com/howto/howto_js_autocomplete.asp
 $(document).on('click', '.autocomplete-item', function() {
     let hiddenInput = $('#id_consultations');
     if (this.className.includes('language-item')) {

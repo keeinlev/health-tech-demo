@@ -1,3 +1,9 @@
+# This module contains views for:
+# - Opening detailed Appointment view (line 27)
+#    - Uploading, deleting and downloading Appointment-related files (line 64, 84, 119)
+# - Redirecting to appointment meeting url (line 144)
+# - All Appointments view (line 157)
+
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -109,6 +115,22 @@ def deletefile(request, apptpk, filepk):
 
     return render(request, 'alert.html', { 'message': 'That Appointment does not exist!' })
 
+@login_required
+def downloadfile(request, pk):
+    u = request.user
+    f = ApptFile.objects.filter(pk=pk)
+    if f.exists():
+        f = f.first()
+        appt = f.appt
+        if u == appt.patient or u == appt.doctor:
+            filename = f.friendly_name
+            response = HttpResponse(f.uploaded_file, content_type=f'{f.content_type}')
+            response['Content-Disposition'] = 'attachment; filename=%s' % filename
+            return response
+        return redirect('index')
+    else:
+        return render(request, 'alert.html', { 'message': 'That file does not exist!', 'valid': False })
+
 # View that redirects user to the MS Teams meeting link
 # I created this as an alternative to using the entire meeting link, which can be quite lengthy
 #   This is to ensure the entire link can fit into an SMS message, instead of breaking up into
@@ -130,22 +152,6 @@ def meeting_redir(request, pk):
                 url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
                 return redirect(url)
     return redirect('index')
-
-@login_required
-def downloadfile(request, pk):
-    u = request.user
-    f = ApptFile.objects.filter(pk=pk)
-    if f.exists():
-        f = f.first()
-        appt = f.appt
-        if u == appt.patient or u == appt.doctor:
-            filename = f.friendly_name
-            response = HttpResponse(f.uploaded_file, content_type=f'{f.content_type}')
-            response['Content-Disposition'] = 'attachment; filename=%s' % filename
-            return response
-        return redirect('index')
-    else:
-        return render(request, 'alert.html', { 'message': 'That file does not exist!', 'valid': False })
 
 @login_required
 def allappts(request):

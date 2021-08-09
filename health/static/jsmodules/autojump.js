@@ -1,3 +1,5 @@
+// DEPRECATED
+
 // $(".phone-inputs").on("keyup", function() {
 //     if (this.value.length == this.maxLength) {
 //         if (this.id == 'phone1') {

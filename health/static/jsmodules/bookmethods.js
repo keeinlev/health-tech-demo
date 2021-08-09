@@ -1,3 +1,5 @@
+// Various event handlers and AJAX calls made for the booking page in order to update displayed info based on selected conditions.
+
 $(document.body).on("change", ".doctor-label", function () {
     var form = $("#bookform");
     $('#id_time').html('');

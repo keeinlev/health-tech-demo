@@ -1,3 +1,8 @@
+# This module contains views for:
+# - Booking an Appointment (lines 150, 216)
+# - Cancelling an Appointment (lines 45, 107)
+# - Updating page info from AJAX requests (lines 125, 229, 257)
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -252,8 +257,8 @@ def findtimes(request):
 def doctorfilter(request):
     if request.user.is_authenticated:
         search = request.GET.get('search')
-        filteredDoctors = Doctor.objects.filter(first_name__contains=search) | Doctor.objects.filter(last_name__contains=search) | Doctor.objects.filter(preferred_name__contains=search)
-        filteredInfos = DoctorInfo.objects.filter(certification__contains=search) | DoctorInfo.objects.filter(consultations__contains=search) | DoctorInfo.objects.filter(languages__contains=search)
+        filteredDoctors = Doctor.objects.filter(first_name__icontains=search) | Doctor.objects.filter(last_name__icontains=search) | Doctor.objects.filter(preferred_name__icontains=search)
+        filteredInfos = DoctorInfo.objects.filter(certification__icontains=search) | DoctorInfo.objects.filter(consultations__icontains=search) | DoctorInfo.objects.filter(languages__icontains=search)
         for info in filteredInfos:
             filteredDoctors = filteredDoctors | Doctor.objects.filter(pk=info.user.pk)
         data = []

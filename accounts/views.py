@@ -1,3 +1,11 @@
+# This module contains views for:
+# - Registering new Patients (line 52)
+# - Registering new Doctors (line 178)
+# - Confirming email on registration (lines 308, 318, 340, 345)
+# - Editing profiles (line 350)
+#    - Editing Patient pharmacy choice (lines 497 517 523 527)
+#    - Requesting and confirming email changes (line 532)
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import View
@@ -265,6 +273,78 @@ def registerdoctor(request):
         return render(request, 'docregister.html', {'form': form})
     return redirect('index')
 
+# View handling AJAX request for checking email and OHIP uniqueness during registration, see register.js line 46
+def validate_email_and_ohip(request):
+    email = request.GET.get('email1', None)
+    data = { 'email_is_taken': User.objects.filter(email__iexact=email).exists(), }
+    if request.GET.get('ohip', None) != None:
+        ohip = request.GET.get('ohip', None)
+        data['ohip_is_taken'] = PatientInfo.objects.filter(ohip_number__iexact=ohip).exists()
+
+    # Prepare an error message based on which field is non-unique
+    if data['email_is_taken']:
+        data['error_message'] = 'Email already registered to existing account!'
+    if 'ohip_is_taken' in data and data['ohip_is_taken']:
+        if 'error_message' in data:
+            data['error_message'] += '<br />OHIP Number already registered to existing account!'
+        else:
+            data['error_message'] = "OHIP Number already registered to existing account!"
+
+    # Returns to AJAX success function, register.js line 51
+    return JsonResponse(data)
+
+# View set for LOGOUT_REDIRECT_URL
+def logout_redir(request):
+    user = request.user
+    if (user.is_authenticated):
+
+        # remove_user_and_token clears the session of any existing MS login token, and sets the user's ms_authenticated field to False, see graph.auth_helper line 87
+        remove_user_and_token(request)
+        
+        # logout is included from Django Authentication URLs under accounts (see health.urls), full URL is 'accounts/logout' but logic is built-in to Django
+        return redirect('logout')
+    return redirect('index')
+
+def activateprompt(request):
+    context = {
+        'message': f'Please check your email for a confirmation message.',
+        'valid': True,
+    }
+    if 'registerdoctor' in request.META.get('HTTP_REFERER'):
+        context['message2'] = ' Once confirmed, you will have to await additional verification from our team before being able to log in.'
+    return render(request, 'alert.html', context)
+
+# View for activating a new User
+def activate(request, uidb64, token):
+    try:
+        # Query User using decoded UID
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    # This will fail if the user is already activated, the token is invalid, or the UID is invalid
+    if user is not None and default_token_generator.check_token(user, token):
+        if user.type == 'PATIENT':
+            user.is_active = True
+            user.save()
+        elif user.type == 'DOCTOR':
+            di = user.userType.more
+            di.email_conf = True
+            di.save()
+        return redirect('confirmsuccess')
+    else:
+        return redirect('confirmfail')
+
+# Redirects after successful activation
+def confirmsuccess(request):
+    message = f'Thank you for confirming your email.'
+    return render(request, 'alert.html', { 'message': message, 'valid': True })
+
+# Redirects after failed activation
+def confirmfail(request):
+    return render(request, 'alert.html', { 'message': 'Email activation invalid.', 'valid': False })
+
 # View for editing profiles
 @login_required
 def editprofile(request):
@@ -447,78 +527,6 @@ def emailchangesuccess(request):
 def emailchangefail(request):
     message = "Your email change request is either invalid or has expired."
     return render(request, 'alert.html', { 'message': message, 'valid': False })
-
-# View handling AJAX request for checking email and OHIP uniqueness during registration, see register.js line 46
-def validate_email_and_ohip(request):
-    email = request.GET.get('email1', None)
-    data = { 'email_is_taken': User.objects.filter(email__iexact=email).exists(), }
-    if request.GET.get('ohip', None) != None:
-        ohip = request.GET.get('ohip', None)
-        data['ohip_is_taken'] = PatientInfo.objects.filter(ohip_number__iexact=ohip).exists()
-
-    # Prepare an error message based on which field is non-unique
-    if data['email_is_taken']:
-        data['error_message'] = 'Email already registered to existing account!'
-    if 'ohip_is_taken' in data and data['ohip_is_taken']:
-        if 'error_message' in data:
-            data['error_message'] += '<br />OHIP Number already registered to existing account!'
-        else:
-            data['error_message'] = "OHIP Number already registered to existing account!"
-
-    # Returns to AJAX success function, register.js line 51
-    return JsonResponse(data)
-
-# View set for LOGOUT_REDIRECT_URL
-def logout_redir(request):
-    user = request.user
-    if (user.is_authenticated):
-
-        # remove_user_and_token clears the session of any existing MS login token, and sets the user's ms_authenticated field to False, see graph.auth_helper line 87
-        remove_user_and_token(request)
-        
-        # logout is included from Django Authentication URLs under accounts (see health.urls), full URL is 'accounts/logout' but logic is built-in to Django
-        return redirect('logout')
-    return redirect('index')
-
-def activateprompt(request):
-    context = {
-        'message': f'Please check your email for a confirmation message.',
-        'valid': True,
-    }
-    if 'registerdoctor' in request.META.get('HTTP_REFERER'):
-        context['message2'] = ' Once confirmed, you will have to await additional verification from our team before being able to log in.'
-    return render(request, 'alert.html', context)
-
-# View for activating a new User
-def activate(request, uidb64, token):
-    try:
-        # Query User using decoded UID
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    
-    # This will fail if the user is already activated, the token is invalid, or the UID is invalid
-    if user is not None and default_token_generator.check_token(user, token):
-        if user.type == 'PATIENT':
-            user.is_active = True
-            user.save()
-        elif user.type == 'DOCTOR':
-            di = user.userType.more
-            di.email_conf = True
-            di.save()
-        return redirect('confirmsuccess')
-    else:
-        return redirect('confirmfail')
-
-# Redirects after successful activation
-def confirmsuccess(request):
-    message = f'Thank you for confirming your email.'
-    return render(request, 'alert.html', { 'message': message, 'valid': True })
-
-# Redirects after failed activation
-def confirmfail(request):
-    return render(request, 'alert.html', { 'message': 'Email activation invalid.', 'valid': False })
 
 @login_required
 def findpharmacy(request):
