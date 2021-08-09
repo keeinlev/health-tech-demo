@@ -22,7 +22,7 @@ jobs:
       AZURE_STATIC_CONTAINER: ${{ secrets.AZURE_STATIC_CONTAINER }}
       AZURE_MEDIA_CONTAINER: ${{ secrets.AZURE_MEDIA_CONTAINER }}
       DJANGO_DEVELOPMENT: ${{ secrets.DJANGO_DEVELOPMENT }}
-      DJANGO_UAT: ${{ secrets.DJANGO_UAT }}
+      DJANGO_EXT_STORAGE: ${{ secrets.DJANGO_EXT_STORAGE }}
       RDS_ENDPOINT: ${{ secrets.RDS_ENDPOINT }}
       RDS_NAME: ${{ secrets.RDS_NAME }}
       RDS_USER: ${{ secrets.RDS_USER }}

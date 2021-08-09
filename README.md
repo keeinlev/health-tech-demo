@@ -10,11 +10,19 @@ As of now, the demo version of this app is hosted through Azure App Services, st
 Here's a breakdown of the modules contained in the root project folder:
 
 - health
-    * Project folder, contains the app's configurations in settings.py, development.py and production.py
+    * Project folder, contains the app's settings.
+        - settings.py defines general settings
+        - development.py and production.py set the allowed hosts, DEBUG and domain settings, production.py also sets CSRF and Cookie settings
+        - development_db_settings.py sets the app to store data in a local SQLite database
+        - production_db_settings.py sets the app to store data in an external database (currently set to use AWS RDS PostgreSQL)
+        - development_storage_settings.py sets the app to store static files and media in local directories
+        - production_storage_settings.py sets the app to store static files and media in an external storage system (currently set to use Azure Storage Account)
+        - development.py and development_db_settings.py will be active if DJANGO_DEVELOPMENT (environment variable)/DEBUG (setting) are set to True, while production.py and production_db_settings.py will be active otherwise
+        - development_storage_settings.py will be active if DJANGO_EXT_STORAGE (environment variable) is set to False and production_storage_settings.py will be active otherwise
     * manage.py can be used to run Django commands in-console (does essentially the same thing as django-admin as seen [here](https://docs.djangoproject.com/en/3.2/ref/django-admin/#available-commands))
     * All main routing paths can be found in urls.py
     * Also contains modified templates for default views such as login and password reset
-- doctorappointment
+- home
     * This is sort of the index. It contains functionalities that are accessible to users of all groups, such as the home, about us and error pages.
 - accounts
     * Contains all our User Models, including the custom Base User and Proxy Models for Patients and Doctors
@@ -26,13 +34,15 @@ Here's a breakdown of the modules contained in the root project folder:
     * Pertains to all the main functions available to Doctor users, which are all accessible from the dashboard page
     * Very intertwined with the book module and makes lots of additions and changes to Appointment objects.
 - appointment
-    * I know, I'm horrible at naming these, but this is the app that takes care of one-to-one appointment details, such as notes and prescriptions.
-    * Pretty basic, contains a model for appointment details, and nowhere near as big as book or account
+    * Takes care of appointment files and details such as notes and prescriptions.
+    * Contains models for appointment details and files, and nowhere near as big as book or account
+        - Note: Does not contain the Appointment model, which may cause confusion
+        - This module was created later into development to hold models that are auxilliary to the main Appointment model and the associated views, while the main model is defined in the book module and is referenced in almost every module. However, most of its related views are located in book or doctordashboard.
 - patientdashboard
     * Much simpler than the doctordashboard module, as this serves to only view Appointment details as a Patient and the upload/get/delete processes for images.
 - scheduledreminders
     * Self explanatory, handles the sending of scheduled reminders.
-    * Regularly checks database using APScheduler for any upcoming appointments (< 15 minutes) and uses Django send_mail to send email and SMS notifications.
+    * Regularly checks database using APScheduler for any upcoming appointments (15 minutes ahead) and uses Django send_mail to send email and SMS notifications.
 - graph
     * Everything pertaining to MS Graph connections and API usage, including authentication using OAuth 2.0, getting user profile info and creating events on Outlook Calendar.
     * Most functions are from MS Graph documentation [found here](https://docs.microsoft.com/en-us/graph/tutorials/python).

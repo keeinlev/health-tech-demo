@@ -21,7 +21,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('doctorappointment.urls')),
+    path('', include('home.urls')),
     path('book/', include('book.urls')),
     path('doctordashboard/', include('doctordashboard.urls')),
     path('accounts/', include('accounts.urls')),
@@ -30,6 +30,6 @@ urlpatterns = [
     path('graph/', include('graph.urls')),
     path('patientdashboard/', include('patientdashboard.urls')), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-handler404 = 'doctorappointment.views.handler404'
-handler500 = 'doctorappointment.views.handler500'
+handler404 = 'home.views.handler404'
+handler500 = 'home.views.handler500'
 

@@ -16,6 +16,7 @@ import mimetypes
 import environ
 from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
+from django.core.exceptions import ImproperlyConfigured
 
 env = environ.Env()
 
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiselectfield',
-    'doctorappointment',
+    'home',
     'book',
     'doctordashboard',
     'accounts',
@@ -156,37 +157,78 @@ LOGOUT_REDIRECT_URL = 'index'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
-EMAIL_HOST_USER = env('EMAIL_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+
+try:
+    EMAIL_HOST_USER = env('EMAIL_USER')
+except ImproperlyConfigured:
+    EMAIL_HOST_USER = None
+
+try:
+    EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+except ImproperlyConfigured:
+    EMAIL_HOST_PASSWORD = None
+
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
-SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
-SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
-SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
+try:
+    SIGNALWIRE_PROJECT = env('SIGNALWIRE_PROJECT')
+except ImproperlyConfigured:
+    SIGNALWIRE_PROJECT = None
+
+try:
+    SIGNALWIRE_TOKEN = env('SIGNALWIRE_TOKEN')
+    SIGNALWIRE_CLIENT = signalwire_client(SIGNALWIRE_PROJECT, SIGNALWIRE_TOKEN, signalwire_space_url = env('SIGNALWIRE_SPACE_URL'))
+except ImproperlyConfigured:
+    SIGNALWIRE_TOKEN = None
+    SIGNALWIRE_CLIENT = signalwire_client('', '', signalwire_space_url = '')
+try:
+    SIGNALWIRE_NUMBER = env('SIGNALWIRE_PHONE_NUMBER')
+except ImproperlyConfigured:
+    SIGNALWIRE_NUMBER = ''
 
 #CA_CARRIERS_LIST = ['@txt.bellmobility.ca','@txt.bell.ca','@fido.ca','@pcs.rogers.com','@msg.telus.com',
 #'@vmobile.ca','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca','@mobiletxt.ca']
 
 #CA_CARRIERS_LIST = ['@txt.bell.ca','@pcs.rogers.com','@msg.telus.com','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca']
 
-SMS_CARRIER = env('SMS_CARRIER_DOMAIN')
+try:
+    SMS_CARRIER = env('SMS_CARRIER_DOMAIN')
+except ImproperlyConfigured:
+    SMS_CARRIER = None
 
-MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
-MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')
-MS_TEAMS_MEETING_ID_LENGTH = int(env('MS_TEAMS_MEETING_ID_LENGTH'))
+try:
+    MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
+except ImproperlyConfigured:
+    MS_TEAMS_MEETING_URL_1 = ''
+try:
+    MS_TEAMS_MEETING_URL_2 = env('MS_TEAMS_TEMP_LINK_2')
+except ImproperlyConfigured:
+    MS_TEAMS_MEETING_URL_2 = ''
+try:
+    MS_TEAMS_MEETING_ID_LENGTH = int(env('MS_TEAMS_MEETING_ID_LENGTH'))
+except ImproperlyConfigured:
+    MS_TEAMS_MEETING_ID_LENGTH = 0
 
-GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+try:
+    GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+except ImproperlyConfigured:
+    GOOGLE_MAPS_API_KEY = ''
 
-DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
+try:
+    DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
+except ImproperlyConfigured:
+    DJANGO_DEVELOPMENT = False
 
-DJANGO_UAT = env('DJANGO_UAT')
+try:
+    DJANGO_EXT_STORAGE = env('DJANGO_EXT_STORAGE')
+except ImproperlyConfigured:
+    DJANGO_EXT_STORAGE = True
 
 if DJANGO_DEVELOPMENT == 'True':
     from .development import *
     from .development_db_settings import *
-    if DJANGO_UAT == 'True':
+    if DJANGO_EXT_STORAGE == 'True':
         from .production_storage_settings import *
     else:
         from .development_storage_settings import *
