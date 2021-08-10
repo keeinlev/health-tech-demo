@@ -44,8 +44,8 @@ class DoctorEditForm(UserEditForm):
 
 class PatientEditForm(UserEditForm):
     dob = forms.DateField(label=False, required=True, widget=forms.DateInput(attrs={'type': "date", 'class': "formcontrol", 'id': "dob", 'max':"9999-12-31"}))
-    address = forms.CharField(label=False, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "address", 'class': "formcontrol", 'placeholder': "Address"}))
-    postal_code = forms.CharField(label=False, required=True, widget=forms.TextInput(attrs={'type': "text", 'id': "postal_code", 'class': "formcontrol", 'placeholder': "Postal Code"}))
+    address = forms.CharField(label=False, required=False, widget=forms.TextInput(attrs={'type': "text", 'id': "address", 'class': "formcontrol", 'placeholder': "Address"}))
+    postal_code = forms.CharField(label=False, required=False, widget=forms.TextInput(attrs={'type': "text", 'id': "postal_code", 'class': "formcontrol", 'placeholder': "Postal Code"}))
     # ohip1 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol ohip-inputs", 'id': "ohip1", 'maxlength': "4", 'placeholder': "XXXX"}))
     # ohip2 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol ohip-inputs", 'id': "ohip2", 'maxlength': "3", 'placeholder': "XXX"}))
     # ohip3 = forms.IntegerField(label=False, required=True, widget=forms.NumberInput(attrs={'type': "number", 'min':'0', 'onkeypress':"return event.charCode >= 48", 'class': "formcontrol ohip-inputs", 'id': "ohip3", 'maxlength': "3", 'placeholder': "XXX"}))
