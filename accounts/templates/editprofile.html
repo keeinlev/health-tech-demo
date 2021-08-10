@@ -25,10 +25,14 @@
                 {{ form.errors }}
                 {{ form.non_field_errors }}
                 <label for="name">Name</label>
-                <div class="row" id="name">
-                    <div class="col-3 offset-3">
+                <div class="row justify-content-center" id="name">
+                    <div class="col-3">
                         {{ form.first_name }}
                         {{ form.first_name.errors }}
+                    </div>
+                    <div class="col-3">
+                        {{ form.preferred_name }}
+                        {{ form.preferred_name.errors }}
                     </div>
                     <div class="col-3">
                         {{ form.last_name }}

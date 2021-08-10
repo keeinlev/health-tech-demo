@@ -412,6 +412,7 @@ def editprofile(request):
 
 
                 u.first_name = form.cleaned_data['first_name']
+                u.preferred_name = form.cleaned_data['preferred_name']
                 u.last_name = form.cleaned_data['last_name']
                 u.phone = phone
                 if phone != None:
@@ -455,6 +456,7 @@ def editprofile(request):
         else:
             init = {
                 'first_name': u.first_name,
+                'preferred_name': u.preferred_name,
                 'last_name': u.last_name,
                 'email': u.email,
                 'init_email': u.email,
