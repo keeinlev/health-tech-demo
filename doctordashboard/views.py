@@ -446,10 +446,10 @@ def getdates(request):
             for a in selected_appts:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
                 appts.append({
-                    'date': str(a.date),
+                    'date': str(a.shortMonthDay),
                     'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
                     'booked': "<b class='" + ("red-text'>Booked" if a.booked else "green-text'>Available") + "</b>",
-                    'patient': f'{a.patient.first_name} {a.patient.last_name}' if a.patient else "None",
+                    'patient': f'{a.patient.firstOrPreferredName} {a.patient.last_name}' if a.patient else "None",
                     'detailsurl': reverse('details', kwargs={'pk': a.pk}),
                     'meeturl': reverse('meeting_redir', kwargs={'pk': a.pk}),
                     'cancelurl': reverse('cancelappt', kwargs={'pk': a.pk}),
@@ -484,10 +484,10 @@ def patientsearch(request):
             for a in query:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
                 appts.append({
-                    'date': str(a.date),
+                    'date': str(a.shortMonthDay),
                     'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
                     'booked': "<b class='" + ("red-text'>Booked" if a.booked else "green-text'>Available") + "</b>",
-                    'patient': f'{a.patient.first_name} {a.patient.last_name}' if a.patient else "None",
+                    'patient': f'{a.patient.firstOrPreferredName} {a.patient.last_name}' if a.patient else "None",
                     'detailsurl': reverse('details', kwargs={'pk': a.pk}),
                 })
             data = {'apptdata': appts}
