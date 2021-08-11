@@ -6,7 +6,8 @@
     <div class="alert{% if not message %} display-hidden{% endif %}">
         <b><small style="margin: auto auto auto 30px" id="alert-message">{{ message }}</small></b>
     </div>
-    {% if user.is_authenticated and (user == appt.patient or user == appt.doctor) %}
+    {% if user.is_authenticated %}
+        {% if user == appt.patient or user == appt.doctor %}
         <div class='heading'>
             <h1>Confirm Cancel</h1>
         </div>
@@ -26,5 +27,6 @@
                 </div>
             </form>
         </div>
+        {% endif %}
     {% endif %}
 {% endblock %}
