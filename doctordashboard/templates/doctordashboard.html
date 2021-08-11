@@ -16,7 +16,7 @@
     {% if user.type == 'DOCTOR' %}
         <div style='padding-bottom: 50px;'>
             <div class='row'>
-                <div class='col-12 col-md-8'>
+                <div class='col-12 col-lg-7'>
                     <div class="section" style='height: 97.33%;'>
                         <h2>Open a new Appointment slot</h2>
                         
@@ -66,7 +66,7 @@
                                             <tr>
                                                 <th class='infohead'>Date</th>
                                                 <th class='infohead'>Time</th>
-                                                <th class='infohead'>Availability</th>
+                                                <th class='infohead'>Status</th>
                                                 <th class='infohead'>Patient</th>
                                                 <th class='infohead'>Details</th>
                                                 <th class='infohead'>Meet</th>
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                 </div>
-                <div class='col-12 col-md-4'>
+                <div class='col-12 col-lg-5'>
                     <div class="section">
                         <h2>Open a range of Appointment slots</h2>
                         <form method="post" class='doctorform' action="{% url 'bookmult' %}" update-end-date-url = "{% url 'updateenddate' %}" id="bookmultform">
