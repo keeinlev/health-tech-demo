@@ -67,6 +67,7 @@ $('#bookcalendar').calendar({
 });
 
 function updateApptTable(details) {
+    $('.inforow').remove();
     str = '';
     for (i = 0; i < details.length; ++i) {
         str += '<tr class="inforow">\n<td class="infocell">' + details[i]['date'] + '</td>';
@@ -85,7 +86,7 @@ function updateApptTable(details) {
     }
 }
 
-$('#search-bar').on("keyup", function() {
+$('#search-bar').on("input", function() {
     bar = $('#search-bar').val();
     $('#patient-search').val(bar);
     if (bar != '') {
@@ -98,13 +99,13 @@ $('#search-bar').on("keyup", function() {
             date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
         }
         $('#default-row').addClass('display-hidden');
-        $('.inforow').remove();
         $('input[name="date"]').val(date);
         $.ajax({
             url: $('#bookform').attr("get-patient-appts-url"),
             data: $('#bookform').serialize(),
             dataType: 'json',
             success: function (data) {
+                console.log(data['apptdata'])
                 updateApptTable(data['apptdata'])
             }
         });
@@ -124,7 +125,6 @@ function fetchAppts() {
         date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
     }
     $('#default-row').addClass('display-hidden');
-    $('.inforow').remove();
     $('input[name="date"]').val(date);
     $.ajax({
         url: $('#bookform').attr("get-dates-url"),
