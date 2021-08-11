@@ -34,6 +34,10 @@ class Appointment(models.Model):
     @property
     def shortDateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%a %b %d %I:%M%p')
+    
+    @property
+    def shortMonthDay(self):
+        return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%b %d')
 
     # Returns an Appointment's time only in the format of "<Hour 1-12>:<Minute><AM/PM>"
     @property
