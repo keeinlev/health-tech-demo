@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'multiselectfield',
     'home',
     'book',
     'doctordashboard',
@@ -66,7 +65,6 @@ MIDDLEWARE = [
 ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
-SESSION_COOKIE_AGE = 900
 SESSION_SAVE_EVERY_REQUEST = True
 
 ROOT_URLCONF = 'health.urls'
@@ -228,11 +226,11 @@ except ImproperlyConfigured:
 if DJANGO_DEVELOPMENT == 'True':
     from .development import *
     from .development_db_settings import *
-    if DJANGO_EXT_STORAGE == 'True':
-        from .production_storage_settings import *
-    else:
-        from .development_storage_settings import *
 else:
     from .production import *
     from .production_db_settings import *
+    #from .production_storage_settings import *
+if DJANGO_EXT_STORAGE == 'True':
     from .production_storage_settings import *
+else:
+    from .development_storage_settings import *
