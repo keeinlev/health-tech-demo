@@ -24,10 +24,9 @@ env = environ.Env()
 
 # Create your views here.
 @login_required
-def details(request, pk):
+def details(request, pk, status=''):
     u = request.user
     if u.is_authenticated:
-
         # Query the appointment
         appt = Appointment.objects.filter(pk = pk)
         if appt.exists():
@@ -35,7 +34,15 @@ def details(request, pk):
 
             # Make sure whoever is accessing the details is either the Patient or the Doctor
             if u == appt.patient or u == appt.doctor:
-
+                context = {}
+                message = ''
+                if status == 'Success':
+                    message = 'Changes made successfully.'
+                elif status == 'MissingObject':
+                    message = f'Your changes were made with Status Code: {status}'
+                
+                if message:
+                    context['message'] = message
                 # Query the Appointment details
                 # If the details don't exist, just create the object
                 p = ApptDetails.objects.filter(appt=appt)
@@ -49,32 +56,42 @@ def details(request, pk):
                     if request.method == 'POST':
                         form = ApptDetailsForm(request.POST)
                         if form.is_valid():
+
+                            files = request.FILES.getlist('files')
+                            for f in files:
+                                n = f.name
+                                ApptFile.objects.create(appt=appt, uploaded_file=f, friendly_name=n, file_type=n[n.index('.'):], content_type=f.content_type)
+
                             p.prescription = form.cleaned_data['prescription']
                             p.notes = form.cleaned_data['notes']
                             p.save()
-                            return redirect('doctordashboard')
+                            return redirect(reverse('details', kwargs={'pk':pk, 'status':'Success'}))
+                        return redirect(reverse('details', kwargs={'pk':pk, 'status':'fail'}))
                     else:
                         # Set initial details in the form when GETting
                         form = ApptDetailsForm(initial={
                             'prescription': p.prescription,
                             'notes': p.notes,
                         })
-                        return render(request, 'prescription.html', {'appt': appt, 'form': form})
+                        context['appt']= appt
+                        context['form']= form
+                        
+                        return render(request, 'prescription.html', context)
                 else:
                     if request.method == 'POST':
-                        data = request.POST
                         files = request.FILES.getlist('files')
 
                         for f in files:
                             n = f.name
-                            print(f.content_type, len(f.content_type))
                             ApptFile.objects.create(appt=appt, uploaded_file=f, friendly_name=n, file_type=n[n.index('.'):], content_type=f.content_type)
-                        return redirect(reverse('details', kwargs={'pk':appt.pk}))
+                        return redirect(reverse('details', kwargs={'pk':appt.pk, 'status':'Success'}))
                     else:
-                        return render(request, 'prescription.html', {'appt': appt, 'details': p})
+                        context['appt'] = appt
+                        context['details'] = p
+                        return render(request, 'prescription.html', context)
             else:
                 # If user is not the Patient or Doctor
-                return render(request, 'prescription.html', {'message': 'You do not have access to this page.'})
+                return render(request, 'alert.html', { 'message': 'You do not have access to this page.' })
         else:
             # If the Appointment does not exist
             return render(request, 'prescription.html', {'message': 'No Appointment found!'})
@@ -95,25 +112,24 @@ def deletefile(request, apptpk, filepk):
         if u == appt.doctor or u == appt.patient:
             if queried.exists():
                 queried = queried.first()
-                if settings.DEFAULT_FILE_STORAGE == 'storages.backends.azure_storage.AzureStorage':
-                    blob_name = queried.get_blob_url
-                    blob_service = settings.BLOB_SERVICE
-                    try:
-                        blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
-                    except AzureMissingResourceHttpError as e:
-                        print('This blob does not exist or has already been deleted. Error: ' + str(e)[str(e).index('<Message>') + len('<Message>'):str(e).index('</Message>')])
-                        queried.delete()
-                        return render(request, 'prescription.html', context)
+                # if settings.DEFAULT_FILE_STORAGE == 'storages.backends.azure_storage.AzureStorage':
+                #     blob_name = queried.get_blob_url
+                #     blob_service = settings.BLOB_SERVICE
+                # try:
+                #     queried.delete()
+                #     blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
+                # except AzureMissingResourceHttpError as e:
+                #     print('This blob does not exist or has already been deleted. Error: ' + str(e)[str(e).index('<Message>') + len('<Message>'):str(e).index('</Message>')])
+                #     queried.delete()
+                #     return redirect(reverse('details', kwargs={'pk':apptpk, 'status':'AzureMissingFile'}))
                 queried.delete()
-                context['message'] = 'File deleted successfully!'
-                return render(request, 'prescription.html', context)
+                return redirect(reverse('details', kwargs={'pk':apptpk, 'status':'Success'}))
             else:
-                context['message'] = 'That file does not exist!'
-                return render(request, 'prescription.html', context)
+                return redirect(reverse('details', kwargs={'pk':apptpk, 'status':'MissingObject'}))
         else:
-            return render(request, 'alert.html', { 'message': 'You do not have access to this page!' })
-
-    return render(request, 'alert.html', { 'message': 'That Appointment does not exist!' })
+            return redirect(reverse('details', kwargs={'pk':apptpk}))
+    return redirect(reverse('details', kwargs={'pk':apptpk}))
+    
 
 @login_required
 def downloadfile(request, pk):

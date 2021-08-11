@@ -5,6 +5,8 @@ import uuid
 from django.utils.timezone import now as todayDate
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.db.models.signals import pre_delete
+from django.conf import settings
 
 def get_upload_path(instance, filename):
     fileType = filename[filename.index('.'):]
@@ -16,6 +18,15 @@ class ApptDetails(models.Model):
     appt = models.OneToOneField(Appointment, on_delete=models.CASCADE, default=None)
     prescription = models.CharField(_("Prescription"), max_length=50, default='', null=True)
     notes = models.CharField(_("Additional Notes"), max_length=50, default='', null=True)
+
+def delete_apptfile(sender, instance, using, **kwargs):
+    if settings.DEFAULT_FILE_STORAGE == 'storages.backends.azure_storage.AzureStorage':
+        blob_name = instance.get_blob_url
+        blob_service = settings.BLOB_SERVICE
+        try:
+            blob_service.delete_blob(container_name=settings.AZURE_CONTAINER, blob_name=blob_name)
+        except AzureMissingResourceHttpError as e:
+            print('This blob does not exist or has already been deleted. Error: ' + str(e)[str(e).index('<Message>') + len('<Message>'):str(e).index('</Message>')])
 
 class ApptFile(models.Model):
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -37,3 +48,4 @@ class ApptFile(models.Model):
     def isMedia(self):
         return self in self.appt.getMedia
     
+pre_delete.connect(delete_apptfile, sender=ApptFile)
