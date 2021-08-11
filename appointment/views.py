@@ -163,10 +163,11 @@ def meeting_redir(request, pk):
     if u.is_authenticated:
         if appt.exists():
             appt = appt.first()
-            # Verify URL details and if user should have access to the Appointment
-            if len(appt.meeting_id) == MS_TEAMS_MEETING_ID_LENGTH and u == appt.patient or u == appt.doctor:
-                url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
-                return redirect(url)
+            if appt.meeting_id:
+                # Verify URL details and if user should have access to the Appointment
+                if len(appt.meeting_id) == MS_TEAMS_MEETING_ID_LENGTH and u == appt.patient or u == appt.doctor:
+                    url = MS_TEAMS_MEETING_URL_1 + appt.meeting_id + MS_TEAMS_MEETING_URL_2
+                    return redirect(url)
     return redirect('index')
 
 @login_required
