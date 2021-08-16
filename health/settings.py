@@ -223,14 +223,14 @@ try:
 except ImproperlyConfigured:
     DJANGO_EXT_STORAGE = True
 
-if DJANGO_DEVELOPMENT == 'True':
+if DJANGO_DEVELOPMENT.upper() == 'TRUE':
     from .development import *
     from .development_db_settings import *
 else:
     from .production import *
     from .production_db_settings import *
     #from .production_storage_settings import *
-if DJANGO_EXT_STORAGE == 'True':
+if DJANGO_EXT_STORAGE.upper() == 'TRUE':
     from .production_storage_settings import *
 else:
     from .development_storage_settings import *
