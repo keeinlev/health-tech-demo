@@ -104,11 +104,6 @@ async def send_cancellations(appts, reason):
                 )
     L = asyncio.gather(*tasks)
     await L
-    
-
-# Returns a random character to serve as a meeting_id
-def generateMeetingId():
-    return ''.join(choice(allChars) for i in range(meeting_id_length))
 
 # Helper function that breaks down an ISO formatted date string into a tuple of integer values
 # Example: '2021-06-16' -> (2021, 6, 16)
