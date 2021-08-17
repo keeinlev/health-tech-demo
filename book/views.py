@@ -48,7 +48,7 @@ def cancelappt(request, pk):
         a = Appointment.objects.filter(pk=pk)
         if a.exists():
             a = a.first()
-            if not a.apptHasPassed:
+            if not a.apptHasPassed and (u == a.doctor or u == a.patient):
                 if request.method == "POST":
                     
                     # A confirm cancel form will only show up in the GET request if the Appointment is booked
@@ -74,13 +74,27 @@ def cancelappt(request, pk):
                                 from_=SIGNALWIRE_NUMBER,
                                 to='+1' + target.phone,
                             )
-                        send_mail(
-                            'Your Appointment has been Cancelled',
-                            'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
-                            'healthapptdemo@gmail.com',
-                            [target.email],
-                        )
-                        a.delete()
+                        if target.email_notifications:
+                            send_mail(
+                                'Your Appointment has been Cancelled',
+                                'Hi, ' + target.first_name + '\n\nWe regret to inform you that your appointment with ' + other + ' on ' + a.dateTime + ' has been cancelled for reason:\n' + r + ('\nPlease rebook an appointment for another time.\n' if target.type == 'PATIENT' else '') + '\nWe are sorry for the inconvenience.',
+                                'healthapptdemo@gmail.com',
+                                [target.email],
+                            )
+                        if target.type == 'PATIENT':
+                            a.delete()
+                        else:
+                            a.booked = False
+                            a.patient = None
+                            a.reminder_sent = False
+                            a.ms_event_created
+                            a.type = None
+                            a.consultation = None
+                            a.meeting_id = None
+                            a.save()
+                            a.details.delete()
+                            a.getAllFiles.delete()
+
                         return redirect('apptcanceled')
                 else:
                     if a.booked:
@@ -100,7 +114,7 @@ def cancelappt(request, pk):
                 return render(request, 'alert.html', {'message': 'Appointment has already passed!'})
         else:
             return render(request, 'alert.html', {'message': 'Appointment does not exist!'})
-    return render(request, 'doctordashboard.html')
+    return redirect('index')
 
 # Redirect view once an Appointment has been cancelled to prevent unwanted form resubmissions
 @login_required
