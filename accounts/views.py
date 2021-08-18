@@ -27,7 +27,7 @@ from .models import User, Patient, Doctor, PatientInfo, DoctorInfo
 from graph.auth_helper import remove_user_and_token
 from maps.maps_helper import geocode, get_nearby, find_place_by_place_id
 
-from health.settings import SMS_CARRIER, GOOGLE_MAPS_API_KEY
+from health.settings import GOOGLE_MAPS_API_KEY
 
 from pprint import pprint
 
@@ -150,14 +150,6 @@ def register(request):
                 link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
                 activate_url = getProtocol(request) + '://' + domain + link
 
-                # Send initial SMS consent Message
-                # send_mail(
-                #     '',
-                #     'You will now receive SMS notifications for your booked appointments',
-                #     'healthapptdemo@gmail.com',
-                #     [u.phone + SMS_CARRIER],
-                # )
-
                 # Send a confirmation email
                 send_mail(
                     'Confirm your Online Health Account',
@@ -246,14 +238,6 @@ def registerdoctor(request):
                 uidb64 = urlsafe_base64_encode(force_bytes(u.pk))
                 link = reverse('activate', kwargs={'uidb64':uidb64, 'token':default_token_generator.make_token(u),})
                 activate_url = getProtocol(request) + '://' + domain + link
-
-                # Send initial SMS consent Message
-                # send_mail(
-                #     '',
-                #     'You will now receive SMS notifications for your booked appointments',
-                #     'healthapptdemo@gmail.com',
-                #     [u.phone + SMS_CARRIER],
-                # )
 
                 # Send a confirmation email
                 send_mail(

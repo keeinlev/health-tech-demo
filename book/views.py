@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.db import IntegrityError
 
-from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SMS_CARRIER, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
+from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
 
 from .forms import EditAppointmentForm, CancelConfirmForm
 from .models import Appointment
@@ -63,12 +63,6 @@ def cancelappt(request, pk):
                         
                         # Sends other party an SMS and Email message to notify them of cancellation
                         if target.sms_notifications and target.phone:
-                            # send_mail(
-                            #     ''
-                            #     'Hi, ' + target.first_name + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook for another time.' if target.type == 'PATIENT' else ''),
-                            #     'healthapptdemo@gmail.com',
-                            #     [target.phone + SMS_CARRIER],
-                            # )
                             smsmessage = swclient.messages.create(
                                 body='Hi, ' + target.firstOrPreferredName + '. Your appointment with ' + other + ' on ' + a.shortDateTime + ' has been cancelled due to: ' + r + ('.\nPlease rebook an appointment for another time.' if target.type == 'PATIENT' else ''),
                                 from_=SIGNALWIRE_NUMBER,

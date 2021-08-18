@@ -3,7 +3,7 @@ import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient, CURRENT_DOMAIN, SMS_CARRIER
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient, CURRENT_DOMAIN
 from django.urls import reverse
 import asyncio
 from asgiref.sync import sync_to_async
@@ -23,14 +23,6 @@ def emailWrapper(subject, body, to=[]):
         body,
         'healthapptdemo@gmail.com',
         to,
-    )
-############################################################################## IT LOOKS LIKE FIDO MIGHT WORK FOR EVERY CARRIER!!!!!!!!!!!!!!
-def SMSWrapper(subject, body, to):
-    send_mail(
-        subject,
-        body,
-        'healthapptdemo@gmail.com',
-        [f'{to}{SMS_CARRIER}']
     )
 
 # Function for sending Email and SMS confirmations/reminders for an Appointment.

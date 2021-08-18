@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.db import IntegrityError
 
-from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SMS_CARRIER, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
+from health.settings import MS_TEAMS_MEETING_URL_1 as meeting_url_1, MS_TEAMS_MEETING_URL_2 as meeting_url_2, MS_TEAMS_MEETING_ID_LENGTH as meeting_id_length, SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
 
 from book.models import Appointment
 from book.times import IntTimes
