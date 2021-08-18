@@ -1,22 +1,31 @@
-import yaml
 import msal
 import os
 import time
 from accounts.models import Doctor
 import environ
+from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 
 env = environ.Env()
 
-# Load the oauth_settings.yml file
-#stream = open('oauth_settings.yml', 'r')
-#settings = yaml.load(stream, yaml.SafeLoader)
-settings = {
-    'app_id': env('MS_GRAPH_CLIENT_ID'),
-    'app_secret': env('MS_GRAPH_CLIENT_SECRET'),
-    'redirect': env('MS_GRAPH_REDIRECT_URI'),
-    'scopes' : ['user.read','mailboxsettings.read','calendars.readwrite'],
-    'authority': "https://login.microsoftonline.com/common",
-}
+try:
+    settings = {
+        'app_id': env('MS_GRAPH_CLIENT_ID'),
+        'app_secret': env('MS_GRAPH_CLIENT_SECRET'),
+        'redirect': settings.CURRENT_SITE + env('MS_GRAPH_REDIRECT_URL'),
+        'scopes' : ['user.read','mailboxsettings.read','calendars.readwrite'],
+        'authority': "https://login.microsoftonline.com/common",
+    }
+except ImproperlyConfigured:
+    settings = {
+        'app_id': '',
+        'app_secret': '',
+        'redirect': '',
+        'scopes' : '',
+        'authority': '',
+    }
+    
+
 
 def load_cache(request):
     # Check for a token cache in the session
