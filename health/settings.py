@@ -17,6 +17,8 @@ import environ
 from signalwire.rest import Client as signalwire_client
 import urllib.parse as up
 from django.core.exceptions import ImproperlyConfigured
+import json
+from pprint import pprint
 
 env = environ.Env()
 
@@ -191,11 +193,6 @@ except ImproperlyConfigured:
 #CA_CARRIERS_LIST = ['@txt.bell.ca','@pcs.rogers.com','@msg.telus.com','@msg.koodomobile.com','@sms.sasktel.com','@txt.freedommobile.ca']
 
 try:
-    SMS_CARRIER = env('SMS_CARRIER_DOMAIN')
-except ImproperlyConfigured:
-    SMS_CARRIER = None
-
-try:
     MS_TEAMS_MEETING_URL_1 = env('MS_TEAMS_TEMP_LINK_1')
 except ImproperlyConfigured:
     MS_TEAMS_MEETING_URL_1 = ''
@@ -218,6 +215,31 @@ try:
 except ImproperlyConfigured:
     DJANGO_DEVELOPMENT = False
 
+if env('DJANGO_DEVELOPMENT').upper() == 'TRUE':
+    envKeyValues = list(env.ENVIRON.items())
+    envKeyValues = envKeyValues[envKeyValues.index(('DJANGO_SETTINGS_MODULE', 'health.settings')) + 1:]
+    appSettingsJsonList = []
+    for k, v in envKeyValues:
+        if '_DEV_ONLY' not in k:
+            value = v
+            if k == 'DJANGO_DEVELOPMENT':
+                value = 'False'
+            elif k == 'DJANGO_EXT_DB' or k == 'DJANGO_EXT_STORAGE':
+                value = 'True'
+            appSettingsJsonList.append({
+                "name":k,
+                "slotSetting":False,
+                "value":value
+            })
+    print("Run \'az webapp config appsettings set --name <app-name> --resource-group <resource-group-name> \"@appSettings.json\"\' to load environment settings to your Azure App Service")
+    with(open('appSettings.json', 'w')) as settingsFileOut:
+        json.dump(appSettingsJsonList, settingsFileOut)
+
+try:
+    DJANGO_EXT_DB = env('DJANGO_EXT_DB')
+except ImproperlyConfigured:
+    DJANGO_EXT_DB = True
+
 try:
     DJANGO_EXT_STORAGE = env('DJANGO_EXT_STORAGE')
 except ImproperlyConfigured:
@@ -225,11 +247,14 @@ except ImproperlyConfigured:
 
 if DJANGO_DEVELOPMENT.upper() == 'TRUE':
     from .development import *
-    from .development_db_settings import *
 else:
     from .production import *
+
+if DJANGO_EXT_DB.upper() == 'TRUE':
     from .production_db_settings import *
-    #from .production_storage_settings import *
+else:
+    from .development_db_settings import *
+
 if DJANGO_EXT_STORAGE.upper() == 'TRUE':
     from .production_storage_settings import *
 else:
