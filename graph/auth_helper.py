@@ -12,7 +12,7 @@ try:
     settings = {
         'app_id': env('MS_GRAPH_CLIENT_ID'),
         'app_secret': env('MS_GRAPH_CLIENT_SECRET'),
-        'redirect': settings.CURRENT_SITE + env('MS_GRAPH_REDIRECT_URL'),
+        'redirect': settings.CURRENT_SITE_FOR_GRAPH_RD + env('MS_GRAPH_REDIRECT_URL'),
         'scopes' : ['user.read','mailboxsettings.read','calendars.readwrite'],
         'authority': "https://login.microsoftonline.com/common",
     }

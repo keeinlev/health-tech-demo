@@ -30,6 +30,7 @@ def callback(request):
         store_user(request, user)
         pprint(user)
         print(user.get('id'))
+        print(request.user.ms_authenticated)
         #tz_info = tz.gettz('America/New_York')
 
         # Get midnight today in user's time zone

@@ -6,7 +6,7 @@ ALLOWED_HOSTS = ['127.0.0.1','health-tech.azurewebsites.net', 'localhost']
 
 CURRENT_DOMAIN = 'health-tech.azurewebsites.net'
 
-CURRENT_SITE = 'https://health-tech.azurewebsites.net'
+CURRENT_SITE_FOR_GRAPH_RD = 'https://health-tech.azurewebsites.net'
 
 SESSION_COOKIE_AGE = 900
 CSRF_COOKIE_SECURE = True

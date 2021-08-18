@@ -18,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
     # Change what fields are accepted in User editing
     fieldsets = (
         (None, {'fields': ('email', 'password', 'type', 'is_active')}),
-        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone',)}),
+        ('Personal info', {'fields': ('first_name', 'preferred_name', 'last_name', 'phone', 'ms_authenticated',)}),
     )
 
     # Change what fields are accepted in User creation
