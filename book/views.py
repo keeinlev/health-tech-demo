@@ -80,7 +80,7 @@ def cancelappt(request, pk):
                         else:
                             a.booked = False
                             a.patient = None
-                            a.reminder_sent = False
+                            a.reminder_sent2 = 0
                             a.ms_event_created
                             a.type = None
                             a.consultation = None

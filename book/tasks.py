@@ -48,7 +48,7 @@ def send_reminder(appt_id, purpose):
             else:
                 kwords = ['Reminder', 'a reminder for']
             
-            if purpose == 'confirm' or not appt.reminder_sent:
+            if purpose == 'confirm' or appt.reminder_sent2 < 2: #or not appt.reminder_sent:
 
                 messageVar1 = f'\nJoin: {appt.meeting_redirect_link}'
                 messageVar2 = f'\nJoin: {appt.meeting_redirect_link}'

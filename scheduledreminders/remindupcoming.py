@@ -8,10 +8,12 @@ eastern = timezone('America/New_York')
 # Helper to fetch all Appointments within 15 minutes of now that are booked and have not yet had a reminder sent for them yet.
 def remind_all_upcoming(): 
     now = datetime.now().astimezone(utc)
-    upcoming = Appointment.objects.filter(datetime__lte=now+timedelta(minutes=15), datetime__gte=now, booked=True, reminder_sent=False)
+    toBeUpdated = Appointment.objects.filter(datetime__lte=now+timedelta(days=1), datetime__gte=now, reminder_sent2=0, booked=True)
+    toBeUpdated.update(reminder_sent2=1)
+    upcoming = Appointment.objects.filter(datetime__lte=now+timedelta(minutes=30), datetime__gte=now, booked=True, reminder_sent2=1) | Appointment.objects.filter(datetime__lte=now+timedelta(days=1, minutes=15), datetime__gte=now+timedelta(days=1), booked=True, reminder_sent2=0)# reminder_sent=False)
     for appt in upcoming:
         send_reminder(appt.id, 'remind')
-        appt.reminder_sent = True
+        appt.reminder_sent2 += 1
         appt.save()
 
 # Helper to delete any Appointments that were opened but not booked that have passed
