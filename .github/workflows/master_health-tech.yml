@@ -40,6 +40,7 @@ jobs:
       SIGNALWIRE_SPACE_URL: ${{ secrets.SIGNALWIRE_SPACE_URL }}
       SIGNALWIRE_PHONE_NUMBER: ${{ secrets.SIGNALWIRE_PHONE_NUMBER }}
       GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+      GOOGLE_MAPS_EMBED_API_KEY: ${{ secrets.GOOGLE_MAPS_EMBED_API_KEY }}
     steps:
     - uses: actions/checkout@v2
 

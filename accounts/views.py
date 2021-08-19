@@ -27,7 +27,7 @@ from .models import User, Patient, Doctor, PatientInfo, DoctorInfo
 from graph.auth_helper import remove_user_and_token
 from maps.maps_helper import geocode, get_nearby, find_place_by_place_id
 
-from health.settings import GOOGLE_MAPS_API_KEY
+from health.settings import GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_EMBED_API_KEY
 
 from pprint import pprint
 
@@ -526,7 +526,7 @@ def findpharmacy(request):
                 print(nearby['error_message'])
                 pprint(nearby['results'])
             if nearby['status'] != 'OK':
-               return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'message':'Location Service Error. Please check your address and postal code.' })
+               return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_EMBED_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'message':'Location Service Error. Please check your address and postal code.' })
             nearby = nearby['results']
             data = []
             for place in nearby:
@@ -538,9 +538,9 @@ def findpharmacy(request):
                 if not ignored:
                     data.append({'name': place['name'], 'address': place['vicinity'], 'place_id':place['place_id']})
             #print(pinfo.postal_code)
-            #print(pinfo.address_coords)  
+            #print(pinfo.address_coords)
             #return render(request, 'findpharmacy.html', { 'querytext':f'place?key={GOOGLE_MAPS_API_KEY}&q=place_id:ChIJJezxiLRCK4gRaYFq3-uLzcI' })
-            return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'places':data })
+            return render(request, 'findpharmacy.html', { 'querytext':f'search?key={GOOGLE_MAPS_EMBED_API_KEY}&q=pharmacies+{pinfo.postal_code[:3]}&zoom=13&center={pinfo.address_coords}', 'places':data })
             #return render(request, 'findpharmacy.html', { 'querytext':f'view?key={GOOGLE_MAPS_API_KEY}&center=43.56465615772579,-79.67794135999671&zoom=9' })
         else:
             pid = request.POST.get('pharmacy-id', None)
