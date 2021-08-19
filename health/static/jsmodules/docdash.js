@@ -75,7 +75,12 @@ function updateApptTable(details) {
         str += '\n    <td class="infocell">' + details[i]['booked'] + '</td>';
         str += '\n    <td class="infocell">' + details[i]['patient'] + '</td>';
         str += '\n    <td class="infocell"><a href="' + details[i]['detailsurl'] + '">Details</a></td>';
-        str += '\n    <td class="infocell"><a href="' + details[i]['meeturl'] + '">Meet</a></td>';
+        if (details[i]['meeturl']) {
+            str += '\n    <td class="infocell"><a href="' + details[i]['meeturl'] + '">' + (details[i]['meeturl'].slice(0,3) == 'tel' ? 'Call' : 'Meet') + '</a></td>';
+        }
+        else {
+            str += '\n    <td class="infocell">None</td>';
+        }
         str += '\n    <td class="infocell"><a href="' + details[i]['cancelurl'] + '">Cancel</a></td>';
         str += '\n</tr>\n';
     }
@@ -89,30 +94,7 @@ function updateApptTable(details) {
 $('#search-bar').on("input", function() {
     bar = $('#search-bar').val();
     $('#patient-search').val(bar);
-    if (bar != '') {
-        rawdate = $('#bookcalendar').calendar('get date');
-        date = 0;
-        if (rawdate) {
-            day = rawdate.getDate();
-            month = rawdate.getMonth() + 1;
-            year = rawdate.getFullYear();
-            date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-        }
-        $('#default-row').addClass('display-hidden');
-        $('input[name="date"]').val(date);
-        $.ajax({
-            url: $('#bookform').attr("get-patient-appts-url"),
-            data: $('#bookform').serialize(),
-            dataType: 'json',
-            success: function (data) {
-                console.log(data['apptdata'])
-                updateApptTable(data['apptdata'])
-            }
-        });
-    } else {
-        $('.inforow').remove();
-        fetchAppts();
-    }
+    fetchAppts();
 });
 
 function fetchAppts() {

@@ -1,9 +1,9 @@
 # This module contains views for:
-# - Accessing the Doctor dashboard page (line 137)
-# - Opening new Appointment slots (lines 246, 260, 284)
-# - Cancelling a range of Appointments (line 348)
-# - Fetching and downloading Appointment History (line 151)
-# - Updating pages after AJAX requests (lines 324, 406, 437, 469, 500)
+# - Accessing the Doctor dashboard page
+# - Opening new Appointment slots
+# - Cancelling a range of Appointments
+# - Fetching and downloading Appointment History
+# - Updating pages after AJAX requests
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -396,7 +396,7 @@ def cancelmult(request):
     return render(request, 'doctordashboard.html')
 
 # View for handling AJAX request during Doctor time slot scheduling, will make sure end date selection only includes times after selected start date.
-# See docdash.js line 34
+# See docdash.js
 @login_required
 def updateenddate(request):
     u = request.user
@@ -427,26 +427,38 @@ def updateenddate(request):
     return JsonResponse({})
 
 # View for AJAX request fetching details for all Appointments on a selected date, updating Appointment table on dashboard
-# See docdash.js line 126
+# See docdash.js
 @login_required
 def getdates(request):
     u = request.user
     if (u.is_authenticated):
         if u.type == "DOCTOR":
+            searched = request.GET.get('patient-search', None)
             date = request.GET.get('date', None)
             selected_appts = Appointment.objects.filter(doctor=u, datetime__gte=datetime.now().astimezone(utc))
+            
+            if searched:
+                selected_appts = selected_appts.filter(patient__first_name__icontains=searched) | u.getAppts.filter(patient__preferred_name__icontains=searched) | u.getAppts.filter(patient__last_name__icontains=searched)
+            
             if date:
-                selected_appts = u.getAppts.filter(doctor=u, date=date)
+                selected_appts = selected_appts.filter(doctor=u, date=date)
             appts = []
             for a in selected_appts:
                 dt = a.datetime.astimezone(timezone('America/New_York'))
+                meeturl = 0
+                if a.booked:
+                    if a.type:
+                        meeturl = reverse('meeting_redir', kwargs={'pk': a.pk})
+                    else:
+                        meeturl = "tel:+1" + a.patient.phone
+
                 appts.append({
                     'date': str(a.shortMonthDay),
                     'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
                     'booked': "<b class='" + ("red-text'>Booked" if a.booked else "green-text'>Available") + "</b>",
                     'patient': f'{a.patient.firstOrPreferredName} {a.patient.last_name}' if a.patient else "None",
                     'detailsurl': reverse('details', kwargs={'pk': a.pk}),
-                    'meeturl': reverse('meeting_redir', kwargs={'pk': a.pk}),
+                    'meeturl': meeturl,
                     'cancelurl': reverse('cancelappt', kwargs={'pk': a.pk}),
                 })
             data = {
@@ -458,39 +470,8 @@ def getdates(request):
             return JsonResponse(data)
     return JsonResponse({})
 
-# View for AJAX request fetching details for all Appointments on a selected date and scheduled for a searched Patient, updating Appointment table on dashboard
-# See docdash.js line 88
-@login_required
-def patientsearch(request):
-    u = request.user
-    if (u.is_authenticated):
-        if u.type == "DOCTOR":
-            searched = request.GET.get('patient-search')
-            date = request.GET.get('date', None)
-
-            # Using searched keyword, get Appointments where Patient first, preferred or last name matches
-            # Will query all Appointments if no date is given
-            query = u.getAppts.filter(patient__first_name__icontains=searched) | u.getAppts.filter(patient__preferred_name__icontains=searched) | u.getAppts.filter(patient__last_name__icontains=searched)
-            
-            # Narrows query to match date
-            if date != '0':
-                query = u.getAppts.filter(date=date, patient__first_name__icontains=searched) | u.getAppts.filter(date=date, patient__preferred_name__icontains=searched) | u.getAppts.filter(date=date, patient__last_name__icontains=searched)
-            appts = []
-            for a in query:
-                dt = a.datetime.astimezone(timezone('America/New_York'))
-                appts.append({
-                    'date': str(a.shortMonthDay),
-                    'time': f'{dt.hour % 12 if dt.hour % 12 else 12}:{"0" if dt.minute < 10 else ""}{dt.minute}{"PM" if dt.hour > 11 else "AM"}',
-                    'booked': "<b class='" + ("red-text'>Booked" if a.booked else "green-text'>Available") + "</b>",
-                    'patient': f'{a.patient.firstOrPreferredName} {a.patient.last_name}' if a.patient else "None",
-                    'detailsurl': reverse('details', kwargs={'pk': a.pk}),
-                })
-            data = {'apptdata': appts}
-            return JsonResponse(data)
-    return JsonResponse({})
-
 # View for AJAX request to check if a selected date and time has already been booked or not, used when Doctor opens a single time slot using calendar UI.
-# See docdash.js line 155
+# See docdash.js
 @login_required
 def checkifbooked(request):
     u = request.user
