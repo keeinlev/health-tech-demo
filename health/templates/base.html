@@ -19,6 +19,52 @@
         <link href="https://cdn.rawgit.com/mdehoog/Semantic-UI/6e6d051d47b598ebab05857545f242caf2b4b48c/dist/semantic.min.css" rel="stylesheet" type="text/css" />
         <link href="{% static 'appstyles/general.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'appstyles/modal.css' %}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" id="pagelayer-frontend-css" href="https://mehealthtech.ca/site-data/plugins/pagelayer-pro/css/givecss.php?give=pagelayer-frontend.css%2Cnivo-lightbox.css%2Canimate.min.css%2Cowl.carousel.min.css%2Cowl.theme.default.min.css%2Cfont-awesome5.min.css&amp;premium=%2Cpremium-frontend.css&amp;ver=1.5.4" type="text/css" media="all">
+        <script type="text/javascript" src="https://mehealthtech.ca/site-data/plugins/pagelayer-pro/js/givejs.php?give=pagelayer-frontend.js%2Cnivo-lightbox.min.js%2Cwow.min.js%2Cjquery-numerator.js%2CsimpleParallax.min.js%2Cowl.carousel.min.js&amp;premium=%2Cchart.min.js%2Cpremium-frontend.js%2Cshuffle.min.js&amp;ver=1.5.4"></script>
+        <style id="pagelayer-global-styles" type="text/css">
+            .pagelayer-row-stretch-auto > .pagelayer-row-holder, .pagelayer-row-stretch-full > .pagelayer-row-holder.pagelayer-width-auto { 
+                max-width: 1170px; 
+                margin-left: auto; 
+                margin-right: auto;
+            }
+            @media (min-width: 769px) {
+                .pagelayer-hide-desktop{
+                    display:none !important;
+                }
+            }
+            @media (max-width: 768px) and (min-width: 361px){
+                .pagelayer-hide-tablet{
+                    display:none !important;
+                }
+            }
+            @media (max-width: 360px){
+                .pagelayer-hide-mobile{
+                    display:none !important;
+                }
+            }
+            @media (max-width: 768px) {
+                [class^="pagelayer-offset-"],
+                [class*=" pagelayer-offset-"] {
+                    margin-left: 0;
+                }
+            
+                .pagelayer-row .pagelayer-col {
+                    margin-left: 0;
+                    width: 100%;
+                }
+                .pagelayer-row.pagelayer-gutters .pagelayer-col {
+                    margin-bottom: 16px;
+                }
+                .pagelayer-first-sm {
+                    order: -1;
+                }
+                .pagelayer-last-sm {
+                    order: 1;
+                }
+                    
+                
+            }
+        </style>
         {% block styles %}
         {% endblock %}
     </head>
@@ -98,7 +144,7 @@
         <div class='spacer'></div>
         {% block top %}
         {% endblock %}
-        <div class="container">
+        <div class="container" style='padding-bottom: 300px'>
             
             <div id='loadModal' class='modal'>
                 <div class="modal-content" id='loading-content'>
@@ -113,6 +159,195 @@
             {% endblock %}
         </div>
         {% block bottom %}
+        <footer class="pagelayer-footer">
+            <div pagelayer-id="wii3746" class="p-wii3746 pagelayer-post_props"></div>
+            <div pagelayer-id="cp44114" class="p-cp44114 pagelayer-row pagelayer-row-stretch-auto pagelayer-height-default">
+                <style pagelayer-style-id="cp44114">.p-cp44114 .pagelayer-col-holder{padding: 10px}
+                    .p-cp44114 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}
+                    .p-cp44114 .pagelayer-svg-top .pagelayer-shape-fill{fill:#227bc3}
+                    .p-cp44114 .pagelayer-row-svg .pagelayer-svg-top{width:100%;height:100px}
+                    .p-cp44114 .pagelayer-svg-bottom .pagelayer-shape-fill{fill:#272627}
+                    .p-cp44114 .pagelayer-row-svg .pagelayer-svg-bottom{width:400%;height:300px}
+                    .p-cp44114{background: #000000;padding-top: 70px; padding-right: 0px; padding-bottom: 20px; padding-left: 0px}
+                </style>
+                <div class="pagelayer-row-shape">
+                    <div class="pagelayer-row-svg">
+                        <svg class="pagelayer-svg-bottom">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                                <path class="pagelayer-shape-fill" style="opacity:0.66" d="M329.7,73.79c-50.4,-4 -99.94,-6.49 -123.24,-23.79c-13,-9.8 -76.7,-33.75 -109.5,-30.45c-32.8,3.2 -96.96,54 -96.96,54v36.44l1070.7,-18.74c0,0 -91.5,-38.45 -115.5,-50c-27.71,-13.33 -54.97,-41.63 -154.74,24.81c-60,39.95 -119.86,-113.11 -323.76,-24.81c-19.4,8.3 -96.6,36.55 -147,32.55z"></path>
+                                <path class="pagelayer-shape-fill" style="opacity:0.33" d="M81.59,75.05c-63.9,0 -81.59,-37.5 -81.59,-37.5v62.45h1000l7.46,-57.95c0,0 -7.46,-22.5 -94.5,7.95c-63.25,22.13 -106.3,-42.15 -210,7.05c-103.7,49.2 -241.4,1.65 -270,-7.05c-51.9,-15.9 -61,-27.45 -106.5,-27.45c-41.7,0 -144.17,52.4 -241.87,52.5z"></path>
+                                <path class="pagelayer-shape-fill" d="M78.5,50c-73.7,7.2 -97.5,50 -97.5,50h1053c0,0 -49.7,-73.65 -111,-62.45c-42.4,7.6 -30.2,11.8 -87,27c-57.2,15.2 -55.5,32.05 -184.5,-14.55c-129.1,-46 -227.41,70.55 -427.41,13.05c-63.5,-18.1 -71.89,-20.25 -145.59,-13.05z"></path>
+                            </svg>
+                        </svg>
+                    </div>
+                </div>
+                <div class="pagelayer-row-holder pagelayer-row pagelayer-auto pagelayer-width-auto">
+                    <div pagelayer-id="lgy6878" class="p-lgy6878 pagelayer-col pagelayer-col-3">
+                        <style pagelayer-style-id="lgy6878">.p-lgy6878 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}</style>
+                        <div class="pagelayer-col-holder">
+                            <div pagelayer-id="nre5192" class="p-nre5192 pagelayer-inner_row pagelayer-row-stretch-auto pagelayer-height-default">
+                                <style pagelayer-style-id="nre5192">.p-nre5192 .pagelayer-col-holder{padding: 10px}
+                                    .p-nre5192 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}
+                                    .p-nre5192 .pagelayer-svg-top .pagelayer-shape-fill{fill:#227bc3}
+                                    .p-nre5192 .pagelayer-row-svg .pagelayer-svg-top{width:100%;height:100px}
+                                    .p-nre5192 .pagelayer-svg-bottom .pagelayer-shape-fill{fill:#e44993}
+                                    .p-nre5192 .pagelayer-row-svg .pagelayer-svg-bottom{width:100%;height:100px}
+                                </style>
+                                <div class="pagelayer-row-holder pagelayer-row pagelayer-auto pagelayer-width-auto">
+                                    <div pagelayer-id="9494756" class="p-9494756 pagelayer-col pagelayer-col-3">
+                                        <style pagelayer-style-id="9494756">.p-9494756 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}</style>
+                                        <div class="pagelayer-col-holder">
+                                            <div pagelayer-id="xup7481" class="p-xup7481 pagelayer-image" align="left">
+                                                <style pagelayer-style-id="xup7481">.p-xup7481 .pagelayer-image-holder{text-align: left}
+                                                    .p-xup7481 .pagelayer-image-holder .pagelayer-image-overlay-content{text-align: left}
+                                                    .p-xup7481 img{max-width: 75%}
+                                                    @media (max-width: 768px) and (min-width: 361px){.p-xup7481 img{max-width: 35%}}
+                                                    @media (max-width: 360px){.p-xup7481 img{max-width: 60%}}
+                                                    .p-xup7481 .pagelayer-img{-webkit-transition: all 400ms; transition: all 400ms}
+                                                    .p-xup7481 .pagelayer-image-caption{color: #0986c0}
+                                                </style>
+                                                <div class="pagelayer-image-holder pagelayer-anim-par">
+                                                    <a class="pagelayer-ele-link" href="https://mehealthtech.ca/" pagelayer-image-link-type="custom_url">
+                                                    <img class="pagelayer-img pagelayer-animation-{{anim_hover}}" src="https://mehealthtech.ca/sitepad-data/uploads//2021/06/mehealth-e1623439016803.png" title="mehealth" alt="mehealth" srcset="https://mehealthtech.ca/sitepad-data/uploads//2021/06/mehealth-e1623439016803.png, https://mehealthtech.ca/sitepad-data/uploads//2021/06/mehealth-e1623439016803.png 1x, ">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div pagelayer-id="lup4068" class="p-lup4068 pagelayer-text">
+                                                <style pagelayer-style-id="lup4068">.p-lup4068{padding-top: 20px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px;font-family: Raleway !important;font-size: 16px !important}
+                                                    .p-lup4068 {
+                                                    color:white;
+                                                    }
+                                                </style>
+                                                <div class="pagelayer-text-holder">
+                                                    <p><br></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div pagelayer-id="s7e8842" class="p-s7e8842 pagelayer-col pagelayer-col-3">
+                                        <style pagelayer-style-id="s7e8842">.p-s7e8842 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}</style>
+                                        <div class="pagelayer-col-holder"></div>
+                                    </div>
+                                    <div pagelayer-id="ybi2246" class="p-ybi2246 pagelayer-col pagelayer-col-3">
+                                        <style pagelayer-style-id="ybi2246">.p-ybi2246 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}</style>
+                                        <div class="pagelayer-col-holder">
+                                            <div pagelayer-id="e885542" class="p-e885542 pagelayer-heading" align="left">
+                                                <style pagelayer-style-id="e885542">.p-e885542{text-align: left;padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 40px}
+                                                    .p-e885542 .pagelayer-heading-holder *{color:#ffffff;font-family: Montserrat !important; font-size: 22px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    .p-e885542 .pagelayer-heading-holder{color:#ffffff;font-family: Montserrat !important; font-size: 22px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    @media (max-width: 768px) and (min-width: 361px){.p-e885542{padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}}
+                                                    @media (max-width: 360px){.p-e885542{padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}}
+                                                </style>
+                                                <div class="pagelayer-heading-holder">
+                                                    <h2>Quick Links</h2>
+                                                </div>
+                                            </div>
+                                            <div pagelayer-id="ml96266" class="p-ml96266 pagelayer-list">
+                                                <style pagelayer-style-id="ml96266">.p-ml96266 li{list-style-type: none;font-family: Raleway; font-size: 16px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    .p-ml96266 .pagelayer-list-icon-holder{padding-bottom: calc(15px/2); padding-top: calc(15px/2)}
+                                                    .p-ml96266 .pagelayer-list-item{color:#ffffff;margin-left: NaNpx}
+                                                    .p-ml96266 li > a{font-family: Raleway; font-size: 16px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    .p-ml96266 .pagelayer-list-icon{color:#0986c0}
+                                                    .p-ml96266 .pagelayer-list-ul > div:not(:last-child){border-bottom-style: solid}
+                                                    .p-ml96266 .pagelayer-list-ul > div{border-bottom-color: #ffffff;border-bottom-width: 1px}
+                                                    .p-ml96266{padding-top: 10px; padding-right: 30px; padding-bottom: 0px; padding-left: 50px}
+                                                    @media (max-width: 768px) and (min-width: 361px){.p-ml96266{padding-top: 10px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}}
+                                                    @media (max-width: 360px){.p-ml96266{padding-top: 10px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}}
+                                                </style>
+                                                <ul class="pagelayer-list-ul pagelayer-list-type-none">
+                                                    <div pagelayer-id="jdz1705" class="p-jdz1705 pagelayer-list_item">
+                                                        <li class="pagelayer-list-li">
+                                                            <a class="pagelayer-list-url pagelayer-ele-link" href="http://mehealthtech.ca/">
+                                                            <span class="pagelayer-list-icon-holder">
+                                                            <span class="pagelayer-list-item">
+                                                            Home</span>
+                                                            </span>
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                    <div pagelayer-id="xtw7416" class="p-xtw7416 pagelayer-list_item">
+                                                        <li class="pagelayer-list-li">
+                                                            <a class="pagelayer-list-url pagelayer-ele-link" href="https://mehealthtech.ca/page/">
+                                                            <span class="pagelayer-list-icon-holder">
+                                                            <span class="pagelayer-list-item">
+                                                            Contact Us</span>
+                                                            </span>
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                    <div pagelayer-id="c5m1305" class="p-c5m1305 pagelayer-list_item">
+                                                        <li class="pagelayer-list-li">
+                                                            <a class="pagelayer-list-url pagelayer-ele-link" href="https://mehealthtech.ca/blog/">
+                                                            <span class="pagelayer-list-icon-holder">
+                                                            <span class="pagelayer-list-item">
+                                                            Blog</span>
+                                                            </span>
+                                                            </a>
+                                                        </li>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div pagelayer-id="v0p5941" class="p-v0p5941 pagelayer-col pagelayer-col-3">
+                                        <style pagelayer-style-id="v0p5941">.p-v0p5941 .pagelayer-background-overlay{-webkit-transition: all 400ms !important; transition: all 400ms !important}</style>
+                                        <div class="pagelayer-col-holder">
+                                            <div pagelayer-id="ccn1002" class="p-ccn1002 pagelayer-heading" align="left">
+                                                <style pagelayer-style-id="ccn1002">.p-ccn1002{text-align: left}
+                                                    .p-ccn1002 .pagelayer-heading-holder *{color:#ffffff;font-family: Montserrat !important; font-size: 22px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    .p-ccn1002 .pagelayer-heading-holder{color:#ffffff;font-family: Montserrat !important; font-size: 22px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                </style>
+                                                <div class="pagelayer-heading-holder">
+                                                    <h2>Contact Us</h2>
+                                                </div>
+                                            </div>
+                                            <div pagelayer-id="1cf6859" class="p-1cf6859 pagelayer-phone">
+                                                <style pagelayer-style-id="1cf6859">.p-1cf6859 .pagelayer-phone *, .p-1cf6859 .pagelayer-phone{color:#ffffff;font-family: Raleway; font-size: 16px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    body:not(.rtl) .p-1cf6859 .pagelayer-phone-icon{margin-right: 10px}
+                                                    body.rtl .p-1cf6859 .pagelayer-phone-icon{margin-left:10px}
+                                                    .p-1cf6859 .pagelayer-phone-icon i{color:#ffffff;font-size: 16px}
+                                                    .p-1cf6859{padding-top: 10px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}
+                                                </style>
+                                                <div class="pagelayer-phone-holder">
+                                                    <span class="pagelayer-phone-icon"><i class="fas fa-mobile-alt"></i></span>
+                                                    <a href="tel:+(416)278-0188">
+                                                    <span class="pagelayer-phone">(416) 278-0188</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div pagelayer-id="wuo1710" class="p-wuo1710 pagelayer-email">
+                                                <style pagelayer-style-id="wuo1710">.p-wuo1710 .pagelayer-email *, .p-wuo1710 .pagelayer-email{color:#ffffff;font-family: Raleway; font-size: 16px !important; font-style:  !important; font-weight:  !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                                    body:not(.rtl) .p-wuo1710 .pagelayer-email-icon{margin-right: 10px}
+                                                    body.rtl .p-wuo1710 .pagelayer-email-icon{margin-left:10px}
+                                                    .p-wuo1710 .pagelayer-email-icon i{color:#ffffff;font-size: 16px}
+                                                    .p-wuo1710{padding-top: 10px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}
+                                                </style>
+                                                <div class="pagelayer-email-holder">
+                                                    <span class="pagelayer-email-icon"><i class="fas fa-envelope-open-text"></i></span>
+                                                    <a href="mailto:info@mehealthtech.ca">
+                                                    <span class="pagelayer-email">info@mehealthtech.ca</span></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div pagelayer-id="1ua3788" class="p-1ua3788 pagelayer-copyright">
+                                <style pagelayer-style-id="1ua3788">.p-1ua3788 .pagelayer-copyright *, .p-1ua3788 .pagelayer-copyright{color:#ffffff;font-family: Raleway; font-size: 20px !important; font-style:  !important; font-weight: 600 !important; font-variant:  !important; text-decoration-line:  !important; text-decoration-style: Solid !important; line-height: em !important; text-transform:  !important; letter-spacing: px !important; word-spacing: px !important}
+                                    .p-1ua3788 .pagelayer-copyright{text-align: center}
+                                    .p-1ua3788{padding-top: 20px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px}
+                                </style>
+                                <div class="pagelayer-copyright">
+                                    <a href="https://mehealthtech.ca">
+                                    © 2021 MeHealth Technology
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
         {% endblock %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
