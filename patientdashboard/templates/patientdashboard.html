@@ -27,7 +27,7 @@
                                 <div class='row'>
                                     <div class='col-12 appointment-status appointment-status-md'>
                                         Appointment on {{ appt.dateTime }} with Dr. {{ appt.doctor }}<br>
-                                        <a href="{{ appt.meeting_link }}" target="_blank">Meeting link</a>
+                                        {% if appt.type %}<a href="{{ appt.meeting_link }}">Meeting Link</a>{% elif appt.booked %}<b>Phone Appointment</b>{% endif %}
                                     </div>
                                 </div>
                                 <!--<div class='row'>

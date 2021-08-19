@@ -20,7 +20,7 @@
                     <div class="section" style='height: 97.33%;'>
                         <h2>Open a new Appointment slot</h2>
                         
-                        <form method="post" class='doctorform' action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" get-dates-url="{% url 'getdates' %}" get-patient-appts-url="{% url 'patientsearch' %}" id="bookform">
+                        <form method="post" class='doctorform' action="{% url 'booksingle' %}" check-date-url="{% url 'checkifbooked' %}" get-dates-url="{% url 'getdates' %}" id="bookform">
                             {% csrf_token %}
                             <input type='hidden' id='patient-search' name='patient-search'>
                             <div class="ui calendar" id="bookcalendar"></div>
