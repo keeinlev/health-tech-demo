@@ -211,9 +211,9 @@ except ImproperlyConfigured:
     GOOGLE_MAPS_API_KEY = ''
     
 try:
-    GOOGLE_MAPS_EMBEDAPI_KEY = env('GOOGLE_MAPS_EMBED_API_KEY')
+    GOOGLE_MAPS_EMBED_API_KEY = env('GOOGLE_MAPS_EMBED_API_KEY')
 except ImproperlyConfigured:
-    GOOGLE_MAPS_EMBEDAPI_KEY = ''
+    GOOGLE_MAPS_EMBED_API_KEY = ''
 
 try:
     DJANGO_DEVELOPMENT = env('DJANGO_DEVELOPMENT')
