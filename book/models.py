@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from accounts.models import User, Patient, Doctor
 from book.times import IntTimes
 import datetime
@@ -50,7 +51,10 @@ class Appointment(models.Model):
     def meeting_link(self):
         from health.settings import MS_TEAMS_MEETING_URL_1 as meet_link1, MS_TEAMS_MEETING_URL_2 as meet_link2
         return meet_link1 + self.meeting_id + meet_link2
-        
+
+    @property
+    def meeting_redirect_link(self):
+        return 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':self.pk})
 
     @property
     def details(self):

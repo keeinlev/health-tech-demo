@@ -49,11 +49,9 @@ def send_reminder(appt_id, purpose):
                 kwords = ['Reminder', 'a reminder for']
             
             if purpose == 'confirm' or not appt.reminder_sent:
-                # Piecing together the short redirect URL using the primary key
-                redirect_url = 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':appt.pk})
 
-                messageVar1 = f'\nJoin: {redirect_url}'
-                messageVar2 = f'\nJoin: {redirect_url}'
+                messageVar1 = f'\nJoin: {appt.meeting_redirect_link}'
+                messageVar2 = f'\nJoin: {appt.meeting_redirect_link}'
 
                 # Appointment type is video if True, phone if False
                 if not appt.type and appt.patient.phone != None:
@@ -88,8 +86,8 @@ def send_reminder(appt_id, purpose):
                 #   so no need to send them from here
                 if not appt.ms_event_created:
                     # Reassignment of messageVars for Email
-                    messageVar1 = f'Use the following link to join:\n{appt.meeting_link}'
-                    messageVar2 = f'Use the following link to join:\n{appt.meeting_link}'
+                    messageVar1 = f'Use the following link to join:\n{appt.meeting_redirect_link}'
+                    messageVar2 = f'Use the following link to join:\n{appt.meeting_redirect_link}'
 
                     if not appt.type:
                         messageVar1 = f'The doctor will call you at the phone number you have provided: +1{patient_phone}'
