@@ -1,4 +1,4 @@
-# health-tech-demo
+# health-tech-demo 
 
 This is a project I've been working on during my 1B Co-op Term at SEEEG Data Inc.
 It's a Django-based web service that aids in facilitating patient-doctor connections and appointment scheduling.
