@@ -2,7 +2,7 @@ from .settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','health-tech.azurewebsites.net', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1','health-tech.azurewebsites.net', 'localhost', 'mehealthtech-bitbucket.azurewebsites.net']
 
 CURRENT_DOMAIN = 'health-tech.azurewebsites.net'
 
