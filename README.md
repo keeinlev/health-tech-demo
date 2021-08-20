@@ -1,7 +1,5 @@
 # health-tech-demo
 
-testing git with new branch
-
 This is a project I've been working on during my 1B Co-op Term at SEEEG Data Inc.
 It's a Django-based web service that aids in facilitating patient-doctor connections and appointment scheduling.
 This app uses built-in Django authentication with a custom User Model, as well as Microsoft Graph and MSAL to connect to users' MS accounts and create Calendar events.
