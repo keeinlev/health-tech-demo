@@ -37,6 +37,7 @@ class Appointment(models.Model):
     def shortDateTime(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%a %b %d %I:%M%p')
     
+    # Returns an Appointment's datetime in the format of "<Short Month Name> <Day 1-31>"
     @property
     def shortMonthDay(self):
         return datetime.datetime.strftime(self.datetime.astimezone(eastern), '%b %d')
@@ -57,10 +58,15 @@ class Appointment(models.Model):
     def meeting_redirect_link(self):
         return 'https://health-tech.azurewebsites.net' + reverse('meeting_redir', kwargs={'pk':self.pk})
 
+    # Returns the ApptDetails object tied to the Appointment if it exists, creates a new one if it doesn't
     @property
     def details(self):
         from appointment.models import ApptDetails
-        return ApptDetails.objects.get(appt=self)
+        if ApptDetails.objects.filter(appt=self).exists():
+            return ApptDetails.objects.get(appt=self)
+        else:
+            new = ApptDetails.objects.create(appt=self, date=self.date)
+            return new
 
     @property
     def localTZ(self):

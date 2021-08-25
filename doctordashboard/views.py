@@ -222,12 +222,12 @@ def apptHistory(request):
                         col_lookup = {'Date':str(appt.date), 'Time':dict(IntTimes.choices)[appt.time], 'Consultation':appt.consultation, 'Patient Name':str(appt.patient), 'Patient DOB':str(appt.patient.more.dob), 'Patient Address':f'{appt.patient.more.address}, {appt.patient.more.postal_code}', 'Patient Email':appt.patient.email, 'Patient Phone #':str(appt.patient.phone), 'Patient OHIP':appt.patient.more.ohip_number, 'Patient OHIP Expiry':str(appt.patient.more.ohip_expiry), 'Patient Pharmacy':appt.patient.more.pharmacy, 'Doctor Notes':ApptDetails.objects.get(appt=appt).notes, 'Prescription':ApptDetails.objects.get(appt=appt).prescription}
 
                         if fileType == 'csv':
-                            row = list(map(lambda x: col_lookup[x], columns))
+                            row = list(map(lambda current_col: col_lookup[current_col], columns))
                             writer.writerow(row)
                         elif fileType == 'xls':
                             row_num += 1
-                            for i in range(len(columns)):
-                                ws.write(row_num, i, col_lookup[columns[i]], font_style)
+                            for current_col in range(len(columns)):
+                                ws.write(row_num, current_col, col_lookup[columns[current_col]], font_style)
                     if fileType == 'xls':
                         wb.save(response)
                     return response
@@ -292,7 +292,7 @@ def bookmult(request):
                     d = startdate
                     while(d <= enddate):
 
-                        # Gets the list of all time integer values
+                        # Gets the list of the keys in the IntTimes tuples as strings
                         timeKeys = IntTimes.getKeys()
                             
                         # Creates an Appointment for every time in the range and for every day in the range

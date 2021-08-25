@@ -52,13 +52,8 @@ class IntTimes(models.IntegerChoices):
     T745PM = 1945,"7:45PM"
 
     def getKeys():
-        l = []
-        for time in IntTimes.choices:
-            l.append(str(time[0]))
-        return l
+        return list(map(lambda x: str(x[0]), IntTimes.choices))
     
     def getValues():
-        l = []
-        for time in IntTimes.choices:
-            l.append(time[1])
-        return l
+        return list(map(lambda x: x[1], IntTimes.choices))
+

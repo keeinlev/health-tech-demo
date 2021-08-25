@@ -1,21 +1,8 @@
 from .models import Appointment
-import time
 import datetime
 from django.core.mail import send_mail
 import math
-from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient, CURRENT_DOMAIN
-from django.urls import reverse
-import asyncio
-from asgiref.sync import sync_to_async
-
-# def get_or_create_eventloop():
-#     try:
-#         return asyncio.get_event_loop()
-#     except RuntimeError as ex:
-#         if "There is no current event loop in thread" in str(ex):
-#             loop = asyncio.new_event_loop()
-#             asyncio.set_event_loop(loop)
-#             return asyncio.get_event_loop()
+from health.settings import SIGNALWIRE_NUMBER, SIGNALWIRE_CLIENT as swclient
 
 def emailWrapper(subject, body, to=[]):
     send_mail(
@@ -58,29 +45,19 @@ def send_reminder(appt_id, purpose):
                     messageVar1 = f'\nThe doctor will call this number: +1{patient_phone}'
                     messageVar2 = f'\nPlease call the Patient at +1{patient_phone}'
                 
-                # Sending of messages
+                # Sending of messages using SignalWire Client
                 if patient.sms_notifications and appt.patient.phone != None:
                     message1 = swclient.messages.create(
                         body=f'Hello {patient.firstOrPreferredName}\nthis is {kwords[1]} an Appointment with Dr. {doctor} {appt.shortDateTime}\n\n{messageVar1}',
                         from_=SIGNALWIRE_NUMBER,
                         to='+1' + patient_phone,
                     )
-                    # SMSWrapper(
-                    #     f'Appointment {kwords[0]}',
-                    #     messageVar1,
-                    #     patient_phone
-                    # )
                 if doctor.sms_notifications and appt.doctor.phone != None:
                     message2 = swclient.messages.create(
                         body=f'Hello {doctor.firstOrPreferredName}\nThis is {kwords[1]} an Appointment with {patient} {appt.shortDateTime}\n\n{messageVar2}',
                         from_=SIGNALWIRE_NUMBER,
                         to='+1' + doctor_phone,
                     )
-                    # SMSWrapper(
-                    #     f'Appointment {kwords[0]}',
-                    #     messageVar2,
-                    #     doctor_phone
-                    # )
                 
                 # If the Appointment was created while the User was connected to MS account, reminders and confirmations will be sent by Email automatically,
                 #   so no need to send them from here
