@@ -45,7 +45,7 @@
                             Upload Files <input type='file' accept='.png,.jpg,.gif,.mp4,.mov,.avi,.wmv,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' name='files' id='files-input' multiple />
                         </div>
                         <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
-                        <a href="{% url 'doctordashboard' %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
+                        <a href="{% if appt.apptHasPassed %}{% url 'allappts' %}{% else %}{% url 'doctordashboard' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
                     </form>
                 {% else %}
                     <div class='section'>
@@ -79,7 +79,7 @@
                                 Upload Files <input type='file' accept='.png,.jpg,.gif,.mp4,.mov,.avi,.wmv,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document' name='files' id='files-input' multiple />
                             </div>
                             <input type="submit" class="btn-lg btn-block btn-secondary" style='margin-top: 20px;'>
-                            <a href="{% url 'patientdashboard' %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
+                            <a href="{% if appt.apptHasPassed %}{% url 'allappts' %}{% else %}{% url 'patientdashboard' %}{% endif %}"><input type="button" class='btn-lg btn-block btn-primary' value="Back"></button></a>
                         </form>
                     </div>
                 {% endif %}

@@ -167,7 +167,10 @@
                             <option value='booked'>Booked</option>
                         </select>
                     </div>
+                    <div class='col'>
+                    </div>
                 </div>
+                <a href="{% url 'allappts' %}">View all</a>
                 {% if doctor.getSomeAppts %}
                     {% for apptgroup in doctor.upcomingGroups %}
                         <h4 class='display-hidden' id='{{ apptgroup.name }}-empty'>You have no {{ apptgroup.name }} Appointments saved.</h4>

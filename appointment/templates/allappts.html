@@ -14,39 +14,41 @@
         </div>
     {% endif %}
     {% if user.is_authenticated %}
-        <div style='padding-bottom: 200px;'>
-            <div class='section'><div class='row'>
-                <div class='col-12'>
-                    <div class='infotable-cont'>
-                        <table class='infotable' id='appointment-table'>
-                            <thead class='appttablehead'>
-                                <tr>
-                                    <th class='infohead'>Date</th>
-                                    <th class='infohead'>Time</th>
-                                    <th class='infohead'>Status</th>
-                                    <th class='infohead'>Patient</th>
-                                    <th class='infohead'>Details</th>
-                                    <th class='infohead'>Meet</th>
-                                    <th class='infohead'>Cancel</th>
-                                </tr>
-                            </thead>
-                            <tbody class='appttablebody'>
-                                {% for appt in user.getAllAppts %}
-                                    <tr id='default-row' class='appttablerow'>
-                                        <td class='infocell'>{{ appt.date }}</td>
-                                        <td class='infocell'>{{ appt.apptTime }}</td>
-                                        <td class='infocell'><b{% if appt.apptHasPassed %}>Passed{% else %} class='{% if appt.booked %}red-text'>Booked{% else %}green-text'>Available{% endif %}{% endif %}</b></td>
-                                        <td class='infocell'>{{ appt.patient }}</td>
-                                        <td class='infocell'><a href="{% url 'details' appt.pk %}">Details</a></td>
-                                        <td class='infocell'>{% if not appt.apptHasPassed %}<a href="{% url 'meeting_redir' appt.pk %}">Meet Link</a>{% endif %}</td>
-                                        <td class='infocell'>{% if not appt.apptHasPassed %}<a href="{% url 'cancelappt' appt.pk %}">Cancel</a>{% endif %}</td>
+        {% if user.type == 'DOCTOR' or user.type == 'PATIENT' %}
+            <div style='padding-bottom: 200px;'>
+                <div class='section'>
+                    <div class='col-12'>
+                        <div class='infotable-cont'>
+                            <table class='infotable' id='appointment-table'>
+                                <thead class='appttablehead'>
+                                    <tr>
+                                        <th class='infohead'>Date</th>
+                                        <th class='infohead'>Time</th>
+                                        <th class='infohead'>Status</th>
+                                        <th class='infohead'>Patient</th>
+                                        <th class='infohead'>Details</th>
+                                        <th class='infohead'>Meet</th>
+                                        <th class='infohead'>Cancel</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class='appttablebody'>
+                                    {% for appt in user.getAllAppts %}
+                                        <tr id='default-row' class='appttablerow'>
+                                            <td class='infocell'>{{ appt.date }}</td>
+                                            <td class='infocell'>{{ appt.apptTime }}</td>
+                                            <td class='infocell'><b{% if appt.apptHasPassed %}>Past{% else %} class='{% if appt.booked %}red-text'>Booked{% else %}green-text'>Available{% endif %}{% endif %}</b></td>
+                                            <td class='infocell'>{{ appt.patient }}</td>
+                                            <td class='infocell'><a href="{% url 'details' appt.pk %}">Details</a></td>
+                                            <td class='infocell'>{% if not appt.apptHasPassed %}<a href="{% url 'meeting_redir' appt.pk %}">Meet Link</a>{% endif %}</td>
+                                            <td class='infocell'>{% if not appt.apptHasPassed %}<a href="{% url 'cancelappt' appt.pk %}">Cancel</a>{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 {% endblock %}
