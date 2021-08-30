@@ -65,7 +65,6 @@ emailmatch = false;
 passmatch = false;
 
 $('.formcontrol, .next').on("input click", function(e) {
-
     
     var filled = true;
 

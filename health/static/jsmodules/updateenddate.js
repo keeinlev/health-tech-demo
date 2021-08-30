@@ -12,31 +12,8 @@ $('#id_starttime, #id_c_starttime').on("change", function() {
     form_url = form.attr("update-end-date-url");
     form_data = form.serialize();
     update_end_date(form_url, form_data);
-    // console.log(form[0] == $('#cancelmultform')[0]);
-    // if (form[0] == $('#cancelmultform')[0]) {
-    //     filled = true;
-    //     for (var elem=0; elem < $('.cancel-mult-fields').length; elem++) {
-    //         if (!$('.cancel-mult-fields')[elem].value) {
-    //             filled = false;
-    //             break;
-    //         }
-    //     }
-    //     if (filled) {
-    //         form_url = $('#cancelmultform').attr("get-reason-url");
-    //         form_data = $('#cancelmultform').serialize();
-    //         console.log(form_data);
-    //         cancel_needs_reason(form_url, form_data);
-    //     }
-    // }
-    //}
 });
-// $('#id_c_starttime').on("change", function() {
-//     //if (this.value > $('#id_c_endtime').val()) {
-//     form_url = $('#cancelmultform').attr("update-end-date-url");
-//     form_data = $('#cancelmultform').serialize();
-//     update_end_date(form_url, form_data);
-//     //}
-// });
+
 function update_end_date(form_url, form_data) {
     $.ajax({
         url: form_url,

@@ -1,3 +1,5 @@
+# These are only used in the tests.py files to give the test results some flair, not used in main code
+
 class color:
    PURPLE = '\033[1;35;48m'
    CYAN = '\033[1;36;48m'

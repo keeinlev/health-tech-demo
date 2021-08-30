@@ -1,3 +1,10 @@
+# IMPORTANT: When using external storage (i.e. when DJANGO_EXT_STORAGE is True) and making changes to static files, be sure to call
+# "python manage.py collectstatic" before running the server. This will update the old versions of the files in the Azure Storage Account.
+# Otherwise, the server will run using the outdated files.
+# This command has been written to run automatically on deployment to the Cloud when using Github Actions, but if using BitBucket, you will
+# need to do this manually on push/deploy.
+
+
 from .settings import *
 from django.core.exceptions import ImproperlyConfigured
 from azure.storage.blob import BlockBlobService
