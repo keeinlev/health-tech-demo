@@ -62,7 +62,7 @@ class BookTest(StaticLiveServerTestCase):
         assert len(Appointment.objects.all()) == 1
         assert Appointment.objects.last().patient == self.test_user
         assert Appointment.objects.last().consultation in self.test_doctor.userType.more.consultations
-        assert not Appointment.objects.last().reminder_sent2
+        assert not Appointment.objects.last().reminder_sent
         assert not Appointment.objects.last().ms_event_created
         assert Appointment.objects.last().booked
         print(f'{color.GREEN}{"POST Appointment":.<30}OK{color.END}')
@@ -85,7 +85,7 @@ class AppointmentTestCase(TestCase):
     def testAppointmentBasic(self):
         a = Appointment.objects.create(doctor=self.test_doctor, date="2021-07-09", time=800, datetime=datetime(2021, 7, 9, 8, 0).astimezone(eastern))
         assert a.ms_event_created == False
-        assert a.reminder_sent2 == 0
+        assert a.reminder_sent == 0
         assert a.type == None
         assert a.meeting_id == None
         assert a.patient == None

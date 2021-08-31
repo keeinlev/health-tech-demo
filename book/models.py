@@ -20,8 +20,7 @@ class Appointment(models.Model):
     booked = models.BooleanField(default=False)
     patient = models.ForeignKey(Patient, related_name="%(class)s_patient", on_delete=models.CASCADE, null=True, default=None, blank=True)
     doctor = models.ForeignKey(Doctor, related_name="%(class)s_doctor", on_delete=models.CASCADE, null=True, default=None)
-    reminder_sent = models.BooleanField(default=False)
-    reminder_sent2 = models.IntegerField(default=0, choices=[(0, 'No Reminder'), (1, 'One Day Reminder'), (2, '15 Minute Reminder')])
+    reminder_sent = models.IntegerField(default=0, choices=[(0, 'No Reminder'), (1, 'One Day Reminder'), (2, '15 Minute Reminder')]) # used as flag to know when to send emails/sms
     ms_event_created = models.BooleanField(default=False)
     meeting_id = models.CharField(unique=True, max_length=48, null=True, blank=True, default=None)
     type = models.BooleanField(default=None, blank=True, null=True, choices=[(1, 'Video'), (0, 'Phone')])

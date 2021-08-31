@@ -55,8 +55,8 @@ class User(AbstractUser):
     preferred_name = models.CharField(_("User Preferred Name"), max_length=50, blank=True, null=True, default=None)
     last_name = models.CharField(_("User Last Name"), max_length=50)
     email = models.EmailField(_("User Email"), validators=[EmailValidator("Please enter a valid e-mail")], max_length=50, unique=True)
-    target_new_email = models.EmailField(_("Possible New Email"), max_length=50, unique=True, blank=True, null=True, default=None)
-    ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False)
+    target_new_email = models.EmailField(_("Possible New Email"), max_length=50, unique=True, blank=True, null=True, default=None) # used to verify when changing emails, can only have one target email to change to at a time, will overwrite
+    ms_authenticated = models.BooleanField(_("Connected to MS Account"), default=False) # True if User chooses to sign into Microsoft Account, must sign in every session
     email_notifications = models.BooleanField(_("Email Notifications"), default=True)
     sms_notifications = models.BooleanField(_("SMS Notifications"), default=True)
     
@@ -88,7 +88,7 @@ class User(AbstractUser):
         elif (self.type == 'DOCTOR'):
             return Appointment.objects.filter(doctor=self).order_by('date', 'time')
 
-    # Returns the Queryset of all Appointment objects that are scheduled to the User
+    # Returns the Queryset of all future Appointment objects that are scheduled to the User
     @property
     def getAppts(self):
         from book.models import Appointment
