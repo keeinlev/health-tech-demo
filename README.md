@@ -5,11 +5,11 @@
 ---
 
 # Table of Contents
-- [Overview of Packages](#markdown-header-overview-of-packages)
-- [Deploying to Azure](#markdown-header-deploying-the-app-to-the-azure-cloud)
-- [Running the Application Locally](#markdown-header-running-the-application-on-your-local-machine)
-- [Accessing the Admin Page](#markdown-header-accessing-the-admin-page)
-- [Required Libraries](#markdown-header-required-libraries)
+- [Overview of Packages](#overview-of-packages)
+- [Deploying to Azure](#deploying-the-app-to-the-azure-cloud)
+- [Running the Application Locally](#running-the-application-on-your-local-machine)
+- [Accessing the Admin Page](#accessing-the-admin-page)
+- [Required Libraries](#required-libraries)
 
 ---
 
