@@ -1,4 +1,11 @@
-# health-tech-demo 
+# health-tech-demo
+
+This is a project I've been working on during my 1B Co-op Term at SEEEG Data Inc.
+It's a Django-based web service that aids in facilitating patient-doctor connections and appointment scheduling.
+This app uses built-in Django authentication with a custom User Model, as well as Microsoft Graph and MSAL to connect to users' MS accounts and create Calendar events.
+Other main dependencies are APScheduler for recurring tasks, MS Azure for Web App Hosting and Static File Blob Storage, and AWS for Database Storage and Connection.
+
+As of now, the demo version of this app is hosted through Azure App Services, static and media files are stored in an Azure Storage Account, and app data is stored in an AWS RDS PostgreSQL database. It was much simpler to set up a free SQL database with AWS, plus using multiple cloud services can also be an added layer of resiliency.
 
 # [Try the Demo here](https://health-tech.azurewebsites.net/)
 
@@ -14,13 +21,6 @@
 ---
 
 # Overview of Packages
-
-This is a project I've been working on during my 1B Co-op Term at SEEEG Data Inc.
-It's a Django-based web service that aids in facilitating patient-doctor connections and appointment scheduling.
-This app uses built-in Django authentication with a custom User Model, as well as Microsoft Graph and MSAL to connect to users' MS accounts and create Calendar events.
-Other main dependencies are APScheduler for recurring tasks, MS Azure for Web App Hosting and Static File Blob Storage, and AWS for Database Storage and Connection.
-
-As of now, the demo version of this app is hosted through Azure App Services, static and media files are stored in an Azure Storage Account, and app data is stored in an AWS RDS PostgreSQL database. It was much simpler to set up a free SQL database with AWS, plus using multiple cloud services can also be an added layer of resiliency.
 
 Here's a breakdown of the packages (Django apps) contained in the root project folder:
 
