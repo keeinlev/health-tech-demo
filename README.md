@@ -7,8 +7,6 @@ Other main dependencies are APScheduler for recurring tasks, MS Azure for Web Ap
 
 As of now, the demo version of this app is hosted through Azure App Services, static and media files are stored in an Azure Storage Account, and app data is stored in an AWS RDS PostgreSQL database. It was much simpler to set up a free SQL database with AWS, plus using multiple cloud services can also be an added layer of resiliency.
 
-# [Try the Demo here](https://health-tech.azurewebsites.net/)
-
 ---
 
 # Table of Contents
